@@ -119,7 +119,7 @@ class RexailDataset(datasets.VisionDataset):
 
     def _load_everything(self):
         whole = []
-        for index in len(self.samples):
+        for index in range(len(self.samples)):
             whole.append(self.__getitem__(index))
         return whole
 
