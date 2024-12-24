@@ -15,8 +15,8 @@ from engine.trainer import trainer
 if __name__ == "__main__":
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        TRAIN_DIR = ""
-        TEST_DIR = ""
+        TRAIN_DIR = "/workspace/dataset/train/"
+        TEST_DIR = "/workspace/dataset/train/"
 
         STAGES_SETTINGS_DIR = "configs/training/stages"
         MODEL_CONFIG_DIR = "configs/architecture"
