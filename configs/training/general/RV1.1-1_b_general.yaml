@@ -2,8 +2,8 @@
 training_general:
 
   - id: 0
-    batch_size: 64
-    num_workers: 16
+    batch_size: 128
+    num_workers: 24
     momentum: 0.9
     weight_decay: 0.00005
     ds_mean: [0.4925, 0.4561, 0.4017]
