@@ -15,8 +15,8 @@ from engine.trainer import trainer
 if __name__ == "__main__":
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        TRAIN_DIR = ""
-        TEST_DIR = ""
+        TRAIN_DIR = "/workspace/dataset/train/"
+        TEST_DIR = "/workspace/dataset/train/"
 
         STAGES_SETTINGS_DIR = "configs/training/stages"
         MODEL_CONFIG_DIR = "configs/architecture"
@@ -103,9 +103,9 @@ if __name__ == "__main__":
                         train_dataloader=train_dataloader,
                         test_dataloader=test_dataloader,
                         optimizer=optimizer,
-                        lr_min=stages_cfg.get('lr_min',0),
-                        lr_max=stages_cfg.get('lr_max'),
-                        warmup_epochs=stages_cfg.get('warmup_epochs'),
+                        lr_min=stage.get('lr_min',0),
+                        lr_max=stage.get('lr_max'),
+                        warmup_epochs=stage.get('warmup_epochs'),
                         loss_fn=loss_fn,
                         epochs=stage.get('epochs'),
                         device=device,
