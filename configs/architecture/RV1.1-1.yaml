@@ -1,0 +1,105 @@
+# res = 224,224
+# params: ~13M
+# total layers: 36
+# inference time on POS: ?
+
+---
+model_stages:
+  
+  - id: 0
+    type: conv
+    kernel: 3
+    stride: 2
+    out_channels: 20
+    in_channels: 3
+    layers: 1
+  
+  - id: 1
+    type: fused
+    expansion_ratio: 1
+    kernel: 3
+    SE_ratio: 0
+    stride: 1
+    out_channels: 20
+    in_channels: 20
+    layers: 2
+  
+  - id: 2
+    type: fused
+    expansion_ratio: 2
+    kernel: 5
+    SE_ratio: 0
+    stride: 2
+    out_channels: 40
+    in_channels: 20
+    layers: 3
+  
+  - id: 3
+    type: fused
+    expansion_ratio: 4
+    kernel: 3
+    SE_ratio: 0
+    stride: 2
+    out_channels: 54
+    in_channels: 40
+    layers: 4
+
+  - id: 4
+    type: invres
+    expansion_ratio: 4
+    kernel: 3
+    SE_ratio: 0.25
+    stride: 1
+    out_channels: 84
+    in_channels: 54
+    layers: 4
+  
+  - id: 5
+    type: invres
+    expansion_ratio: 4
+    kernel: 3
+    SE_ratio: 0.25
+    stride: 2
+    out_channels: 108
+    in_channels: 84
+    layers: 4
+  
+  - id: 6
+    type: invres
+    expansion_ratio: 6
+    kernel: 3
+    SE_ratio: 0.25
+    stride: 1
+    out_channels: 136
+    in_channels: 108
+    layers: 8
+
+  - id: 7
+    type: invres
+    expansion_ratio: 6
+    kernel: 3
+    SE_ratio: 0.25
+    stride: 2
+    out_channels: 218
+    in_channels: 136
+    layers: 13
+
+  - id: 8
+    type: conv
+    kernel: 1
+    stride: 1
+    out_channels: 1024
+    in_channels: 218
+    layers: 1
+
+  - id: 9
+    type: AAP
+  
+  - id: 10
+    type: dropout
+    dropout_prob: 0.1
+
+  - id: 11
+    type: FC
+    out_features: 200
+    in_features: 1024

@@ -1,0 +1,93 @@
+# efficientnetv2-s architecture
+# based on: https://arxiv.org/pdf/2104.00298
+
+---
+model_stages:
+  
+  - id: 0
+    type: conv
+    kernel: 3
+    stride: 2
+    out_channels: 24
+    in_channels: 3
+    layers: 1
+  
+  - id: 1
+    type: fused
+    expansion_ratio: 1
+    kernel: 3
+    SE_ratio: 0
+    stride: 1
+    out_channels: 24
+    in_channels: 24
+    layers: 2
+  
+  - id: 2
+    type: fused
+    expansion_ratio: 4
+    kernel: 3
+    SE_ratio: 0
+    stride: 2
+    out_channels: 48
+    in_channels: 24
+    layers: 4
+  
+  - id: 3
+    type: fused
+    expansion_ratio: 4
+    kernel: 3
+    SE_ratio: 0
+    stride: 2
+    out_channels: 64
+    in_channels: 48
+    layers: 4
+
+  - id: 4
+    type: invres
+    expansion_ratio: 4
+    kernel: 3
+    SE_ratio: 0.25
+    stride: 2
+    out_channels: 128
+    in_channels: 64
+    layers: 6
+  
+  - id: 5
+    type: invres
+    expansion_ratio: 6
+    kernel: 3
+    SE_ratio: 0.25
+    stride: 1
+    out_channels: 160
+    in_channels: 128
+    layers: 9
+
+  - id: 6
+    type: invres
+    expansion_ratio: 6
+    kernel: 3
+    SE_ratio: 0.25
+    stride: 2
+    out_channels: 256
+    in_channels: 160
+    layers: 15
+
+  - id: 7
+    type: conv
+    kernel: 1
+    stride: 1
+    out_channels: 1280
+    in_channels: 256
+    layers: 1
+
+  - id: 8
+    type: AAP
+  
+  - id: 9
+    type: dropout
+    dropout_prob: 0.1
+
+  - id: 10
+    type: FC
+    out_features: 200
+    in_features: 1280

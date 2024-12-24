@@ -1,0 +1,1314 @@
+12:13:23,236 log INFO ------LOGGING: .(RV-xs.yaml,RV-xs_baseline_general.yaml,RV-xs_baseline_stages.yaml). ------
+12:13:23,236 log INFO ---Creating model---
+12:13:23,236 log INFO Creating CFGCNN
+12:13:23,239 log INFO Adding conv stage
+12:13:23,240 log INFO Adding fused stage
+12:13:23,240 log INFO Adding fused stage
+12:13:23,240 log INFO Adding fused stage
+12:13:23,241 log INFO Adding fused stage
+12:13:23,241 log INFO Adding invres stage
+12:13:23,242 log INFO Adding invres stage
+12:13:23,245 log INFO Adding invres stage
+12:13:23,251 log INFO Adding invres stage
+12:13:23,270 log INFO Adding conv stage
+12:13:23,270 log INFO Adding AAP stage
+12:13:23,270 log INFO Adding dropout stage
+12:13:23,270 log INFO Adding FC stage
+12:13:24,357 log INFO ---Model created---
+
+12:13:24,357 log INFO Setting up training env
+12:13:24,358 log INFO ---Calculating std and mean across training set---
+12:13:24,358 log INFO ---mean and std calculated: mean : [0.4925, 0.4561, 0.4017], std : [0.2909, 0.2837, 0.2993] ---
+12:13:24,358 log INFO ---Creating stage transforms---
+12:13:24,359 log INFO Creating #0 transform
+12:13:24,360 log INFO Creating #1 transform
+12:13:24,360 log INFO Creating #2 transform
+12:13:24,360 log INFO Creating #3 transform
+12:13:24,360 log INFO ---Stage transform created---
+
+12:13:24,361 log INFO ---STARTING TRAINING---
+12:13:24,363 log INFO ---Creating dataloaders for stage #0---
+12:13:24,363 log INFO ---Dataloaders created---
+
+12:13:24,363 log INFO Starting training stage #0
+12:13:24,363 log INFO Learning rate adjustment for first param group: 0.000272
+12:13:24,799 log INFO Epoch: 1. 
+ Train loss: 1.1146010160446167, Train Acc: 0.0. 
+ Test loss: 1.1136009693145752, Test acc: 0.0. 
+
+12:13:24,799 log INFO Average gradient norms of layer #0 in epoch #1 is: 2.405861829717954
+12:13:24,799 log INFO Average gradient norms of layer #1 in epoch #1 is: 1.9011980630457401
+12:13:24,799 log INFO Average gradient norms of layer #2 in epoch #1 is: 1.8532963823527098
+12:13:24,799 log INFO Average gradient norms of layer #3 in epoch #1 is: 1.64126965465645
+12:13:24,799 log INFO Average gradient norms of layer #4 in epoch #1 is: 1.2867255086700122
+12:13:24,799 log INFO Average gradient norms of layer #5 in epoch #1 is: 0.8160557101170222
+12:13:24,799 log INFO Average gradient norms of layer #6 in epoch #1 is: 1.4298056289553642
+12:13:24,799 log INFO Average gradient norms of layer #7 in epoch #1 is: 1.1961827397656937
+12:13:24,799 log INFO Average gradient norms of layer #8 in epoch #1 is: 0.8903127493333797
+12:13:24,799 log INFO Average gradient norms of layer #9 in epoch #1 is: 0.6568955887530084
+12:13:24,799 log INFO Average gradient norms of layer #10 in epoch #1 is: 0.4805838574679667
+12:13:24,799 log INFO Average gradient norms of layer #11 in epoch #1 is: 0.37849706598614574
+12:13:24,799 log INFO Average gradient norms of layer #12 in epoch #1 is: 0.6039266688941349
+12:13:24,799 log INFO Average gradient norms of layer #13 in epoch #1 is: 0.5571022215946854
+12:13:24,799 log INFO Average gradient norms of layer #14 in epoch #1 is: 0.4219359448648258
+12:13:24,799 log INFO Average gradient norms of layer #15 in epoch #1 is: 0.3232799212588233
+12:13:24,799 log INFO Average gradient norms of layer #16 in epoch #1 is: 0.28149081050238856
+12:13:24,799 log INFO Average gradient norms of layer #17 in epoch #1 is: 0.5449047570937954
+12:13:24,799 log INFO Average gradient norms of layer #18 in epoch #1 is: 0.35632696233271915
+12:13:24,799 log INFO Average gradient norms of layer #19 in epoch #1 is: 0.27849999504900924
+12:13:24,799 log INFO Average gradient norms of layer #20 in epoch #1 is: 0.23083754921029595
+12:13:24,799 log INFO Average gradient norms of layer #21 in epoch #1 is: 0.18959022408667925
+12:13:24,799 log INFO Average gradient norms of layer #22 in epoch #1 is: 0.16501307492891934
+12:13:24,799 log INFO Average gradient norms of layer #23 in epoch #1 is: 0.14534866717947945
+12:13:24,799 log INFO Average gradient norms of layer #24 in epoch #1 is: 0.13364446962809898
+12:13:24,799 log INFO Average gradient norms of layer #25 in epoch #1 is: 0.3346002170946184
+12:13:24,799 log INFO Average gradient norms of layer #26 in epoch #1 is: 0.016140848256852698
+12:13:24,799 log INFO Average gradient norms of layer #27 in epoch #1 is: 0.015966639713963213
+12:13:24,799 log INFO Average gradient norms of layer #28 in epoch #1 is: 0.2356713651037886
+12:13:24,799 log INFO Average gradient norms of layer #29 in epoch #1 is: 0.1711465664187139
+12:13:24,799 log INFO Average gradient norms of layer #30 in epoch #1 is: 0.13852657744992977
+12:13:24,799 log INFO Average gradient norms of layer #31 in epoch #1 is: 0.11175149138951178
+12:13:24,799 log INFO Average gradient norms of layer #32 in epoch #1 is: 0.10215133182298383
+12:13:24,799 log INFO Average gradient norms of layer #33 in epoch #1 is: 0.08928842172103856
+12:13:24,799 log INFO Average gradient norms of layer #34 in epoch #1 is: 0.08013208329284846
+12:13:24,799 log INFO Average gradient norms of layer #35 in epoch #1 is: 0.07246559750251319
+12:13:24,799 log INFO Average gradient norms of layer #36 in epoch #1 is: 0.06579493583547756
+12:13:24,799 log INFO Average gradient norms of layer #37 in epoch #1 is: 0.3956371049086253 
+
+12:13:24,799 log INFO Learning rate adjustment for first param group: 0.000544
+12:13:25,178 log INFO Epoch: 2. 
+ Train loss: 0.4200608730316162, Train Acc: 1.0. 
+ Test loss: 1.1660207509994507, Test acc: 0.0. 
+
+12:13:25,178 log INFO Average gradient norms of layer #0 in epoch #2 is: 0.475506205111742
+12:13:25,178 log INFO Average gradient norms of layer #1 in epoch #2 is: 0.2720789971450965
+12:13:25,178 log INFO Average gradient norms of layer #2 in epoch #2 is: 0.33283564013739425
+12:13:25,178 log INFO Average gradient norms of layer #3 in epoch #2 is: 0.28075187645542127
+12:13:25,178 log INFO Average gradient norms of layer #4 in epoch #2 is: 0.264783193046848
+12:13:25,178 log INFO Average gradient norms of layer #5 in epoch #2 is: 0.21762205730192363
+12:13:25,178 log INFO Average gradient norms of layer #6 in epoch #2 is: 0.3681901895906776
+12:13:25,178 log INFO Average gradient norms of layer #7 in epoch #2 is: 0.31317114492412657
+12:13:25,178 log INFO Average gradient norms of layer #8 in epoch #2 is: 0.2514262980759763
+12:13:25,178 log INFO Average gradient norms of layer #9 in epoch #2 is: 0.20765947636393517
+12:13:25,178 log INFO Average gradient norms of layer #10 in epoch #2 is: 0.14061947546062756
+12:13:25,178 log INFO Average gradient norms of layer #11 in epoch #2 is: 0.11058889004855746
+12:13:25,178 log INFO Average gradient norms of layer #12 in epoch #2 is: 0.17905444665878084
+12:13:25,178 log INFO Average gradient norms of layer #13 in epoch #2 is: 0.15374202246555113
+12:13:25,178 log INFO Average gradient norms of layer #14 in epoch #2 is: 0.11162967063364358
+12:13:25,178 log INFO Average gradient norms of layer #15 in epoch #2 is: 0.08944067352561998
+12:13:25,178 log INFO Average gradient norms of layer #16 in epoch #2 is: 0.07748581031798131
+12:13:25,178 log INFO Average gradient norms of layer #17 in epoch #2 is: 0.1620349886570196
+12:13:25,178 log INFO Average gradient norms of layer #18 in epoch #2 is: 0.11668652579539553
+12:13:25,178 log INFO Average gradient norms of layer #19 in epoch #2 is: 0.09026648025246721
+12:13:25,178 log INFO Average gradient norms of layer #20 in epoch #2 is: 0.07598828028147422
+12:13:25,178 log INFO Average gradient norms of layer #21 in epoch #2 is: 0.0630747568850981
+12:13:25,178 log INFO Average gradient norms of layer #22 in epoch #2 is: 0.05762016641785895
+12:13:25,178 log INFO Average gradient norms of layer #23 in epoch #2 is: 0.05045537780529194
+12:13:25,178 log INFO Average gradient norms of layer #24 in epoch #2 is: 0.04616945337203466
+12:13:25,178 log INFO Average gradient norms of layer #25 in epoch #2 is: 0.12723186967658145
+12:13:25,178 log INFO Average gradient norms of layer #26 in epoch #2 is: 0.12003916776621301
+12:13:25,178 log INFO Average gradient norms of layer #27 in epoch #2 is: 0.08799972103433211
+12:13:25,178 log INFO Average gradient norms of layer #28 in epoch #2 is: 0.05988148494668799
+12:13:25,178 log INFO Average gradient norms of layer #29 in epoch #2 is: 0.049438638637558124
+12:13:25,178 log INFO Average gradient norms of layer #30 in epoch #2 is: 0.043213935187076356
+12:13:25,178 log INFO Average gradient norms of layer #31 in epoch #2 is: 0.03701824188770093
+12:13:25,178 log INFO Average gradient norms of layer #32 in epoch #2 is: 0.03433695248403282
+12:13:25,178 log INFO Average gradient norms of layer #33 in epoch #2 is: 0.03178068987013183
+12:13:25,178 log INFO Average gradient norms of layer #34 in epoch #2 is: 0.03014194987305779
+12:13:25,178 log INFO Average gradient norms of layer #35 in epoch #2 is: 0.0018761640780873621
+12:13:25,178 log INFO Average gradient norms of layer #36 in epoch #2 is: 0.0018846970230619662
+12:13:25,178 log INFO Average gradient norms of layer #37 in epoch #2 is: 0.19947621723016104 
+
+12:13:25,178 log INFO Learning rate adjustment for first param group: 0.0008159999999999999
+12:13:25,568 log INFO Epoch: 3. 
+ Train loss: 0.010286765173077583, Train Acc: 1.0. 
+ Test loss: 1.271259069442749, Test acc: 0.0. 
+
+12:13:25,568 log INFO Average gradient norms of layer #0 in epoch #3 is: 0.0043467307308067875
+12:13:25,568 log INFO Average gradient norms of layer #1 in epoch #3 is: 0.0031241525454485477
+12:13:25,568 log INFO Average gradient norms of layer #2 in epoch #3 is: 0.004445432179636555
+12:13:25,568 log INFO Average gradient norms of layer #3 in epoch #3 is: 0.002825995112895422
+12:13:25,568 log INFO Average gradient norms of layer #4 in epoch #3 is: 0.00325460694875801
+12:13:25,568 log INFO Average gradient norms of layer #5 in epoch #3 is: 0.0021920651603674437
+12:13:25,568 log INFO Average gradient norms of layer #6 in epoch #3 is: 0.004034559065379047
+12:13:25,568 log INFO Average gradient norms of layer #7 in epoch #3 is: 0.0028363598151675737
+12:13:25,568 log INFO Average gradient norms of layer #8 in epoch #3 is: 0.0024968246376824827
+12:13:25,568 log INFO Average gradient norms of layer #9 in epoch #3 is: 0.0022031395352404915
+12:13:25,568 log INFO Average gradient norms of layer #10 in epoch #3 is: 0.001440420733639396
+12:13:25,568 log INFO Average gradient norms of layer #11 in epoch #3 is: 0.0010059305956870387
+12:13:25,568 log INFO Average gradient norms of layer #12 in epoch #3 is: 0.0015428061359987631
+12:13:25,568 log INFO Average gradient norms of layer #13 in epoch #3 is: 0.0012321671173291472
+12:13:25,568 log INFO Average gradient norms of layer #14 in epoch #3 is: 0.0009870405927711928
+12:13:25,568 log INFO Average gradient norms of layer #15 in epoch #3 is: 0.0008237154916112978
+12:13:25,568 log INFO Average gradient norms of layer #16 in epoch #3 is: 0.0007525370235303518
+12:13:25,568 log INFO Average gradient norms of layer #17 in epoch #3 is: 0.0015722181878646225
+12:13:25,568 log INFO Average gradient norms of layer #18 in epoch #3 is: 0.0012039846158701656
+12:13:25,568 log INFO Average gradient norms of layer #19 in epoch #3 is: 0.0009448515915339514
+12:13:25,568 log INFO Average gradient norms of layer #20 in epoch #3 is: 0.0008728558596316387
+12:13:25,568 log INFO Average gradient norms of layer #21 in epoch #3 is: 0.0007980367059164213
+12:13:25,568 log INFO Average gradient norms of layer #22 in epoch #3 is: 0.0007150478296134763
+12:13:25,568 log INFO Average gradient norms of layer #23 in epoch #3 is: 0.0006874162765555405
+12:13:25,568 log INFO Average gradient norms of layer #24 in epoch #3 is: 0.0006350576130344504
+12:13:25,568 log INFO Average gradient norms of layer #25 in epoch #3 is: 0.0021597193931481742
+12:13:25,568 log INFO Average gradient norms of layer #26 in epoch #3 is: 0.0022632062249545244
+12:13:25,568 log INFO Average gradient norms of layer #27 in epoch #3 is: 0.0019572993061263795
+12:13:25,568 log INFO Average gradient norms of layer #28 in epoch #3 is: 0.0012143215982152514
+12:13:25,568 log INFO Average gradient norms of layer #29 in epoch #3 is: 0.0010533590208346604
+12:13:25,568 log INFO Average gradient norms of layer #30 in epoch #3 is: 0.0009432582285295198
+12:13:25,568 log INFO Average gradient norms of layer #31 in epoch #3 is: 0.0008389667252037478
+12:13:25,568 log INFO Average gradient norms of layer #32 in epoch #3 is: 0.0007777607356206607
+12:13:25,568 log INFO Average gradient norms of layer #33 in epoch #3 is: 0.0007384155908347719
+12:13:25,568 log INFO Average gradient norms of layer #34 in epoch #3 is: 0.0006834640879924985
+12:13:25,568 log INFO Average gradient norms of layer #35 in epoch #3 is: 0.0007021061390354049
+12:13:25,568 log INFO Average gradient norms of layer #36 in epoch #3 is: 0.0006611765073857584
+12:13:25,568 log INFO Average gradient norms of layer #37 in epoch #3 is: 0.006757995113730431 
+
+12:13:25,568 log INFO Learning rate adjustment for first param group: 0.001088
+12:13:25,943 log INFO Epoch: 4. 
+ Train loss: 3.671578815556131e-05, Train Acc: 1.0. 
+ Test loss: 1.4716453552246094, Test acc: 0.0. 
+
+12:13:25,943 log INFO Average gradient norms of layer #0 in epoch #4 is: 1.5152580772337387e-05
+12:13:25,943 log INFO Average gradient norms of layer #1 in epoch #4 is: 2.066205354367412e-05
+12:13:25,943 log INFO Average gradient norms of layer #2 in epoch #4 is: 2.7386554734221136e-05
+12:13:25,943 log INFO Average gradient norms of layer #3 in epoch #4 is: 1.5693308389093847e-05
+12:13:25,943 log INFO Average gradient norms of layer #4 in epoch #4 is: 1.9600395262386883e-05
+12:13:25,943 log INFO Average gradient norms of layer #5 in epoch #4 is: 9.877967708386374e-06
+12:13:25,943 log INFO Average gradient norms of layer #6 in epoch #4 is: 1.8761161385327796e-05
+12:13:25,943 log INFO Average gradient norms of layer #7 in epoch #4 is: 1.4423680165502143e-05
+12:13:25,943 log INFO Average gradient norms of layer #8 in epoch #4 is: 1.270306857500405e-05
+12:13:25,943 log INFO Average gradient norms of layer #9 in epoch #4 is: 1.5743494213028857e-05
+12:13:25,943 log INFO Average gradient norms of layer #10 in epoch #4 is: 9.196675794159317e-06
+12:13:25,943 log INFO Average gradient norms of layer #11 in epoch #4 is: 6.198052156566299e-06
+12:13:25,943 log INFO Average gradient norms of layer #12 in epoch #4 is: 9.69485751598092e-06
+12:13:25,943 log INFO Average gradient norms of layer #13 in epoch #4 is: 1.4354458380735672e-06
+12:13:25,943 log INFO Average gradient norms of layer #14 in epoch #4 is: 7.561135381776826e-06
+12:13:25,943 log INFO Average gradient norms of layer #15 in epoch #4 is: 5.716202271827491e-06
+12:13:25,943 log INFO Average gradient norms of layer #16 in epoch #4 is: 4.905014904649112e-06
+12:13:25,943 log INFO Average gradient norms of layer #17 in epoch #4 is: 9.520680970310535e-06
+12:13:25,943 log INFO Average gradient norms of layer #18 in epoch #4 is: 6.993125828149822e-06
+12:13:25,943 log INFO Average gradient norms of layer #19 in epoch #4 is: 5.322089399450603e-06
+12:13:25,943 log INFO Average gradient norms of layer #20 in epoch #4 is: 5.018479571092403e-06
+12:13:25,943 log INFO Average gradient norms of layer #21 in epoch #4 is: 4.540435592546436e-06
+12:13:25,943 log INFO Average gradient norms of layer #22 in epoch #4 is: 4.283728286625684e-06
+12:13:25,943 log INFO Average gradient norms of layer #23 in epoch #4 is: 3.857508664529048e-06
+12:13:25,943 log INFO Average gradient norms of layer #24 in epoch #4 is: 3.74989759178875e-06
+12:13:25,943 log INFO Average gradient norms of layer #25 in epoch #4 is: 1.2851114169824207e-05
+12:13:25,943 log INFO Average gradient norms of layer #26 in epoch #4 is: 2.823767155430432e-06
+12:13:25,943 log INFO Average gradient norms of layer #27 in epoch #4 is: 1.4841636550593332e-05
+12:13:25,943 log INFO Average gradient norms of layer #28 in epoch #4 is: 2.610601602733187e-06
+12:13:25,943 log INFO Average gradient norms of layer #29 in epoch #4 is: 7.83759402865272e-06
+12:13:25,943 log INFO Average gradient norms of layer #30 in epoch #4 is: 1.8902135008321908e-06
+12:13:25,943 log INFO Average gradient norms of layer #31 in epoch #4 is: 1.8708268023633979e-06
+12:13:25,943 log INFO Average gradient norms of layer #32 in epoch #4 is: 1.9085056610290004e-06
+12:13:25,943 log INFO Average gradient norms of layer #33 in epoch #4 is: 6.0958908628859885e-06
+12:13:25,943 log INFO Average gradient norms of layer #34 in epoch #4 is: 4.968010584464684e-06
+12:13:25,943 log INFO Average gradient norms of layer #35 in epoch #4 is: 1.1639713346770887e-06
+12:13:25,943 log INFO Average gradient norms of layer #36 in epoch #4 is: 4.757737636473093e-06
+12:13:25,943 log INFO Average gradient norms of layer #37 in epoch #4 is: 3.131264566036407e-05 
+
+12:13:25,943 log INFO Learning rate adjustment for first param group: 0.0018
+12:13:26,317 log INFO Epoch: 5. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 123.01099395751953, Test acc: 0.0. 
+
+12:13:26,317 log INFO Average gradient norms of layer #0 in epoch #5 is: 2.758907583870022e-09
+12:13:26,317 log INFO Average gradient norms of layer #1 in epoch #5 is: 5.218080888676664e-09
+12:13:26,317 log INFO Average gradient norms of layer #2 in epoch #5 is: 5.460280554092645e-09
+12:13:26,317 log INFO Average gradient norms of layer #3 in epoch #5 is: 5.3680680687599276e-09
+12:13:26,317 log INFO Average gradient norms of layer #4 in epoch #5 is: 8.576494889278585e-09
+12:13:26,317 log INFO Average gradient norms of layer #5 in epoch #5 is: 6.119113421983642e-09
+12:13:26,317 log INFO Average gradient norms of layer #6 in epoch #5 is: 1.2114300632082298e-08
+12:13:26,317 log INFO Average gradient norms of layer #7 in epoch #5 is: 9.160610439188735e-09
+12:13:26,317 log INFO Average gradient norms of layer #8 in epoch #5 is: 8.551485885779e-09
+12:13:26,317 log INFO Average gradient norms of layer #9 in epoch #5 is: 9.839354206118933e-09
+12:13:26,317 log INFO Average gradient norms of layer #10 in epoch #5 is: 5.289875666901773e-09
+12:13:26,317 log INFO Average gradient norms of layer #11 in epoch #5 is: 1.2402589552581213e-09
+12:13:26,317 log INFO Average gradient norms of layer #12 in epoch #5 is: 6.4664567381571756e-09
+12:13:26,317 log INFO Average gradient norms of layer #13 in epoch #5 is: 4.70147460469364e-09
+12:13:26,317 log INFO Average gradient norms of layer #14 in epoch #5 is: 3.7484171293958074e-09
+12:13:26,317 log INFO Average gradient norms of layer #15 in epoch #5 is: 3.2071894332058192e-09
+12:13:26,317 log INFO Average gradient norms of layer #16 in epoch #5 is: 2.9100715258866443e-09
+12:13:26,317 log INFO Average gradient norms of layer #17 in epoch #5 is: 6.820952372086323e-09
+12:13:26,317 log INFO Average gradient norms of layer #18 in epoch #5 is: 4.586391111276202e-09
+12:13:26,317 log INFO Average gradient norms of layer #19 in epoch #5 is: 3.541066409173283e-09
+12:13:26,317 log INFO Average gradient norms of layer #20 in epoch #5 is: 3.2562273136309153e-09
+12:13:26,317 log INFO Average gradient norms of layer #21 in epoch #5 is: 3.086756448079748e-09
+12:13:26,317 log INFO Average gradient norms of layer #22 in epoch #5 is: 2.8023023886701114e-09
+12:13:26,317 log INFO Average gradient norms of layer #23 in epoch #5 is: 2.526803601061108e-09
+12:13:26,317 log INFO Average gradient norms of layer #24 in epoch #5 is: 2.5009590147884414e-09
+12:13:26,317 log INFO Average gradient norms of layer #25 in epoch #5 is: 9.151150523898605e-09
+12:13:26,317 log INFO Average gradient norms of layer #26 in epoch #5 is: 9.454600642639128e-09
+12:13:26,318 log INFO Average gradient norms of layer #27 in epoch #5 is: 7.3987774823036065e-09
+12:13:26,318 log INFO Average gradient norms of layer #28 in epoch #5 is: 4.479039027773377e-09
+12:13:26,318 log INFO Average gradient norms of layer #29 in epoch #5 is: 1.8320110308727868e-09
+12:13:26,318 log INFO Average gradient norms of layer #30 in epoch #5 is: 3.7246419318614866e-09
+12:13:26,318 log INFO Average gradient norms of layer #31 in epoch #5 is: 2.9706474770797743e-09
+12:13:26,318 log INFO Average gradient norms of layer #32 in epoch #5 is: 2.5964393286888074e-09
+12:13:26,318 log INFO Average gradient norms of layer #33 in epoch #5 is: 2.348822702847002e-09
+12:13:26,318 log INFO Average gradient norms of layer #34 in epoch #5 is: 2.1293267208521867e-09
+12:13:26,318 log INFO Average gradient norms of layer #35 in epoch #5 is: 2.144156331223953e-09
+12:13:26,318 log INFO Average gradient norms of layer #36 in epoch #5 is: 2.0016600173598227e-09
+12:13:26,318 log INFO Average gradient norms of layer #37 in epoch #5 is: 2.5282622810133642e-08 
+
+12:13:26,318 log INFO Learning rate adjustment for first param group: 0.001799785248712644
+12:13:26,689 log INFO Epoch: 6. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 13271.7841796875, Test acc: 0.0. 
+
+12:13:26,689 log INFO Average gradient norms of layer #0 in epoch #6 is: 4.852133506181439e-13
+12:13:26,689 log INFO Average gradient norms of layer #1 in epoch #6 is: 4.4935205227383915e-13
+12:13:26,689 log INFO Average gradient norms of layer #2 in epoch #6 is: 2.7850567311344873e-13
+12:13:26,689 log INFO Average gradient norms of layer #3 in epoch #6 is: 2.3675238620064445e-13
+12:13:26,689 log INFO Average gradient norms of layer #4 in epoch #6 is: 3.859047586862827e-13
+12:13:26,689 log INFO Average gradient norms of layer #5 in epoch #6 is: 2.796585983159046e-13
+12:13:26,689 log INFO Average gradient norms of layer #6 in epoch #6 is: 5.381005211160943e-13
+12:13:26,689 log INFO Average gradient norms of layer #7 in epoch #6 is: 4.567593444567358e-13
+12:13:26,689 log INFO Average gradient norms of layer #8 in epoch #6 is: 3.515317913787229e-13
+12:13:26,689 log INFO Average gradient norms of layer #9 in epoch #6 is: 4.323795345265415e-13
+12:13:26,689 log INFO Average gradient norms of layer #10 in epoch #6 is: 2.8354503106786557e-13
+12:13:26,689 log INFO Average gradient norms of layer #11 in epoch #6 is: 1.98574493101008e-13
+12:13:26,689 log INFO Average gradient norms of layer #12 in epoch #6 is: 3.5134787754906187e-13
+12:13:26,689 log INFO Average gradient norms of layer #13 in epoch #6 is: 2.5721993968657703e-13
+12:13:26,689 log INFO Average gradient norms of layer #14 in epoch #6 is: 9.691351576267595e-14
+12:13:26,689 log INFO Average gradient norms of layer #15 in epoch #6 is: 1.9941947141044743e-13
+12:13:26,689 log INFO Average gradient norms of layer #16 in epoch #6 is: 1.691531783623706e-13
+12:13:26,689 log INFO Average gradient norms of layer #17 in epoch #6 is: 3.722788112480894e-13
+12:13:26,689 log INFO Average gradient norms of layer #18 in epoch #6 is: 2.5159898913458177e-13
+12:13:26,689 log INFO Average gradient norms of layer #19 in epoch #6 is: 1.9324167972126926e-13
+12:13:26,689 log INFO Average gradient norms of layer #20 in epoch #6 is: 1.0818044736045252e-13
+12:13:26,689 log INFO Average gradient norms of layer #21 in epoch #6 is: 1.9354167266938943e-13
+12:13:26,689 log INFO Average gradient norms of layer #22 in epoch #6 is: 9.777008675229572e-14
+12:13:26,689 log INFO Average gradient norms of layer #23 in epoch #6 is: 9.329944216542812e-14
+12:13:26,689 log INFO Average gradient norms of layer #24 in epoch #6 is: 9.652609758879492e-14
+12:13:26,689 log INFO Average gradient norms of layer #25 in epoch #6 is: 4.379700580837809e-13
+12:13:26,689 log INFO Average gradient norms of layer #26 in epoch #6 is: 3.752348704651343e-13
+12:13:26,689 log INFO Average gradient norms of layer #27 in epoch #6 is: 2.784576621314583e-13
+12:13:26,689 log INFO Average gradient norms of layer #28 in epoch #6 is: 1.344688274906136e-13
+12:13:26,689 log INFO Average gradient norms of layer #29 in epoch #6 is: 1.816576886579935e-13
+12:13:26,689 log INFO Average gradient norms of layer #30 in epoch #6 is: 1.4792498444668026e-13
+12:13:26,689 log INFO Average gradient norms of layer #31 in epoch #6 is: 1.3079014126936551e-13
+12:13:26,689 log INFO Average gradient norms of layer #32 in epoch #6 is: 1.1497033960192804e-13
+12:13:26,689 log INFO Average gradient norms of layer #33 in epoch #6 is: 1.0347063720378288e-13
+12:13:26,689 log INFO Average gradient norms of layer #34 in epoch #6 is: 5.915100451506236e-14
+12:13:26,689 log INFO Average gradient norms of layer #35 in epoch #6 is: 1.0343133964903272e-13
+12:13:26,689 log INFO Average gradient norms of layer #36 in epoch #6 is: 1.0156924571149665e-13
+12:13:26,689 log INFO Average gradient norms of layer #37 in epoch #6 is: 1.174717513656905e-12 
+
+12:13:26,689 log INFO Learning rate adjustment for first param group: 0.001799141130492092
+12:13:27,66 log INFO Epoch: 7. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 149825.625, Test acc: 0.0. 
+
+12:13:27,66 log INFO Average gradient norms of layer #0 in epoch #7 is: 1.1979192063206794e-17
+12:13:27,66 log INFO Average gradient norms of layer #1 in epoch #7 is: 2.2419016671185253e-17
+12:13:27,66 log INFO Average gradient norms of layer #2 in epoch #7 is: 2.3038954229531255e-17
+12:13:27,66 log INFO Average gradient norms of layer #3 in epoch #7 is: 2.4934212576094138e-17
+12:13:27,66 log INFO Average gradient norms of layer #4 in epoch #7 is: 5.350671841659118e-17
+12:13:27,66 log INFO Average gradient norms of layer #5 in epoch #7 is: 4.431541163577034e-17
+12:13:27,66 log INFO Average gradient norms of layer #6 in epoch #7 is: 1.0359527404523127e-16
+12:13:27,66 log INFO Average gradient norms of layer #7 in epoch #7 is: 7.286813428007897e-17
+12:13:27,66 log INFO Average gradient norms of layer #8 in epoch #7 is: 7.27107658224119e-17
+12:13:27,66 log INFO Average gradient norms of layer #9 in epoch #7 is: 7.985664647251554e-17
+12:13:27,66 log INFO Average gradient norms of layer #10 in epoch #7 is: 4.79079407132282e-17
+12:13:27,66 log INFO Average gradient norms of layer #11 in epoch #7 is: 5.591129423729658e-17
+12:13:27,66 log INFO Average gradient norms of layer #12 in epoch #7 is: 8.296885446336912e-17
+12:13:27,66 log INFO Average gradient norms of layer #13 in epoch #7 is: 5.734222214191796e-17
+12:13:27,66 log INFO Average gradient norms of layer #14 in epoch #7 is: 4.469349842620594e-17
+12:13:27,66 log INFO Average gradient norms of layer #15 in epoch #7 is: 4.053561720637991e-17
+12:13:27,66 log INFO Average gradient norms of layer #16 in epoch #7 is: 3.611370133487106e-17
+12:13:27,66 log INFO Average gradient norms of layer #17 in epoch #7 is: 8.001945216863189e-17
+12:13:27,66 log INFO Average gradient norms of layer #18 in epoch #7 is: 5.596040828898524e-17
+12:13:27,66 log INFO Average gradient norms of layer #19 in epoch #7 is: 4.318893323915179e-17
+12:13:27,66 log INFO Average gradient norms of layer #20 in epoch #7 is: 4.0759069780686385e-17
+12:13:27,66 log INFO Average gradient norms of layer #21 in epoch #7 is: 3.787583600649428e-17
+12:13:27,66 log INFO Average gradient norms of layer #22 in epoch #7 is: 2.51164542765697e-17
+12:13:27,66 log INFO Average gradient norms of layer #23 in epoch #7 is: 3.1352618748262057e-17
+12:13:27,66 log INFO Average gradient norms of layer #24 in epoch #7 is: 3.1704137007782285e-17
+12:13:27,66 log INFO Average gradient norms of layer #25 in epoch #7 is: 1.048787594600319e-16
+12:13:27,66 log INFO Average gradient norms of layer #26 in epoch #7 is: 8.933911708940936e-17
+12:13:27,66 log INFO Average gradient norms of layer #27 in epoch #7 is: 7.163157982162922e-17
+12:13:27,66 log INFO Average gradient norms of layer #28 in epoch #7 is: 4.2747137585182565e-17
+12:13:27,66 log INFO Average gradient norms of layer #29 in epoch #7 is: 4.7108686827690494e-17
+12:13:27,66 log INFO Average gradient norms of layer #30 in epoch #7 is: 3.3622223274447016e-17
+12:13:27,66 log INFO Average gradient norms of layer #31 in epoch #7 is: 3.9771502279363504e-17
+12:13:27,66 log INFO Average gradient norms of layer #32 in epoch #7 is: 3.441846274084048e-17
+12:13:27,66 log INFO Average gradient norms of layer #33 in epoch #7 is: 3.046910291061243e-17
+12:13:27,66 log INFO Average gradient norms of layer #34 in epoch #7 is: 2.686382755522985e-17
+12:13:27,66 log INFO Average gradient norms of layer #35 in epoch #7 is: 2.762287129043939e-17
+12:13:27,66 log INFO Average gradient norms of layer #36 in epoch #7 is: 2.7239183547399346e-17
+12:13:27,66 log INFO Average gradient norms of layer #37 in epoch #7 is: 3.1857898674828347e-16 
+
+12:13:27,66 log INFO Learning rate adjustment for first param group: 0.0017980680521772173
+12:13:27,448 log INFO Epoch: 8. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 529240.5625, Test acc: 0.0. 
+
+12:13:27,448 log INFO Average gradient norms of layer #0 in epoch #8 is: 6.702174502293482e-21
+12:13:27,448 log INFO Average gradient norms of layer #1 in epoch #8 is: 1.0974073289197665e-20
+12:13:27,448 log INFO Average gradient norms of layer #2 in epoch #8 is: 1.2997086599704222e-20
+12:13:27,448 log INFO Average gradient norms of layer #3 in epoch #8 is: 1.321453817399215e-20
+12:13:27,448 log INFO Average gradient norms of layer #4 in epoch #8 is: 2.2788838093713613e-20
+12:13:27,448 log INFO Average gradient norms of layer #5 in epoch #8 is: 1.79558442375488e-20
+12:13:27,448 log INFO Average gradient norms of layer #6 in epoch #8 is: 3.202887188264395e-20
+12:13:27,448 log INFO Average gradient norms of layer #7 in epoch #8 is: 2.2269226960160927e-20
+12:13:27,448 log INFO Average gradient norms of layer #8 in epoch #8 is: 1.785118466865068e-20
+12:13:27,448 log INFO Average gradient norms of layer #9 in epoch #8 is: 2.5990990692113985e-20
+12:13:27,448 log INFO Average gradient norms of layer #10 in epoch #8 is: 2.1082863846251515e-20
+12:13:27,448 log INFO Average gradient norms of layer #11 in epoch #8 is: 1.4181364248884703e-20
+12:13:27,448 log INFO Average gradient norms of layer #12 in epoch #8 is: 2.770781473731444e-20
+12:13:27,448 log INFO Average gradient norms of layer #13 in epoch #8 is: 1.818892005888894e-20
+12:13:27,448 log INFO Average gradient norms of layer #14 in epoch #8 is: 1.4939523180894624e-20
+12:13:27,448 log INFO Average gradient norms of layer #15 in epoch #8 is: 1.3069841693045387e-20
+12:13:27,448 log INFO Average gradient norms of layer #16 in epoch #8 is: 1.064861290281078e-20
+12:13:27,448 log INFO Average gradient norms of layer #17 in epoch #8 is: 2.6414913033463238e-20
+12:13:27,448 log INFO Average gradient norms of layer #18 in epoch #8 is: 2.0301976947067056e-20
+12:13:27,448 log INFO Average gradient norms of layer #19 in epoch #8 is: 1.5064645334344888e-20
+12:13:27,448 log INFO Average gradient norms of layer #20 in epoch #8 is: 1.508935255304517e-20
+12:13:27,448 log INFO Average gradient norms of layer #21 in epoch #8 is: 1.476541360360723e-20
+12:13:27,448 log INFO Average gradient norms of layer #22 in epoch #8 is: 1.2152318774707763e-20
+12:13:27,448 log INFO Average gradient norms of layer #23 in epoch #8 is: 1.1177813803002404e-20
+12:13:27,448 log INFO Average gradient norms of layer #24 in epoch #8 is: 1.0524381643234303e-20
+12:13:27,448 log INFO Average gradient norms of layer #25 in epoch #8 is: 4.0945099630554385e-20
+12:13:27,448 log INFO Average gradient norms of layer #26 in epoch #8 is: 3.023236336466732e-20
+12:13:27,448 log INFO Average gradient norms of layer #27 in epoch #8 is: 3.3041030162895763e-20
+12:13:27,448 log INFO Average gradient norms of layer #28 in epoch #8 is: 2.0979422068228145e-20
+12:13:27,448 log INFO Average gradient norms of layer #29 in epoch #8 is: 1.2959117108425165e-20
+12:13:27,448 log INFO Average gradient norms of layer #30 in epoch #8 is: 1.6096345275646292e-20
+12:13:27,448 log INFO Average gradient norms of layer #31 in epoch #8 is: 1.2835093540633266e-20
+12:13:27,448 log INFO Average gradient norms of layer #32 in epoch #8 is: 1.0911679753907027e-20
+12:13:27,448 log INFO Average gradient norms of layer #33 in epoch #8 is: 1.0083916017314672e-20
+12:13:27,448 log INFO Average gradient norms of layer #34 in epoch #8 is: 6.520490717398106e-21
+12:13:27,448 log INFO Average gradient norms of layer #35 in epoch #8 is: 1.0295403941351378e-20
+12:13:27,448 log INFO Average gradient norms of layer #36 in epoch #8 is: 8.83615020524421e-21
+12:13:27,448 log INFO Average gradient norms of layer #37 in epoch #8 is: 9.861097101585201e-20 
+
+12:13:27,448 log INFO Learning rate adjustment for first param group: 0.0017965666915472842
+12:13:27,825 log INFO Epoch: 9. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 4404860.0, Test acc: 0.0. 
+
+12:13:27,825 log INFO Average gradient norms of layer #0 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #1 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #2 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #3 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #4 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #5 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #6 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #7 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #8 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #9 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #10 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #11 in epoch #9 is: 0.0
+12:13:27,825 log INFO Average gradient norms of layer #12 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #13 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #14 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #15 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #16 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #17 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #18 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #19 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #20 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #21 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #22 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #23 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #24 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #25 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #26 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #27 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #28 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #29 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #30 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #31 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #32 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #33 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #34 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #35 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #36 in epoch #9 is: 0.0
+12:13:27,826 log INFO Average gradient norms of layer #37 in epoch #9 is: 0.0 
+
+12:13:27,826 log INFO Learning rate adjustment for first param group: 0.001794637996893845
+12:13:28,198 log INFO Epoch: 10. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 5047834.0, Test acc: 0.0. 
+
+12:13:28,198 log INFO Average gradient norms of layer #0 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #1 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #2 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #3 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #4 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #5 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #6 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #7 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #8 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #9 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #10 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #11 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #12 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #13 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #14 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #15 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #16 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #17 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #18 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #19 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #20 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #21 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #22 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #23 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #24 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #25 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #26 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #27 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #28 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #29 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #30 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #31 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #32 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #33 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #34 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #35 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #36 in epoch #10 is: 0.0
+12:13:28,198 log INFO Average gradient norms of layer #37 in epoch #10 is: 0.0 
+
+12:13:28,198 log INFO ---Saving current model's state dict...---
+12:13:28,273 log INFO ---model saved!---
+12:13:28,273 log INFO Learning rate adjustment for first param group: 0.0017922831864217814
+12:13:28,649 log INFO Epoch: 11. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 3753667.0, Test acc: 0.0. 
+
+12:13:28,650 log INFO Average gradient norms of layer #0 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #1 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #2 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #3 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #4 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #5 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #6 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #7 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #8 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #9 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #10 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #11 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #12 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #13 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #14 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #15 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #16 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #17 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #18 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #19 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #20 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #21 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #22 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #23 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #24 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #25 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #26 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #27 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #28 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #29 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #30 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #31 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #32 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #33 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #34 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #35 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #36 in epoch #11 is: 0.0
+12:13:28,650 log INFO Average gradient norms of layer #37 in epoch #11 is: 0.0 
+
+12:13:28,650 log INFO Learning rate adjustment for first param group: 0.0017895037474798597
+12:13:29,52 log INFO Epoch: 12. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 2669422.0, Test acc: 0.0. 
+
+12:13:29,52 log INFO Average gradient norms of layer #0 in epoch #12 is: 0.0
+12:13:29,52 log INFO Average gradient norms of layer #1 in epoch #12 is: 0.0
+12:13:29,52 log INFO Average gradient norms of layer #2 in epoch #12 is: 0.0
+12:13:29,52 log INFO Average gradient norms of layer #3 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #4 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #5 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #6 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #7 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #8 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #9 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #10 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #11 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #12 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #13 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #14 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #15 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #16 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #17 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #18 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #19 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #20 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #21 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #22 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #23 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #24 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #25 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #26 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #27 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #28 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #29 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #30 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #31 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #32 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #33 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #34 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #35 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #36 in epoch #12 is: 0.0
+12:13:29,53 log INFO Average gradient norms of layer #37 in epoch #12 is: 0.0 
+
+12:13:29,53 log INFO Learning rate adjustment for first param group: 0.0017863014356212879
+12:13:29,439 log INFO Epoch: 13. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 4295517.0, Test acc: 0.0. 
+
+12:13:29,439 log INFO Average gradient norms of layer #0 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #1 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #2 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #3 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #4 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #5 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #6 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #7 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #8 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #9 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #10 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #11 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #12 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #13 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #14 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #15 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #16 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #17 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #18 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #19 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #20 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #21 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #22 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #23 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #24 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #25 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #26 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #27 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #28 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #29 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #30 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #31 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #32 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #33 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #34 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #35 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #36 in epoch #13 is: 0.0
+12:13:29,439 log INFO Average gradient norms of layer #37 in epoch #13 is: 0.0 
+
+12:13:29,439 log INFO Learning rate adjustment for first param group: 0.0017826782734948726
+12:13:29,830 log INFO Epoch: 14. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 5295578.0, Test acc: 0.0. 
+
+12:13:29,830 log INFO Average gradient norms of layer #0 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #1 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #2 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #3 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #4 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #5 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #6 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #7 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #8 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #9 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #10 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #11 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #12 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #13 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #14 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #15 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #16 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #17 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #18 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #19 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #20 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #21 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #22 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #23 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #24 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #25 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #26 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #27 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #28 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #29 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #30 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #31 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #32 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #33 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #34 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #35 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #36 in epoch #14 is: 0.0
+12:13:29,830 log INFO Average gradient norms of layer #37 in epoch #14 is: 0.0 
+
+12:13:29,830 log INFO Learning rate adjustment for first param group: 0.0017786365495674691
+12:13:30,219 log INFO Epoch: 15. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 7034569.0, Test acc: 0.0. 
+
+12:13:30,220 log INFO Average gradient norms of layer #0 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #1 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #2 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #3 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #4 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #5 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #6 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #7 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #8 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #9 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #10 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #11 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #12 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #13 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #14 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #15 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #16 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #17 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #18 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #19 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #20 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #21 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #22 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #23 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #24 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #25 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #26 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #27 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #28 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #29 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #30 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #31 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #32 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #33 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #34 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #35 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #36 in epoch #15 is: 0.0
+12:13:30,220 log INFO Average gradient norms of layer #37 in epoch #15 is: 0.0 
+
+12:13:30,220 log INFO Learning rate adjustment for first param group: 0.0017741788166785383
+12:13:30,599 log INFO Epoch: 16. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 5296999.0, Test acc: 0.0. 
+
+12:13:30,599 log INFO Average gradient norms of layer #0 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #1 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #2 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #3 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #4 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #5 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #6 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #7 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #8 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #9 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #10 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #11 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #12 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #13 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #14 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #15 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #16 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #17 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #18 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #19 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #20 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #21 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #22 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #23 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #24 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #25 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #26 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #27 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #28 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #29 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #30 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #31 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #32 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #33 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #34 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #35 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #36 in epoch #16 is: 0.0
+12:13:30,599 log INFO Average gradient norms of layer #37 in epoch #16 is: 0.0 
+
+12:13:30,599 log INFO Learning rate adjustment for first param group: 0.0017693078904277171
+12:13:30,987 log INFO Epoch: 17. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 3566874.5, Test acc: 0.0. 
+
+12:13:30,987 log INFO Average gradient norms of layer #0 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #1 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #2 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #3 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #4 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #5 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #6 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #7 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #8 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #9 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #10 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #11 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #12 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #13 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #14 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #15 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #16 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #17 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #18 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #19 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #20 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #21 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #22 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #23 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #24 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #25 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #26 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #27 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #28 in epoch #17 is: 0.0
+12:13:30,987 log INFO Average gradient norms of layer #29 in epoch #17 is: 0.0
+12:13:30,988 log INFO Average gradient norms of layer #30 in epoch #17 is: 0.0
+12:13:30,988 log INFO Average gradient norms of layer #31 in epoch #17 is: 0.0
+12:13:30,988 log INFO Average gradient norms of layer #32 in epoch #17 is: 0.0
+12:13:30,988 log INFO Average gradient norms of layer #33 in epoch #17 is: 0.0
+12:13:30,988 log INFO Average gradient norms of layer #34 in epoch #17 is: 0.0
+12:13:30,988 log INFO Average gradient norms of layer #35 in epoch #17 is: 0.0
+12:13:30,988 log INFO Average gradient norms of layer #36 in epoch #17 is: 0.0
+12:13:30,988 log INFO Average gradient norms of layer #37 in epoch #17 is: 0.0 
+
+12:13:30,988 log INFO Learning rate adjustment for first param group: 0.001764026847396426
+12:13:31,367 log INFO Epoch: 18. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 1796712.75, Test acc: 0.0. 
+
+12:13:31,367 log INFO Average gradient norms of layer #0 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #1 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #2 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #3 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #4 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #5 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #6 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #7 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #8 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #9 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #10 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #11 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #12 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #13 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #14 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #15 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #16 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #17 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #18 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #19 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #20 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #21 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #22 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #23 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #24 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #25 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #26 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #27 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #28 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #29 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #30 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #31 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #32 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #33 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #34 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #35 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #36 in epoch #18 is: 0.0
+12:13:31,367 log INFO Average gradient norms of layer #37 in epoch #18 is: 0.0 
+
+12:13:31,367 log INFO Learning rate adjustment for first param group: 0.0017583390232046344
+12:13:31,748 log INFO Epoch: 19. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 1296393.125, Test acc: 0.0. 
+
+12:13:31,748 log INFO Average gradient norms of layer #0 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #1 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #2 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #3 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #4 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #5 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #6 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #7 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #8 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #9 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #10 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #11 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #12 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #13 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #14 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #15 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #16 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #17 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #18 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #19 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #20 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #21 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #22 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #23 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #24 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #25 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #26 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #27 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #28 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #29 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #30 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #31 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #32 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #33 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #34 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #35 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #36 in epoch #19 is: 0.0
+12:13:31,748 log INFO Average gradient norms of layer #37 in epoch #19 is: 0.0 
+
+12:13:31,748 log INFO Learning rate adjustment for first param group: 0.0017522480104040109
+12:13:32,127 log INFO Epoch: 20. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 692653.875, Test acc: 0.0. 
+
+12:13:32,127 log INFO Average gradient norms of layer #0 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #1 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #2 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #3 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #4 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #5 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #6 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #7 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #8 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #9 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #10 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #11 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #12 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #13 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #14 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #15 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #16 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #17 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #18 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #19 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #20 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #21 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #22 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #23 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #24 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #25 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #26 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #27 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #28 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #29 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #30 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #31 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #32 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #33 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #34 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #35 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #36 in epoch #20 is: 0.0
+12:13:32,127 log INFO Average gradient norms of layer #37 in epoch #20 is: 0.0 
+
+12:13:32,127 log INFO ---Saving current model's state dict...---
+12:13:32,202 log INFO ---model saved!---
+12:13:32,203 log INFO Learning rate adjustment for first param group: 0.0017457576562087919
+12:13:32,585 log INFO Epoch: 21. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 553401.4375, Test acc: 0.0. 
+
+12:13:32,585 log INFO Average gradient norms of layer #0 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #1 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #2 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #3 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #4 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #5 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #6 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #7 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #8 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #9 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #10 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #11 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #12 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #13 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #14 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #15 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #16 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #17 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #18 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #19 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #20 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #21 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #22 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #23 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #24 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #25 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #26 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #27 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #28 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #29 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #30 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #31 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #32 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #33 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #34 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #35 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #36 in epoch #21 is: 0.0
+12:13:32,585 log INFO Average gradient norms of layer #37 in epoch #21 is: 0.0 
+
+12:13:32,585 log INFO Learning rate adjustment for first param group: 0.001738872060065797
+12:13:32,979 log INFO Epoch: 22. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 864195.8125, Test acc: 0.0. 
+
+12:13:32,979 log INFO Average gradient norms of layer #0 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #1 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #2 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #3 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #4 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #5 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #6 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #7 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #8 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #9 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #10 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #11 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #12 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #13 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #14 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #15 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #16 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #17 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #18 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #19 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #20 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #21 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #22 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #23 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #24 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #25 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #26 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #27 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #28 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #29 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #30 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #31 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #32 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #33 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #34 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #35 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #36 in epoch #22 is: 0.0
+12:13:32,979 log INFO Average gradient norms of layer #37 in epoch #22 is: 0.0 
+
+12:13:32,979 log INFO Learning rate adjustment for first param group: 0.0017315955710651323
+12:13:33,363 log INFO Epoch: 23. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 524281.75, Test acc: 0.0. 
+
+12:13:33,363 log INFO Average gradient norms of layer #0 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #1 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #2 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #3 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #4 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #5 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #6 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #7 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #8 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #9 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #10 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #11 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #12 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #13 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #14 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #15 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #16 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #17 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #18 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #19 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #20 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #21 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #22 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #23 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #24 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #25 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #26 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #27 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #28 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #29 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #30 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #31 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #32 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #33 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #34 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #35 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #36 in epoch #23 is: 0.0
+12:13:33,363 log INFO Average gradient norms of layer #37 in epoch #23 is: 0.0 
+
+12:13:33,363 log INFO Learning rate adjustment for first param group: 0.0017239327851932102
+12:13:33,759 log INFO Epoch: 24. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 562773.9375, Test acc: 0.0. 
+
+12:13:33,759 log INFO Average gradient norms of layer #0 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #1 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #2 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #3 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #4 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #5 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #6 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #7 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #8 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #9 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #10 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #11 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #12 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #13 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #14 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #15 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #16 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #17 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #18 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #19 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #20 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #21 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #22 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #23 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #24 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #25 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #26 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #27 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #28 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #29 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #30 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #31 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #32 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #33 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #34 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #35 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #36 in epoch #24 is: 0.0
+12:13:33,759 log INFO Average gradient norms of layer #37 in epoch #24 is: 0.0 
+
+12:13:33,759 log INFO Learning rate adjustment for first param group: 0.001715888542429827
+12:13:34,154 log INFO Epoch: 25. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 313997.75, Test acc: 0.0. 
+
+12:13:34,154 log INFO Average gradient norms of layer #0 in epoch #25 is: 0.0
+12:13:34,154 log INFO Average gradient norms of layer #1 in epoch #25 is: 0.0
+12:13:34,154 log INFO Average gradient norms of layer #2 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #3 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #4 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #5 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #6 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #7 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #8 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #9 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #10 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #11 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #12 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #13 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #14 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #15 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #16 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #17 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #18 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #19 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #20 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #21 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #22 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #23 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #24 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #25 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #26 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #27 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #28 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #29 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #30 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #31 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #32 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #33 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #34 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #35 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #36 in epoch #25 is: 0.0
+12:13:34,155 log INFO Average gradient norms of layer #37 in epoch #25 is: 0.0 
+
+12:13:34,155 log INFO Learning rate adjustment for first param group: 0.0017074679236911278
+12:13:34,546 log INFO Epoch: 26. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 332165.75, Test acc: 0.0. 
+
+12:13:34,546 log INFO Average gradient norms of layer #0 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #1 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #2 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #3 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #4 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #5 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #6 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #7 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #8 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #9 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #10 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #11 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #12 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #13 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #14 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #15 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #16 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #17 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #18 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #19 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #20 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #21 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #22 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #23 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #24 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #25 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #26 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #27 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #28 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #29 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #30 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #31 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #32 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #33 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #34 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #35 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #36 in epoch #26 is: 0.0
+12:13:34,546 log INFO Average gradient norms of layer #37 in epoch #26 is: 0.0 
+
+12:13:34,546 log INFO Learning rate adjustment for first param group: 0.0016986762476203904
+12:13:34,937 log INFO Epoch: 27. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 352781.3125, Test acc: 0.0. 
+
+12:13:34,937 log INFO Average gradient norms of layer #0 in epoch #27 is: 0.0
+12:13:34,937 log INFO Average gradient norms of layer #1 in epoch #27 is: 0.0
+12:13:34,937 log INFO Average gradient norms of layer #2 in epoch #27 is: 0.0
+12:13:34,937 log INFO Average gradient norms of layer #3 in epoch #27 is: 0.0
+12:13:34,937 log INFO Average gradient norms of layer #4 in epoch #27 is: 0.0
+12:13:34,937 log INFO Average gradient norms of layer #5 in epoch #27 is: 0.0
+12:13:34,937 log INFO Average gradient norms of layer #6 in epoch #27 is: 0.0
+12:13:34,937 log INFO Average gradient norms of layer #7 in epoch #27 is: 0.0
+12:13:34,937 log INFO Average gradient norms of layer #8 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #9 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #10 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #11 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #12 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #13 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #14 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #15 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #16 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #17 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #18 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #19 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #20 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #21 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #22 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #23 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #24 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #25 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #26 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #27 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #28 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #29 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #30 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #31 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #32 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #33 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #34 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #35 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #36 in epoch #27 is: 0.0
+12:13:34,938 log INFO Average gradient norms of layer #37 in epoch #27 is: 0.0 
+
+12:13:34,938 log INFO Learning rate adjustment for first param group: 0.0016895190672286565
+12:13:35,315 log INFO Epoch: 28. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 297784.9375, Test acc: 0.0. 
+
+12:13:35,315 log INFO Average gradient norms of layer #0 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #1 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #2 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #3 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #4 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #5 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #6 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #7 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #8 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #9 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #10 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #11 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #12 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #13 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #14 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #15 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #16 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #17 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #18 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #19 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #20 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #21 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #22 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #23 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #24 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #25 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #26 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #27 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #28 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #29 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #30 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #31 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #32 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #33 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #34 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #35 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #36 in epoch #28 is: 0.0
+12:13:35,315 log INFO Average gradient norms of layer #37 in epoch #28 is: 0.0 
+
+12:13:35,315 log INFO Learning rate adjustment for first param group: 0.0016800021663873304
+12:13:35,701 log INFO Epoch: 29. 
+ Train loss: 0.0, Train Acc: 1.0. 
+ Test loss: 250757.328125, Test acc: 0.0. 
+
+12:13:35,701 log INFO Average gradient norms of layer #0 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #1 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #2 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #3 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #4 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #5 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #6 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #7 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #8 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #9 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #10 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #11 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #12 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #13 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #14 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #15 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #16 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #17 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #18 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #19 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #20 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #21 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #22 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #23 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #24 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #25 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #26 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #27 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #28 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #29 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #30 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #31 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #32 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #33 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #34 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #35 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #36 in epoch #29 is: 0.0
+12:13:35,701 log INFO Average gradient norms of layer #37 in epoch #29 is: 0.0 
+
+12:13:35,701 log INFO Learning rate adjustment for first param group: 0.0016701315561749642
