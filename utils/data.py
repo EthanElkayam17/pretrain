@@ -71,6 +71,10 @@ class RexailDataset(datasets.VisionDataset):
         self.samples = self.make_dataset()
         self.targets = [s[1] for s in self.samples]
 
+        self.loaded = False
+        self.whole = self._load_everything()
+        self.loaded = True
+
 
     def __len__(self) -> int:
         """Returns the amount of items in the dataset"""
@@ -89,6 +93,9 @@ class RexailDataset(datasets.VisionDataset):
         Args:
             index: Index """
         
+        if self.loaded:
+            return self.whole[index]
+
         path, target = self.samples[index]
         sample = self.loader(path)
         res = []
@@ -108,6 +115,13 @@ class RexailDataset(datasets.VisionDataset):
             res.append(sID)
 
         return tuple(res)
+
+
+    def _load_everything(self):
+        whole = []
+        for index in len(self.samples):
+            whole.append(self.__getitem__(index))
+        return whole
 
 
     @staticmethod

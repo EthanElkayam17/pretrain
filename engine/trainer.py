@@ -198,7 +198,7 @@ def trainer(model: torch.nn.Module,
                 param_group["lr"] = decay(epoch)
                 
             if idx == 0:
-                logger.info(f"Learning rate adjusted to: {param_group["lr"]}")
+                logger.info(f"Learning rate adjusted to: {param_group['lr']}")
 
 
         train_loss, train_acc = train_step(model=model,
