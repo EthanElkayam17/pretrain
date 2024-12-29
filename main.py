@@ -95,7 +95,8 @@ if __name__ == "__main__":
                                                                         train_pre_transform=(transforms[idx])[0],
                                                                         train_decider=partial(RexailDataset.sha256_modulo_split,ratio=70),
                                                                         test_decider=partial(RexailDataset.sha256_modulo_split,ratio=70,complement=True),
-                                                                        test_transform=transforms[idx])
+                                                                        test_transform=transforms[idx],
+                                                                        load_into_memory=True)
                 logger.info("---Dataloaders created---\n")
 
                 logger.info(f"Starting training stage #{str(idx)}")
