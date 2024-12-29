@@ -10,6 +10,7 @@ def get_stage_transforms(settings_name: str,
                          settings_dir: str,
                          mean: list,
                          std: list,
+                         divide_crop_and_augment: bool = False,
                          logger = None):
     
     """Create custom transform based on each training stage in settings.yaml file.
@@ -19,9 +20,10 @@ def get_stage_transforms(settings_name: str,
         settings_dir: path to settings directory.
         mean: mean rgb value to normalize by.
         std: standard deviation to normalize by.
+        divide_crop_and_augment: whether to divide each transform into a tuple of cropper transform and augmentation transform
         logger: logging function.
     
-    Returns: [transform_stage_1, ... , transform_stage_n]
+    Returns: [(transform_stage_1), ... , transform_stage_n]
     """
     
     if logger is None:
@@ -38,18 +40,37 @@ def get_stage_transforms(settings_name: str,
     for idx, stage in enumerate(settings.get('training_stages')):
         logger.info("Creating #" + str(idx) + " transform")
         cropper = v2.CenterCrop(size=stage.get('res')) if stage.get('centered') else v2.RandomResizedCrop(size=stage.get('res'))
-        transforms.append(
-           v2.Compose([ 
-               v2.Resize(stage.get('resize')),
-               cropper,
-               v2.RandomHorizontalFlip(0.5),
-               v2.RandomVerticalFlip(0.5),
-               v2.RandAugment(magnitude=stage.get('RandAugment_magnitude')),
-               v2.ToImage(),
-               v2.ToDtype(torch.float32,scale=True),
-               v2.Normalize(mean=mean, std=std)
-           ])
-        )
+        
+        if divide_crop_and_augment:
+            cropper_transform = v2.Compose([ 
+                v2.Resize(stage.get('resize')),
+                cropper
+            ])
+
+            augmentation_transform = v2.Compose([
+                v2.RandomHorizontalFlip(0.5),
+                v2.RandomVerticalFlip(0.5),
+                v2.RandAugment(magnitude=stage.get('RandAugment_magnitude')),
+                v2.ToImage(),
+                v2.ToDtype(torch.float32,scale=True),
+                v2.Normalize(mean=mean, std=std)
+            ])
+            
+            transforms.append(tuple(cropper_transform,augmentation_transform))
+        else:
+            transforms.append(
+                v2.Compose([ 
+                    v2.Resize(stage.get('resize')),
+                    cropper,
+                    v2.RandomHorizontalFlip(0.5),
+                    v2.RandomVerticalFlip(0.5),
+                    v2.RandAugment(magnitude=stage.get('RandAugment_magnitude')),
+                    v2.ToImage(),
+                    v2.ToDtype(torch.float32,scale=True),
+                    v2.Normalize(mean=mean, std=std)
+                ])
+            )
+            
     return transforms
 
 

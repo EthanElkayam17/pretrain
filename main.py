@@ -70,7 +70,7 @@ if __name__ == "__main__":
         logger.info(f"---mean and std calculated: mean : {mean}, std : {std} ---")
 
         logger.info("---Creating stage transforms---")
-        transforms = get_stage_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, logger)
+        transforms = get_stage_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, True, logger)
         logger.info("---Stage transform created---\n")
 
         loss_fn = torch.nn.CrossEntropyLoss().to(device=device)
@@ -91,7 +91,8 @@ if __name__ == "__main__":
                                                                         test_dir=TEST_DIR,
                                                                         batch_size=train_cfg.get('batch_size'),
                                                                         num_workers=train_cfg.get('num_workers'),
-                                                                        train_transform=transforms[idx],
+                                                                        train_transform=(transforms[idx])[1],
+                                                                        train_pre_transform=(transforms[idx])[0],
                                                                         train_decider=partial(RexailDataset.sha256_modulo_split,ratio=70),
                                                                         test_decider=partial(RexailDataset.sha256_modulo_split,ratio=70,complement=True),
                                                                         test_transform=transforms[idx])

@@ -1,6 +1,9 @@
 import torch
 import numpy as np
 import os
+from tqdm import tqdm
+from multiprocessing import Pool
+from functools import partial
 from hashlib import sha256
 from pathlib import Path
 from PIL import Image
@@ -25,13 +28,13 @@ class RexailDataset(datasets.VisionDataset):
     the flag 'weighed' can be true when including weight data in {image_name}
     such that {image_name} is in the form: '{image_id}${weight}$' 
     
-    Data should be partitioned into train and test (if not partitioned already in the directory itself)
-    by using the 'decider' parameter"""
+    Data should be filtered/partitioned by using the 'decider' parameter"""
     
     def __init__(
         self,
         root: str,
-        transform: Optional[Callable] = None,
+        transform: Union[Callable] = None,
+        pre_transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,
         loader: Callable[[str], Any] = datasets.folder.default_loader,
         decider: Callable[[str], bool] = default_decider,
@@ -39,27 +42,39 @@ class RexailDataset(datasets.VisionDataset):
         ignore_classes: List[str] = list(),
         storewise: bool = False,
         weighed: bool = False,
+        load_into_memory: bool = False,
+        num_workers: int = 1,
     ):
         """Args:
             root: Root directory path.
             transform: A transform for the PIL images.
+            pre_transform: a transform to be applied pre-fetch to all the data (usable only if load_into_memory = True)
             target_transform: A transform for the target.
             loader: A function to load an image given its path.
             decider: A function that takes path of an Image file and decides if its in the dataset.
             extensions: file extensions that are acceptable.
             ignore_classes: classes to ignore when making dataset.
             storewise: whether the directory is partitioned store-wise inside each class.
-            weighed: whether the file names contain weight data."""
+            weighed: whether the file names contain weight data.
+            
+            load_into_memory: whether to load the entire dataset into memory,
+            by default only the paths are stored and the data itself is fetched lazily,
+            this option will load all the required tensors into memory when creating the instance,
+            VERIFY THAT THERE IS ENOUGH MEMORY AVAILABLE BEFORE SETTING TRUE.
+            
+            num_workers: number of workers to be used to load dataset into memory"""
         
         super().__init__(
             root=root,
             transform=transform,
             target_transform=target_transform
         )
+        self.pre_transform = pre_transform
         self.ignore_classes = ignore_classes
         classes, class_to_idx = RexailDataset.find_classes(self.root, self.ignore_classes)
         self.class_to_idx = class_to_idx
 
+        self.loaded_dataset = False
         self.storewise = storewise
         self.weighed = weighed
         self.decider = decider
@@ -71,9 +86,9 @@ class RexailDataset(datasets.VisionDataset):
         self.samples = self.make_dataset()
         self.targets = [s[1] for s in self.samples]
 
-        self.loaded = False
-        self.whole = self._load_everything()
-        self.loaded = True
+        if load_into_memory:
+            self.samples = self._load_everything(num_workers=num_workers)
+            self.loaded_dataset = True
 
 
     def __len__(self) -> int:
@@ -82,46 +97,44 @@ class RexailDataset(datasets.VisionDataset):
         return len(self.samples)
 
 
-    def __getitem__(self, index: int) -> Tuple:
-        """Returns item based on index, in a tuple of the form: (sample, target, weight, sID) 
+    def __getitem__(self, 
+                    index: int,
+                    pre_transform: bool = False) -> Tuple:
+        """Returns item based on index, in a tuple of the form: (sample, target) 
             where:
                 sample is the tensor representing the image.
                 target is class_index of the target class.
-                weight is the weight data of the product.
-                sID is the id of the store where the image is from.
         
         Args:
-            index: Index """
+            index: Index
+            pre_transform: whether to apply pre_transform instead of transform """
         
-        if self.loaded:
-            return self.whole[index]
+        if self.loaded_dataset:
+            sample, target = self.samples[index]
+            sample = self.transform(sample)
+            target = self.target_transform(target)
+            return tuple(sample,target)
 
         path, target = self.samples[index]
         sample = self.loader(path)
-        res = []
-        
-        if self.transform is not None:
-            sample = self.transform(sample)
+        transform = self.pre_transform if pre_transform else self.transform
+
+        if transform is not None:
+            sample = transform(sample)
         if self.target_transform is not None:
             target = self.target_transform(target)
-        res.extend([sample,target])
 
-        if self.weighed:
-            fname = path.split("/")[-1]
-            weight = float(fname.split("$")[1])
-            res.append(weight)
-        if self.storewise:
-            sID = path.split("/")[-2]
-            res.append(sID)
-
-        return tuple(res)
+        return tuple(sample,target)
 
 
-    def _load_everything(self):
-        whole = []
-        for index in range(len(self.samples)):
-            whole.append(self.__getitem__(index))
-        return whole
+    def _load_everything(self, num_workers: int):
+        indices = list(tqdm(range(len(self.samples))))
+        loader = partial(self.__getitem__, pre_transform=(self.pre_transform is not None))
+        
+        with Pool(num_workers) as pool:
+            dataset = pool.map(loader,indices)
+        
+        return dataset
 
 
     @staticmethod
@@ -207,16 +220,19 @@ def create_dataloaders(
         train_dir: Union[str, Path],
         test_dir: Union[str, Path],
         batch_size: int,
-        num_workers: int = 0,        
+        num_workers: int = 1,        
         train_transform: Union[torch.nn.Sequential, transforms.Compose] = default_transform(),
+        train_pre_transform: Optional[Callable] = None,
         test_transform: Union[torch.nn.Sequential, transforms.Compose] = default_transform(),
+        test_pre_transform: Optional[Callable] = None,
         train_extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
         train_decider: Callable[[str], bool] = (lambda x: True),
         test_extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
         test_decider: Callable[[str], bool] = (lambda x: True),
         ignore_classes: List[str] = list(),
         storewise: bool = False,
-        weighed: bool = False
+        weighed: bool = False,
+        load_into_memory: bool = False,
     ) -> Tuple[DataLoader, DataLoader, List]:
     """Creates training/testing dataloaders from training/testing directories
     
@@ -224,8 +240,11 @@ def create_dataloaders(
         train_dir: path of training data directory.
         test_dir: path of testing data directory.
         batch_size: amount per batch.
+        num_workers: int = 0,
         train_transform: transforms to apply to training data.
+        train_pre_transform: pre_transform to apply to training data.
         test_transform: transforms to apply to testing data.
+        test_pre_transform: pre_transform to apply to testing data.
         train_decider: A function that takes path of an Image file and decides if its in the training dataset.
         train_extensions: file extensions that are acceptable in the training dataset.
         test_decider: A function that takes path of an Image file and decides if its in the testing dataset.
@@ -233,25 +252,32 @@ def create_dataloaders(
         ignore_classes: classes to ignore when making training/testing sets.
         storewise: whether both training and testing directories are partitioned store-wise inside each class.
         weighed: whether the file names contain weight data.
+        load_into_memory: whether to load datasets into memory.
 
     Returns: (train_dataloader, test_dataloader, class_names)
     """
 
     train_data = RexailDataset(root=train_dir,
                                transform=train_transform,
+                               pre_transform=train_pre_transform,
                                decider=train_decider,
                                extensions=train_extensions,
                                ignore_classes=ignore_classes,
                                storewise=storewise,
-                               weighed=weighed)
+                               weighed=weighed,
+                               load_into_memory=load_into_memory,
+                               num_workers=num_workers)
     
     test_data = RexailDataset(root=test_dir, 
                               transform=test_transform,
+                              pre_transform=test_pre_transform,
                               decider=test_decider,
                               extensions=test_extensions,
                               ignore_classes=ignore_classes,
                               storewise=storewise,
-                              weighed=weighed)
+                              weighed=weighed,
+                              load_into_memory=load_into_memory,
+                              num_workers=num_workers)
     
     class_names = train_data.classes
     train_dataloader = DataLoader(
