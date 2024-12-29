@@ -132,7 +132,7 @@ class RexailDataset(datasets.VisionDataset):
         loader = partial(self.__getitem__, pre_transform=(self.pre_transform is not None))
         
         with Pool(num_workers) as pool:
-            dataset = list(tqdm(pool.imap(loader,indices)))
+            dataset = list(tqdm(pool.imap(loader,indices), total=len(self.samples), desc="loading dataset into memory"))
         
         return dataset
 
