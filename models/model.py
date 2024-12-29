@@ -132,6 +132,7 @@ class CFGCNN(nn.Module):
             cfg_name: str,
             cfg_dir: str = CFG_PATH,
             stochastic_depth_incremental: float = 0.0055,
+            dropout_prob_override: float = -1,
             logger = None) -> None:
         """Constructs CNN based on config file
         
@@ -139,6 +140,7 @@ class CFGCNN(nn.Module):
             cfg_name: name of config file.
             cfg_dir: path to config directory.
             stochastic_depth_incremental: step size for stochastic depth for each layer.
+            dropout_prob_override: override dropout_prob on config file.
             logger: logging function.
         """
         
@@ -240,8 +242,9 @@ class CFGCNN(nn.Module):
                     classifier_layers.append(nn.AdaptiveAvgPool2d(1))
                     
                 case 'dropout':
+                    prob = dropout_prob_override if (dropout_prob_override != -1) else stage.get('dropout_prob')
                     classifier_layers.append(nn.Flatten())
-                    classifier_layers.append(nn.Dropout(p=stage.get('dropout_prob'), inplace=True))
+                    classifier_layers.append(nn.Dropout(p=prob, inplace=True))
                     
                 case 'FC':
                     classifier_layers.append(nn.Linear(in_features=stage.get('in_features'),

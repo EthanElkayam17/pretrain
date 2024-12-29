@@ -1,15 +1,16 @@
 import torch
 import numpy as np
 import os
+from torch.utils.data.sampler import Sampler
 from tqdm import tqdm
 from multiprocessing import Pool
 from functools import partial
 from hashlib import sha256
 from pathlib import Path
 from PIL import Image
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, Iterable
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, DistributedSampler
 from utils.transforms import default_transform
 from utils.other import dirjoin
 
@@ -136,7 +137,7 @@ class RexailDataset(datasets.VisionDataset):
 
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
-        
+
         indices = list(range(len(self.samples)))
         loader = partial(self.__getitem__, pre_transform=(self.pre_transform is not None))
         
@@ -226,7 +227,9 @@ class RexailDataset(datasets.VisionDataset):
         return sID in stores_lst
 
 
-def create_dataloaders(
+def create_dataloaders_and_samplers(
+        world_size: int,
+        rank: int,
         train_dir: Union[str, Path],
         test_dir: Union[str, Path],
         batch_size: int,
@@ -247,6 +250,8 @@ def create_dataloaders(
     """Creates training/testing dataloaders from training/testing directories
     
     Args:
+        world_size: number of total processes (GPU's),
+        rank: identifier for current process (GPU).
         train_dir: path of training data directory.
         test_dir: path of testing data directory.
         batch_size: amount per batch.
@@ -289,12 +294,16 @@ def create_dataloaders(
                               load_into_memory=load_into_memory,
                               num_workers=num_workers)
     
+    train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
+    test_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
+    
     class_names = train_data.classes
     train_dataloader = DataLoader(
         dataset=train_data,
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
+        sampler=train_sampler,
         
         # Try to avoid costs of transfer between pageable and pinned memory
         pin_memory=True
@@ -305,10 +314,11 @@ def create_dataloaders(
         batch_size=batch_size,
         shuffle=False,  
         num_workers=num_workers,
+        sampler=test_sampler,
         pin_memory=True
     )
 
-    return train_dataloader, test_dataloader, class_names
+    return train_sampler, train_dataloader, test_sampler, test_dataloader, class_names
 
 
 def calculate_mean_std(dir: Union[str, Path]) -> Tuple[List, List]:

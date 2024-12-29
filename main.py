@@ -7,7 +7,7 @@ from functools import partial
 from utils.data import RexailDataset
 from models.model import CFGCNN
 from utils.transforms import get_stage_transforms, default_transform
-from utils.data import create_dataloaders, calculate_mean_std, dirjoin
+from utils.data import create_dataloaders_and_samplers, calculate_mean_std, dirjoin
 from engine.trainer import trainer
 
 if __name__ == "__main__":
@@ -25,7 +25,7 @@ if __name__ == "__main__":
         STAGES_SETTINGS_PATH = (dirjoin(STAGES_SETTINGS_DIR,STAGES_SETTINGS_NAME))
         TRAINING_SETTINGS_PATH = (dirjoin(TRAINING_CONFIG_DIR,TRAINING_SETTINGS_NAME))
         START_EPOCH = 1
-
+        SAVED_MODEL_PATH = None
 
         if not os.path.exists("logs/"): 
                 os.makedirs("logs/")
@@ -38,15 +38,11 @@ if __name__ == "__main__":
                         level=logging.INFO)
         logger = logging.getLogger('log')
         logger.info("------LOGGING: .(" + MODEL_CONFIG_NAME + "," + TRAINING_SETTINGS_NAME + "," + STAGES_SETTINGS_NAME + "). ------")
-        
-        logger.info("---Creating model---")
-        model = CFGCNN(cfg_name=MODEL_CONFIG_NAME, cfg_dir=MODEL_CONFIG_DIR,logger=logger)
-        model.to(device=device)
+
 
         SAVED_MODEL_FNAME = input("If continuing from checkpoint, enter saved model's file name (else, leave null): ")
         if SAVED_MODEL_FNAME != "":
                 SAVED_MODEL_PATH = dirjoin(STATE_DICTS_DIR,SAVED_MODEL_FNAME)
-                model.load_state_dict(torch.load(SAVED_MODEL_PATH,weights_only=True))
 
                 START_EPOCH = input("How many epochs have this model been trained for under the specified settings (if settings accommodate for the loading, leave null): ")
                 if START_EPOCH.isdigit():
@@ -72,12 +68,6 @@ if __name__ == "__main__":
         transforms = get_stage_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, True, logger)
         logger.info("---Stage transform created---\n")
 
-        loss_fn = torch.nn.CrossEntropyLoss().to(device=device)
-        optimizer = torch.optim.RMSprop(params=model.parameters(),
-                                lr=0, 
-                                momentum=train_cfg.get('momentum'), 
-                                weight_decay=train_cfg.get('weight_decay'))
-
 
         logger.info("---STARTING TRAINING---")
         with open(STAGES_SETTINGS_PATH, 'r') as stages_settings_file:
@@ -85,8 +75,7 @@ if __name__ == "__main__":
 
 
         for idx, stage in enumerate(stages_cfg.get('training_stages')):
-                logger.info(f"---Creating dataloaders for stage #{str(idx)}---")
-                train_dataloader, test_dataloader, _ = create_dataloaders(train_dir=TRAIN_DIR,
+                create_dataloaders_per_process = partial(create_dataloaders_and_samplers, train_dir=TRAIN_DIR,
                                                                         test_dir=TEST_DIR,
                                                                         batch_size=train_cfg.get('batch_size'),
                                                                         num_workers=train_cfg.get('num_workers'),
@@ -97,13 +86,10 @@ if __name__ == "__main__":
                                                                         test_transform=(transforms[idx])[1],
                                                                         test_pre_transform=(transforms[idx])[0],
                                                                         load_into_memory=True)
-                logger.info("---Dataloaders created---\n")
 
                 logger.info(f"Starting training stage #{str(idx)}")
-                model.setDropoutProb(stage.get('dropout_prob'))
                 trainer(model=model,
-                        train_dataloader=train_dataloader,
-                        test_dataloader=test_dataloader,
+                        create_dataloaders_and_samplers=create_dataloaders_per_process,
                         optimizer=optimizer,
                         lr_min=stage.get('lr_min',0),
                         lr_max=stage.get('lr_max'),
