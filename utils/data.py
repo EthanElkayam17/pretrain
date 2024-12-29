@@ -124,6 +124,8 @@ class RexailDataset(datasets.VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
+
+        print(f"just got {index}")
         return tuple([sample,target])
 
 
@@ -132,7 +134,7 @@ class RexailDataset(datasets.VisionDataset):
         loader = partial(self.__getitem__, pre_transform=(self.pre_transform is not None))
         
         with Pool(num_workers) as pool:
-            dataset = list(tqdm(pool.map(loader,indices), total=len(self.samples), desc="loading dataset into memory"))
+            dataset = pool.map(loader,indices)
         
         return dataset
 
