@@ -128,11 +128,11 @@ class RexailDataset(datasets.VisionDataset):
 
 
     def _load_everything(self, num_workers: int):
-        indices = list(tqdm(range(len(self.samples))))
+        indices = list(range(len(self.samples)))
         loader = partial(self.__getitem__, pre_transform=(self.pre_transform is not None))
         
         with Pool(num_workers) as pool:
-            dataset = pool.map(loader,indices)
+            dataset = list(tqdm(pool.imap(loader,indices)))
         
         return dataset
 
