@@ -56,7 +56,7 @@ def get_stage_transforms(settings_name: str,
                 v2.Normalize(mean=mean, std=std)
             ])
             
-            transforms.append(tuple(cropper_transform,augmentation_transform))
+            transforms.append(tuple([cropper_transform,augmentation_transform]))
         else:
             transforms.append(
                 v2.Compose([ 
@@ -70,7 +70,7 @@ def get_stage_transforms(settings_name: str,
                     v2.Normalize(mean=mean, std=std)
                 ])
             )
-            
+
     return transforms
 
 

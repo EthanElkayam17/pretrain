@@ -113,7 +113,7 @@ class RexailDataset(datasets.VisionDataset):
             sample, target = self.samples[index]
             sample = self.transform(sample)
             target = self.target_transform(target)
-            return tuple(sample,target)
+            return tuple([sample,target])
 
         path, target = self.samples[index]
         sample = self.loader(path)
@@ -124,7 +124,7 @@ class RexailDataset(datasets.VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return tuple(sample,target)
+        return tuple([sample,target])
 
 
     def _load_everything(self, num_workers: int):
