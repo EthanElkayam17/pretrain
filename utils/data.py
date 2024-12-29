@@ -111,8 +111,13 @@ class RexailDataset(datasets.VisionDataset):
         
         if self.loaded_dataset:
             sample, target = self.samples[index]
-            sample = self.transform(sample)
-            target = self.target_transform(target)
+            
+            if self.transform is not None:
+                sample = self.transform(sample)
+            
+            if self.target_transform is not None:
+                target = self.target_transform(target)
+            
             return tuple([sample,target])
 
         path, target = self.samples[index]
