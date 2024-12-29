@@ -135,6 +135,8 @@ class RexailDataset(datasets.VisionDataset):
 
 
     def _load_everything(self, num_workers: int):
+        """Parallel loading of the dataset into memory"""
+        
         indices = list(range(len(self.samples)))
         loader = partial(self.__getitem__, pre_transform=(self.pre_transform is not None))
         

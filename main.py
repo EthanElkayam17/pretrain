@@ -3,10 +3,8 @@ import logging
 import yaml
 import sys
 import os
-from typing import Callable
 from functools import partial
 from utils.data import RexailDataset
-from torchvision.models import efficientnet_v2_s
 from models.model import CFGCNN
 from utils.transforms import get_stage_transforms, default_transform
 from utils.data import create_dataloaders, calculate_mean_std, dirjoin
@@ -42,7 +40,8 @@ if __name__ == "__main__":
         logger.info("------LOGGING: .(" + MODEL_CONFIG_NAME + "," + TRAINING_SETTINGS_NAME + "," + STAGES_SETTINGS_NAME + "). ------")
         
         logger.info("---Creating model---")
-        model = CFGCNN(cfg_name=MODEL_CONFIG_NAME, cfg_dir=MODEL_CONFIG_DIR,logger=logger).to(device=device)
+        model = CFGCNN(cfg_name=MODEL_CONFIG_NAME, cfg_dir=MODEL_CONFIG_DIR,logger=logger)
+        model.to(device=device)
 
         SAVED_MODEL_FNAME = input("If continuing from checkpoint, enter saved model's file name (else, leave null): ")
         if SAVED_MODEL_FNAME != "":
