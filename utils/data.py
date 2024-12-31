@@ -58,11 +58,13 @@ class RexailDataset(datasets.VisionDataset):
             storewise: whether the directory is partitioned store-wise inside each class.
             weighed: whether the file names contain weight data.
             
-            load_into_memory: whether to load the entire dataset into memory,
+            load_into_memory: whether to load the entire dataset into a shared in-memory block,
             by default only the paths are stored and the data itself is fetched lazily,
             this option will load all the required tensors into memory when creating the instance,
-            VERIFY THAT THERE IS ENOUGH MEMORY AVAILABLE BEFORE SETTING TRUE.
-            
+            VERIFY THAT THERE IS ENOUGH MEMORY AVAILABLE BEFORE SETTING TRUE,
+            the samples of the dataset will be stored in a large contiguous tensor,
+            one should utilize SharedDatasetWrapper to properly share the dataset across processes.
+
             num_workers: number of workers to be used to load dataset into memory"""
         
         super().__init__(
@@ -88,7 +90,10 @@ class RexailDataset(datasets.VisionDataset):
         self.targets = [s[1] for s in self.samples]
 
         if load_into_memory:
-            self.samples = self._load_everything(num_workers=num_workers)
+            shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
+            self.data = torch.empty((len(self.samples), *shape_sample), dtype=torch.float32)
+            self._load_everything(num_workers=num_workers)
+            self.data.share_memory_()
             self.loaded_dataset = True
 
 
@@ -100,7 +105,7 @@ class RexailDataset(datasets.VisionDataset):
 
     def __getitem__(self, 
                     index: int,
-                    pre_transform: bool = False) -> Tuple:
+                    only_pre_transform: bool = False) -> Tuple:
         """Returns item based on index, in a tuple of the form: (sample, target) 
             where:
                 sample is the tensor representing the image.
@@ -108,25 +113,25 @@ class RexailDataset(datasets.VisionDataset):
         
         Args:
             index: Index
-            pre_transform: whether to apply pre_transform instead of transform """
+            only_pre_transform: whether to apply only pre_transform instead of pre_transform+transform """
         
         if self.loaded_dataset:
-            sample, target = self.samples[index]
+            sample = self.data[index]
+            target = self.targets[index]
             
             if self.transform is not None:
                 sample = self.transform(sample)
-            
-            if self.target_transform is not None:
-                target = self.target_transform(target)
             
             return tuple([sample,target])
 
         path, target = self.samples[index]
         sample = self.loader(path)
-        transform = self.pre_transform if pre_transform else self.transform
-
-        if transform is not None:
-            sample = transform(sample)
+        if self.pre_transform is not None:
+            sample = self.pre_transform(sample)
+        
+        if (self.transform is not None) and (not only_pre_transform):
+            sample = self.transform(sample)
+        
         if self.target_transform is not None:
             target = self.target_transform(target)
 
@@ -138,14 +143,14 @@ class RexailDataset(datasets.VisionDataset):
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
 
+        def fill_index(index):
+            self.data[index] = self.__getitem__(index=index,only_pre_transform=(self.pre_transform is not None))[0]
+        
         indices = list(range(len(self.samples)))
-        loader = partial(self.__getitem__, pre_transform=(self.pre_transform is not None))
         
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
-            dataset = pool.map(loader,indices)
-        
-        return dataset
+            pool.map(fill_index,indices)
 
 
     @staticmethod

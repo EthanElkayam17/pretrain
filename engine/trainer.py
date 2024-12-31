@@ -8,9 +8,10 @@ import torch.optim.optimizer
 from torch.utils.data import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel
 from functools import partial
-from typing import Dict, List, Tuple, Union, Callable, Any
+from typing import Tuple, Union, Callable, Any
 from utils.checkpoint import save_state_dict
 from models.model import CFGCNN
+from utils.other import set_random_seed
 
 
 def warmup_to_cosine_decay(epoch: int,
@@ -140,12 +141,6 @@ def test_step(model: torch.nn.Module,
     return test_loss,test_accuracy
 
 
-def set_random_seed(seed):
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-
-
 def setup(rank, world_size):
     """Set up process"""
 
@@ -184,9 +179,9 @@ def trainer(rank: int,
     """Train and test CFGCNN networks using multiple GPUs
     
     Args:
-        model_cfg_name: model's config file name.
-        world_size: number of total processes (GPUs).
         rank: identifier of the gpu for this process.
+        world_size: number of total processes (GPUs).
+        model_cfg_name: model's config file name.
         create_dataloaders_and_samplers: function that will create the test/train dataloaders and samplers.
         momentum: momentum for optimizer.
         weight_decay: weight decay for optimizer.
@@ -201,7 +196,7 @@ def trainer(rank: int,
         save_freq: how many epochs between model saves.
         exp_decay_factor: decay factor if using 'exp' decay.
         curr_epoch: current epoch (in case of model checkpoint loading).
-        model_name: name of model's state_dict file.
+        model_name: name of model's state_dict file that will be saved.
         load_state_dict_path: path to state dict to load at the start of training.
         logger: logging function.
     """
@@ -232,7 +227,7 @@ def trainer(rank: int,
     optimizer = optimizer(params=model.parameters(),
                                 lr=0, 
                                 momentum=momentum, 
-                                weight_decay=weight_decay)
+                                weight_decay=weight_decay).to(rank)
 
 
     logger.info(f"---Creating dataloaders for stage #{str(idx)}---")
@@ -288,5 +283,6 @@ def trainer(rank: int,
         save_state_dict(model=model, 
                         dir="state_dicts",
                         model_name=model_name)
+    dist.barrier()
 
     cleanup()

@@ -3,6 +3,7 @@ import logging
 import yaml
 import sys
 import os
+import torch.multiprocessing as mp
 from functools import partial
 from utils.data import RexailDataset
 from models.model import CFGCNN
@@ -11,7 +12,6 @@ from utils.data import create_dataloaders_and_samplers, calculate_mean_std, dirj
 from engine.trainer import trainer
 
 if __name__ == "__main__":
-        device = "cuda" if torch.cuda.is_available() else "cpu"
 
         TRAIN_DIR = "/workspace/dataset/train/"
         TEST_DIR = "/workspace/dataset/train/"
@@ -25,6 +25,7 @@ if __name__ == "__main__":
         STAGES_SETTINGS_PATH = (dirjoin(STAGES_SETTINGS_DIR,STAGES_SETTINGS_NAME))
         TRAINING_SETTINGS_PATH = (dirjoin(TRAINING_CONFIG_DIR,TRAINING_SETTINGS_NAME))
         START_EPOCH = 1
+        WORLD_SIZE = torch.cuda.device_count()
         SAVED_MODEL_PATH = None
 
         if not os.path.exists("logs/"): 
@@ -88,21 +89,29 @@ if __name__ == "__main__":
                                                                         load_into_memory=True)
 
                 logger.info(f"Starting training stage #{str(idx)}")
-                trainer(model=model,
-                        create_dataloaders_and_samplers=create_dataloaders_per_process,
-                        optimizer=optimizer,
-                        lr_min=stage.get('lr_min',0),
-                        lr_max=stage.get('lr_max'),
-                        warmup_epochs=stage.get('warmup_epochs'),
-                        loss_fn=loss_fn,
-                        epochs=stage.get('epochs'),
-                        device=device,
-                        save_freq=10,
-                        decay_mode=stage.get('decay_mode',"none"),
-                        exp_decay_factor=stage.get('decay_factor',0),
-                        curr_epoch=START_EPOCH,
-                        model_name=(f"{MODEL_NAME}_{idx}"),
-                        logger=logger)
+                mp.spawn(
+                    trainer,
+                    args=(WORLD_SIZE, 
+                          MODEL_CONFIG_NAME,
+                          create_dataloaders_per_process,
+                          train_cfg.get('momentum'),
+                          train_cfg.get('weight_decay'),
+                          stage.get('lr_min'),
+                          stage.get('lr_max'),
+                          stage.get('dropout_prob'),
+                          stage.get('warmup_epochs'),
+                          torch.optim.RMSprop,
+                          torch.nn.CrossEntropyLoss(),
+                          stage.get('epochs'),
+                          stage.get('decay_mode'),
+                          stage.get('decay_factor', 0),
+                          START_EPOCH,
+                          MODEL_NAME,
+                          SAVED_MODEL_PATH,
+                          logger),
+                    nprocs=WORLD_SIZE,
+                    join=True
+                )
                 
                 START_EPOCH = max((START_EPOCH - stage.get('epochs')), 1)
                 logger.info(f"Finished training stage #{str(idx)} \n")

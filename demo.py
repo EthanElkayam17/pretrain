@@ -9,7 +9,6 @@ from operator import itemgetter
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
 
 INFERENCE_DIR = ""
 TRAIN_DIR = ""
@@ -21,15 +20,15 @@ MODEL_CONFIG_NAME, STATE_DICT_FILE_NAME, IMG_FILE_NAME = sys.argv[1], sys.argv[2
 IMG_FILE_PATH = dirjoin(INFERENCE_DIR,IMG_FILE_NAME)
 STATE_DICT_PATH = dirjoin(STATE_DICT_DIR,STATE_DICT_FILE_NAME)
 
-model = CFGCNN(cfg_name=MODEL_CONFIG_NAME, cfg_dir=MODEL_CONFIG_DIR).to(device=device)
+model = CFGCNN(cfg_name=MODEL_CONFIG_NAME, cfg_dir=MODEL_CONFIG_DIR)
 model.load_state_dict(torch.load(STATE_DICT_PATH ,weights_only=True))
 classes, _ = RexailDataset.find_classes(TRAIN_DIR)
 
 transform = default_transform()
 X = transform(datasets.folder.default_loader(IMG_FILE_PATH))
-X.to(device)
+X
 
-y = model(X).to(device)
+y = model(X)
 p = torch.nn.Softmax(y,dim=1)
 class_to_prob = {cls: prob for cls, prob in zip(classes, p.squeeze(0).tolist())}
 
