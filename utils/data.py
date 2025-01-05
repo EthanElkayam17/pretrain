@@ -18,6 +18,9 @@ def default_decider(path: str) -> bool:
         """Default decider"""
         return True
 
+def fill_index(data, dataset, index):
+    data[index] = dataset.__getitem__(index=index,only_pre_transform=(dataset.pre_transform is not None))[0]
+
 class RexailDataset(datasets.VisionDataset):
     """A dataset class for loading and partitioning data from rexail's dataset,
     expects directory in one of the following structures: 
@@ -146,18 +149,17 @@ class RexailDataset(datasets.VisionDataset):
         return tuple([sample,target])
 
 
-    def _fill_index(self, index):
-            self.data[index] = self.__getitem__(index=index,only_pre_transform=(self.pre_transform is not None))[0]
-
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
         
         indices = list(range(len(self.samples)))
+
+        func = partial(fill_index ,self.data, self)
         
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
             for index in indices:
-                pool.apply_async(self._fill_index,index)
+                pool.apply_async(func,index)
 
 
     @staticmethod
