@@ -239,7 +239,7 @@ def trainer(rank: int,
     optimizer = optimizer(params=model.parameters(),
                                 lr=0, 
                                 momentum=momentum, 
-                                weight_decay=weight_decay).to(rank)
+                                weight_decay=weight_decay)
 
 
     logger.info(f"---Creating dataloaders for stage #{str(idx)}---")
