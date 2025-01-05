@@ -141,8 +141,6 @@ class RexailDataset(datasets.VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        if index%50 == 0:
-            print(f"just got {index}")
         return tuple([sample,target])
 
 
@@ -153,21 +151,15 @@ class RexailDataset(datasets.VisionDataset):
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
 
-        try:
-            print(index)
+        path, _ = samples[index]
+        sample = loader(path)
 
-            path, _ = samples[index]
-            sample = loader(path)
-
-            if transform is not None:
-                sample = transform(sample)
+        if transform is not None:
+            sample = transform(sample)
             
-            data[index] = sample.clone()
-        
-        except Exception as e:
-            print(e)
+        data[index] = sample.clone()
 
-    
+
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
         indices = list(range(0,len(self.samples)))
