@@ -95,8 +95,6 @@ class RexailDataset(datasets.VisionDataset):
             data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
             
             self.data = torch.empty((len(self.samples), *data_shape_sample), dtype=torch.float32)
-            print(self.data.shape)
-
 
             self._load_everything(num_workers=num_workers)
             self.data.share_memory_()
@@ -157,7 +155,8 @@ class RexailDataset(datasets.VisionDataset):
         
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
-            pool.map(self._fill_index,indices)
+            for index in indices:
+                pool.apply_async(self._fill_index,index)
 
 
     @staticmethod
