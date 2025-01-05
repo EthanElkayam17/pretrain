@@ -2,6 +2,8 @@ import torch
 import numpy as np
 import os
 import copy
+import torchvision.transforms.v2 as v2
+
 from torch.utils.data.sampler import Sampler
 from multiprocessing import Pool, Lock, Manager
 from functools import partial
@@ -150,14 +152,13 @@ class RexailDataset(datasets.VisionDataset):
     def _load_index(index: int,
                     samples: List,
                     data: torch.Tensor,
-                    transform: Callable,
-                    loader: Callable = datasets.folder.default_loader):
+                    transform: Callable):
 
         try:
             print(index)
 
             path, _ = samples[index]
-            sample = loader(path)
+            sample = Image.open(path).convert('RGB')
 
             if transform is not None:
                 sample = transform(sample)
@@ -172,7 +173,8 @@ class RexailDataset(datasets.VisionDataset):
         """Parallel loading of the dataset into memory"""
         indices = list(range(0,len(self.samples)))
         samples_copy = copy.deepcopy(self.samples)
-        filler = partial(RexailDataset._load_index, samples=samples_copy, data=self.data, transform=self.pre_transform, loader=self.loader)
+        transform = v2.ToTensor()
+        filler = partial(RexailDataset._load_index, samples=samples_copy, data=self.data, transform=transform)
             
         print("loading dataset into memory...")    
         with Pool(num_workers) as pool:
