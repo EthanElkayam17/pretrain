@@ -145,17 +145,17 @@ class RexailDataset(datasets.VisionDataset):
         return tuple([sample,target])
 
 
+    def _fill_index(self, index):
+            self.data[index] = self.__getitem__(index=index,only_pre_transform=(self.pre_transform is not None))[0]
+
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
-
-        def fill_index(index):
-            self.data[index] = self.__getitem__(index=index,only_pre_transform=(self.pre_transform is not None))[0]
         
         indices = list(range(len(self.samples)))
         
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
-            pool.map(fill_index,indices)
+            pool.map(RexailDataset._fill_index,indices)
 
 
     @staticmethod
