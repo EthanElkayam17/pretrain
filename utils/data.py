@@ -133,9 +133,6 @@ class RexailDataset(datasets.VisionDataset):
         sample = self.loader(path)
         if self.pre_transform is not None:
             sample = self.pre_transform(sample)
-            print(type(sample))
-            print(sample)
-            exit()
         
         if (self.transform is not None) and (not only_pre_transform):
             sample = self.transform(sample)

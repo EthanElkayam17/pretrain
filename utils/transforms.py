@@ -44,7 +44,8 @@ def get_stage_transforms(settings_name: str,
         if divide_crop_and_augment:
             cropper_transform = v2.Compose([ 
                 v2.Resize(stage.get('resize')),
-                cropper
+                cropper,
+                v2.ToTensor()
             ])
 
             augmentation_transform = v2.Compose([
