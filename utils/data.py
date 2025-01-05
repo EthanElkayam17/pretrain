@@ -147,34 +147,27 @@ class RexailDataset(datasets.VisionDataset):
 
 
     @staticmethod
-    def _load_index(index: int,
-                    data: torch.Tensor, 
-                    samples: List, 
+    def _load_index(sample: str,
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
-        
-        path, _ = samples[index]
+        print("finally")
+        path, _ = sample
         sample = loader(path)
 
         if transform is not None:
             sample = transform(sample)
-        
-        data[index] = sample.clone()
-        
-        if index%50 == 0:
-            print(f"just got {index}")
+            
+        return sample
 
     
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
-        
-        indices = list(range(len(self.samples)))
 
-        filler = partial(RexailDataset._load_index ,data=self.data, samples=self.samples, transform=self.pre_transform, loader=self.loader)
+        filler = partial(RexailDataset._load_index, transform=self.pre_transform, loader=self.loader)
         
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
-            pool.map(filler,indices)
+            pre_transformed_images = pool.map(filler,self.samples)
 
 
     @staticmethod
