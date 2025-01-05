@@ -144,7 +144,7 @@ class RexailDataset(datasets.VisionDataset):
             print(f"just got {index}")
         return tuple([sample,target])
 
-    @staticmethod
+
     def _fill_index(self, index):
             self.data[index] = self.__getitem__(index=index,only_pre_transform=(self.pre_transform is not None))[0]
 
@@ -155,7 +155,7 @@ class RexailDataset(datasets.VisionDataset):
         
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
-            pool.map(RexailDataset._fill_index,indices)
+            pool.map(self._fill_index,indices)
 
 
     @staticmethod
