@@ -19,6 +19,7 @@ def default_decider(path: str) -> bool:
         return True
 
 def fill_index(data, dataset, index):
+    print("here?")
     data[index] = dataset.__getitem__(index=index,only_pre_transform=(dataset.pre_transform is not None))[0]
 
 class RexailDataset(datasets.VisionDataset):
