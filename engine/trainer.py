@@ -70,7 +70,7 @@ def train_step(model: torch.nn.Module,
         dataloader: dataloader containing data.
         loss_fn: loss function.
         optimizer: optimizer function.
-        device: device to compute on.
+        rank: device to compute on.
     
     Returns: (loss, accuracy, grad_norms)
     """
@@ -94,7 +94,8 @@ def train_step(model: torch.nn.Module,
 
         train_accuracy += ((torch.argmax(torch.softmax(y_res, dim=1), dim=1) == y).sum().item() / len(y_res))
 
-        print(f"training batch number #{batch}")
+        if rank == 0 and (batch % 50 == 0):
+            print(f"training batch number #{batch}")
 
     train_loss = train_loss / len(dataloader)
     train_accuracy = train_accuracy / len(dataloader)
@@ -113,7 +114,7 @@ def test_step(model: torch.nn.Module,
         model: model to test.
         dataloader: dataloader to use for test.
         loss_fn: loss function.
-        device: device to compute on.
+        rank: device to compute on.
     
     Returns: (loss, accuracy)
     """
@@ -133,7 +134,8 @@ def test_step(model: torch.nn.Module,
 
             test_accuracy += ((torch.argmax(torch.softmax(y_res, dim=1), dim=1) == y).sum().item() / len(y_res))
 
-            print(f"testing batch number #{batch}")
+            if rank == 0 and (batch % 50 == 0):
+                print(f"testing batch number #{batch}")
 
     test_loss = test_loss / len(dataloader)
     test_accuracy = test_accuracy / len(dataloader)
@@ -203,6 +205,10 @@ def trainer(rank: int,
 
     if curr_epoch > epochs:
         return
+    
+    if logger is None or rank != 0:
+        logger = logging.getLogger('null_logger')
+        logger.addHandler(logging.NullHandler)
 
 
     DECAY_MODE_TO_FUNC = {
@@ -248,10 +254,6 @@ def trainer(rank: int,
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
     logger.info("---Dataloaders created---\n")
 
-
-    if logger is None:
-            logger = logging.getLogger('null_logger')
-            logger.addHandler(logging.NullHandler)
     
     if not (decay_mode in DECAY_MODE_TO_FUNC.keys()):
         raise ValueError(f"Invalid decay mode, should be one of {DECAY_MODE_TO_FUNC.keys()}")
