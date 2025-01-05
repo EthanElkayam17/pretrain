@@ -96,7 +96,7 @@ class RexailDataset(datasets.VisionDataset):
             
             self.data = torch.empty((len(self.samples), *data_shape_sample), dtype=torch.float32)
             self.data.share_memory_()
-            
+
             self._load_everything(num_workers=num_workers)
             
             self.loaded_dataset = True
@@ -148,13 +148,13 @@ class RexailDataset(datasets.VisionDataset):
 
     @staticmethod
     def _load_index(index: int,
-                    sample: List,
+                    samples: List,
                     data: torch.Tensor,
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
 
         print(index)
-        path = sample[0]
+        path, _ = samples[index]
         sample = loader(path)
 
         if transform is not None:
@@ -166,11 +166,11 @@ class RexailDataset(datasets.VisionDataset):
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
         indices = list(range(0,len(self.samples)))
-        filler = partial(RexailDataset._load_index, data=self.data, transform=self.pre_transform, loader=self.loader)
+        filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
         
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
-            pool.starmap_async(filler,zip(indices, self.samples))
+            pool.map(filler, indices)
 
 
     @staticmethod
