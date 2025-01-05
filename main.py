@@ -8,7 +8,7 @@ from functools import partial
 from utils.data import RexailDataset
 from models.model import CFGCNN
 from utils.transforms import get_stage_transforms, default_transform
-from utils.data import create_dataloaders_and_samplers, calculate_mean_std, dirjoin
+from utils.data import create_dataloaders_and_samplers_from_shared_datasets, calculate_mean_std, dirjoin
 from engine.trainer import trainer
 
 if __name__ == "__main__":
@@ -76,17 +76,26 @@ if __name__ == "__main__":
 
 
         for idx, stage in enumerate(stages_cfg.get('training_stages')):
-                create_dataloaders_per_process = partial(create_dataloaders_and_samplers, train_dir=TRAIN_DIR,
-                                                                        test_dir=TEST_DIR,
-                                                                        batch_size=train_cfg.get('batch_size'),
-                                                                        num_workers=train_cfg.get('num_workers'),
-                                                                        train_transform=(transforms[idx])[1],
-                                                                        train_pre_transform=(transforms[idx])[0],
-                                                                        train_decider=partial(RexailDataset.sha256_modulo_split,ratio=70),
-                                                                        test_decider=partial(RexailDataset.sha256_modulo_split,ratio=70,complement=True),
-                                                                        test_transform=(transforms[idx])[1],
-                                                                        test_pre_transform=(transforms[idx])[0],
-                                                                        load_into_memory=True)
+                
+                train_dataset = RexailDataset(root=TRAIN_DIR,
+                                              transform=(transforms[idx])[1],
+                                              pre_transform=(transforms[idx])[0],
+                                              decider=partial(RexailDataset.sha256_modulo_split,ratio=70),
+                                              load_into_memory=True,
+                                              num_workers=train_cfg.get('num_workers'))
+                
+                test_dataset = RexailDataset(root=TEST_DIR,
+                                              transform=(transforms[idx])[1],
+                                              pre_transform=(transforms[idx])[0],
+                                              decider=partial(RexailDataset.sha256_modulo_split,ratio=70,complement=True),
+                                              load_into_memory=True,
+                                              num_workers=train_cfg.get('num_workers'))
+
+                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
+                                                         train_dataset=train_dataset,
+                                                         test_dataset=test_dataset,
+                                                         batch_size=train_cfg.get('batch_size'),
+                                                         num_workers=train_cfg.get('num_workers'))
 
                 logger.info(f"Starting training stage #{str(idx)}")
                 mp.spawn(

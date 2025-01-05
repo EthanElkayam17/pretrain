@@ -12,7 +12,7 @@ def save_state_dict(model: torch.nn.Module,
     model: a model to save.
     dir: target directory.
     model_name: filename for the saved model. Should include
-      either ".pth" or ".pt" as the file extension.
+    either ".pth" or ".pt" as the file extension.
   """
 
   target_dir_path = Path(dir)

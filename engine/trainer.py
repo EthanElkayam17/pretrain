@@ -142,7 +142,7 @@ def test_step(model: torch.nn.Module,
 
 
 def setup(rank, world_size):
-    """Set up process"""
+    """Set up a process"""
 
     os.environ["MASTER_ADDR"] = "localhost"
     os.environ["MASTER_PORT"] = "12355"
@@ -204,7 +204,6 @@ def trainer(rank: int,
     if curr_epoch > epochs:
         return
 
-    set_random_seed(42)
 
     DECAY_MODE_TO_FUNC = {
                     "exp": partial(warmup_to_exponential_decay, lr_min=lr_min,lr_max=lr_max,warmup_epochs=warmup_epochs, decay_factor=exp_decay_factor),
@@ -214,13 +213,26 @@ def trainer(rank: int,
 
     
     setup(world_size=world_size, rank=rank)
-    model = CFGCNN(cfg_name=model_cfg_name, logger=logger).to(rank)
+    model = CFGCNN(cfg_name=model_cfg_name, logger=logger, dropout_prob_override=dropout_prob).to(rank)
     model = DistributedDataParallel(model, device_ids=[rank])
 
 
-    if load_state_dict_path is not None:
-        map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
-        model.load_state_dict(torch.load(load_state_dict_path, map_location=map_location, weights_only=True))
+    if (load_state_dict_path is not None) and (rank == 0):
+        model.load_state_dict(torch.load(load_state_dict_path, weights_only=True))
+    
+    if rank == 0:
+        save_state_dict(model=model, 
+                        dir="temp_state_dicts",
+                        model_name="temp_state_dict_rank_0.pth")
+    dist.barrier()
+
+    map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
+    model.load_state_dict(torch.load("temp_state_dicts/temp_state_dict_rank_0.pth", map_location=map_location, weights_only=True))    
+    dist.barrier()
+
+    if rank == 0:
+        os.remove("temp_state_dicts/temp_state_dict_rank_0.pth")
+        os.rmdir("temp_state_dicts")
 
 
     loss_fn.to(rank)

@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import os
+import copy
 from torch.utils.data.sampler import Sampler
 from tqdm import tqdm
 from multiprocessing import Pool
@@ -10,7 +11,7 @@ from pathlib import Path
 from PIL import Image
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union, Iterable
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, DistributedSampler
+from torch.utils.data import DataLoader, Dataset, DistributedSampler
 from utils.transforms import default_transform
 from utils.other import dirjoin
 
@@ -29,7 +30,15 @@ class RexailDataset(datasets.VisionDataset):
     the flag 'weighed' can be true when including weight data in {image_name}
     such that {image_name} is in the form: '{image_id}${weight}$' 
     
-    Data should be filtered/partitioned by using the 'decider' parameter"""
+    Data should be filtered/partitioned by using the 'decider' parameter.
+    
+    When not utilizing load_into_memory the dataset can be used as-is to access directly or create dataloaders,
+    only the paths and targets will be stored and the actual data is fetched lazily on __getitem___.
+    
+    When load_into_memory is set True the entire dataset will be stored in a large shared tensor in memory,
+    when using with multiple processes (GPUs) one should create one instance of this class outside of the processes
+    and use it to create instances of WrappedRexailDataset in each process, which will be used for samplers/dataloader
+    """
     
     def __init__(
         self,
@@ -57,14 +66,8 @@ class RexailDataset(datasets.VisionDataset):
             ignore_classes: classes to ignore when making dataset.
             storewise: whether the directory is partitioned store-wise inside each class.
             weighed: whether the file names contain weight data.
-            
-            load_into_memory: whether to load the entire dataset into a shared in-memory block,
-            by default only the paths are stored and the data itself is fetched lazily,
-            this option will load all the required tensors into memory when creating the instance,
-            VERIFY THAT THERE IS ENOUGH MEMORY AVAILABLE BEFORE SETTING TRUE,
-            the samples of the dataset will be stored in a large contiguous tensor,
-            one should utilize SharedDatasetWrapper to properly share the dataset across processes.
 
+            load_into_memory: whether to load the entire dataset into a shared in-memory block.
             num_workers: number of workers to be used to load dataset into memory"""
         
         super().__init__(
@@ -90,10 +93,13 @@ class RexailDataset(datasets.VisionDataset):
         self.targets = [s[1] for s in self.samples]
 
         if load_into_memory:
-            shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
-            self.data = torch.empty((len(self.samples), *shape_sample), dtype=torch.float32)
+            data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
+            
+            self.data = torch.empty((len(self.samples), *data_shape_sample), dtype=torch.float32)
+            
             self._load_everything(num_workers=num_workers)
             self.data.share_memory_()
+            
             self.loaded_dataset = True
 
 
@@ -232,9 +238,41 @@ class RexailDataset(datasets.VisionDataset):
         return sID in stores_lst
 
 
-def create_dataloaders_and_samplers(
-        world_size: int,
-        rank: int,
+class WrappedRexailDataset(Dataset):
+    """Wrapper class for RexailDataset,
+    
+    Should be used with an in-memory RexailDataset"""
+
+    def __init__(self,
+                 shared_dataset: RexailDataset):
+        """Args:
+            shared_dataset: underlying RexailDataset instance"""
+        super().__init__()
+        
+        assert shared_dataset.loaded_dataset is True, "underlying dataset should be loaded into memory"
+
+        self.targets = copy.deepcopy(shared_dataset.targets)
+        self.data = shared_dataset.data
+        self.transform = shared_dataset.transform
+    
+
+    def __len__(self) -> int:
+        """Returns the amount of items in the dataset"""
+
+        return self.data.size(0)
+    
+
+    def __getitem__(self, index):
+        sample = self.data[index]
+        target = self.targets[index]
+            
+        if self.transform is not None:
+            sample = self.transform(sample)
+            
+        return tuple([sample,target])
+
+
+def create_dataloaders_from_dirs(
         train_dir: Union[str, Path],
         test_dir: Union[str, Path],
         batch_size: int,
@@ -244,19 +282,16 @@ def create_dataloaders_and_samplers(
         test_transform: Union[torch.nn.Sequential, transforms.Compose] = default_transform(),
         test_pre_transform: Optional[Callable] = None,
         train_extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
-        train_decider: Callable[[str], bool] = (lambda x: True),
+        train_decider: Callable[[str], bool] = default_decider,
         test_extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
-        test_decider: Callable[[str], bool] = (lambda x: True),
+        test_decider: Callable[[str], bool] = default_decider,
         ignore_classes: List[str] = list(),
         storewise: bool = False,
         weighed: bool = False,
-        load_into_memory: bool = False,
     ) -> Tuple[DataLoader, DataLoader, List]:
     """Creates training/testing dataloaders from training/testing directories
     
     Args:
-        world_size: number of total processes (GPU's),
-        rank: identifier for current process (GPU).
         train_dir: path of training data directory.
         test_dir: path of testing data directory.
         batch_size: amount per batch.
@@ -272,7 +307,6 @@ def create_dataloaders_and_samplers(
         ignore_classes: classes to ignore when making training/testing sets.
         storewise: whether both training and testing directories are partitioned store-wise inside each class.
         weighed: whether the file names contain weight data.
-        load_into_memory: whether to load datasets into memory.
 
     Returns: (train_dataloader, test_dataloader, class_names)
     """
@@ -285,7 +319,7 @@ def create_dataloaders_and_samplers(
                                ignore_classes=ignore_classes,
                                storewise=storewise,
                                weighed=weighed,
-                               load_into_memory=load_into_memory,
+                               load_into_memory=False,
                                num_workers=num_workers)
     
     test_data = RexailDataset(root=test_dir, 
@@ -296,11 +330,9 @@ def create_dataloaders_and_samplers(
                               ignore_classes=ignore_classes,
                               storewise=storewise,
                               weighed=weighed,
-                              load_into_memory=load_into_memory,
+                              load_into_memory=False,
                               num_workers=num_workers)
-    
-    train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
-    test_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
+
     
     class_names = train_data.classes
     train_dataloader = DataLoader(
@@ -308,7 +340,6 @@ def create_dataloaders_and_samplers(
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
-        sampler=train_sampler,
         
         # Try to avoid costs of transfer between pageable and pinned memory
         pin_memory=True
@@ -319,11 +350,48 @@ def create_dataloaders_and_samplers(
         batch_size=batch_size,
         shuffle=False,  
         num_workers=num_workers,
-        sampler=test_sampler,
         pin_memory=True
     )
 
-    return train_sampler, train_dataloader, test_sampler, test_dataloader, class_names
+    return train_dataloader, test_dataloader, class_names
+
+
+def create_dataloaders_and_samplers_from_shared_datasets(
+        world_size: int,
+        rank: int,
+        train_dataset: RexailDataset,
+        test_dataset: RexailDataset,
+        batch_size: int,
+        num_workers: int = 1,
+    ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
+
+        train_data = WrappedRexailDataset(train_dataset)
+        test_data = WrappedRexailDataset(test_dataset)
+
+        train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
+        test_sampler = DistributedSampler(test_data, num_replicas=world_size, rank=rank, shuffle=False)
+
+        train_dataloader = DataLoader(
+            dataset=train_data,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=num_workers,
+            sampler=train_sampler,
+
+            # Try to avoid costs of transfer between pageable and pinned memory
+            pin_memory=True
+        )
+
+        test_dataloader = DataLoader(
+            dataset=test_data,
+            batch_size=batch_size,
+            shuffle=False,  
+            num_workers=num_workers,
+            sampler=test_sampler,
+            pin_memory=True
+        )
+
+        return train_dataloader, train_sampler, test_dataloader, test_sampler, 
 
 
 def calculate_mean_std(dir: Union[str, Path]) -> Tuple[List, List]:
