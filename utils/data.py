@@ -172,14 +172,13 @@ class RexailDataset(datasets.VisionDataset):
     
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
-        with Manager() as manager:
-            lock = manager.Lock()
-            indices = list(range(0,len(self.samples)))
-            filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, lock=lock, loader=self.loader)
+        indices = list(range(0,len(self.samples)))
+        samples_copy = copy.deepcopy(self.samples)
+        filler = partial(RexailDataset._load_index, samples=samples_copy, data=self.data, transform=self.pre_transform, loader=self.loader)
             
-            print("loading dataset into memory...")
-            with Pool(num_workers) as pool:
-                pool.map(filler, indices)
+        print("loading dataset into memory...")    
+        with Pool(num_workers) as pool:
+            pool.map(filler, indices)
 
 
     @staticmethod
