@@ -129,6 +129,7 @@ class RexailDataset(datasets.VisionDataset):
             
             return tuple([sample,target])
 
+        print(index)
         path, target = self.samples[index]
         sample = self.loader(path)
         if self.pre_transform is not None:
@@ -156,7 +157,6 @@ class RexailDataset(datasets.VisionDataset):
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
             for index in indices:
-                print("in")
                 pool.apply_async(self._fill_index,index)
 
 
