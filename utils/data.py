@@ -159,8 +159,7 @@ class RexailDataset(datasets.VisionDataset):
         
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
-            for index in indices:
-                pool.apply_async(func,index)
+            pool.map(func,indices)
 
 
     @staticmethod
