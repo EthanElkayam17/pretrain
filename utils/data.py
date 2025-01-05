@@ -140,7 +140,7 @@ class RexailDataset(datasets.VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        if index%1000 == 0:
+        if index%50 == 0:
             print(f"just got {index}")
         return tuple([sample,target])
 
