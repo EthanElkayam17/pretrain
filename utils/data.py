@@ -3,7 +3,6 @@ import numpy as np
 import os
 import copy
 from torch.utils.data.sampler import Sampler
-from tqdm import tqdm
 from multiprocessing import Pool
 from functools import partial
 from hashlib import sha256
@@ -134,6 +133,9 @@ class RexailDataset(datasets.VisionDataset):
         sample = self.loader(path)
         if self.pre_transform is not None:
             sample = self.pre_transform(sample)
+            print(type(sample))
+            print(sample)
+            exit()
         
         if (self.transform is not None) and (not only_pre_transform):
             sample = self.transform(sample)
