@@ -3,7 +3,7 @@ import numpy as np
 import os
 import copy
 from torch.utils.data.sampler import Sampler
-from multiprocessing import Pool, Lock
+from multiprocessing import Pool, Lock, Manager
 from functools import partial
 from hashlib import sha256
 from pathlib import Path
@@ -172,13 +172,14 @@ class RexailDataset(datasets.VisionDataset):
     
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
-        indices = list(range(0,len(self.samples)))
-        lock = Lock()
-        filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, lock=lock, loader=self.loader)
-        
-        print("loading dataset into memory...")
-        with Pool(num_workers) as pool:
-            pool.map(filler, indices)
+        with Manager() as manager:
+            lock = manager.Lock()
+            indices = list(range(0,len(self.samples)))
+            filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, lock=lock, loader=self.loader)
+            
+            print("loading dataset into memory...")
+            with Pool(num_workers) as pool:
+                pool.map(filler, indices)
 
 
     @staticmethod
