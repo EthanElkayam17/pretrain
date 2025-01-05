@@ -144,7 +144,7 @@ class RexailDataset(datasets.VisionDataset):
             print(f"just got {index}")
         return tuple([sample,target])
 
-
+    @staticmethod
     def _fill_index(self, index):
             self.data[index] = self.__getitem__(index=index,only_pre_transform=(self.pre_transform is not None))[0]
 
