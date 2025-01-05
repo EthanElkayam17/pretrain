@@ -151,7 +151,6 @@ class RexailDataset(datasets.VisionDataset):
                     samples: List,
                     data: torch.Tensor,
                     transform: Callable,
-                    lock,
                     loader: Callable = datasets.folder.default_loader):
 
         try:
@@ -163,8 +162,7 @@ class RexailDataset(datasets.VisionDataset):
             if transform is not None:
                 sample = transform(sample)
             
-            with lock:
-                data[index] = sample.clone()
+            data[index] = sample.clone()
         
         except Exception as e:
             print(e)
