@@ -56,7 +56,7 @@ class RexailDataset(datasets.VisionDataset):
         storewise: bool = False,
         weighed: bool = False,
         load_into_memory: bool = False,
-        num_workers: int = 1,
+        num_workers: int = 0,
     ):
         """Args:
             root: Root directory path.
@@ -279,7 +279,7 @@ def create_dataloaders_from_dirs(
         train_dir: Union[str, Path],
         test_dir: Union[str, Path],
         batch_size: int,
-        num_workers: int = 1,        
+        num_workers: int = 0,        
         train_transform: Union[torch.nn.Sequential, transforms.Compose] = default_transform(),
         train_pre_transform: Optional[Callable] = None,
         test_transform: Union[torch.nn.Sequential, transforms.Compose] = default_transform(),
@@ -365,7 +365,7 @@ def create_dataloaders_and_samplers_from_shared_datasets(
         train_dataset: RexailDataset,
         test_dataset: RexailDataset,
         batch_size: int,
-        num_workers: int = 1,
+        num_workers: int = 0,
     ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
         """Create dataloaders and samplers from shared RexailDatasets
         
