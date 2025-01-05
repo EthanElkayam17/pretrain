@@ -242,7 +242,7 @@ def trainer(rank: int,
                                 weight_decay=weight_decay)
 
 
-    logger.info(f"---Creating dataloaders for stage #{str(idx)}---")
+    logger.info(f"---Creating dataloaders..---")
     train_sampler: DistributedSampler 
     test_sampler: DistributedSampler
     train_sampler, train_dataloader, test_sampler, test_dataloader, _ = create_dataloaders_and_samplers(world_size,rank)
