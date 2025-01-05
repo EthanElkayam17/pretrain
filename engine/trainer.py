@@ -77,12 +77,13 @@ def train_step(model: torch.nn.Module,
 
     print("are we here??")
     model.train()
+    print("are we there?")
+
 
     train_loss, train_accuracy = 0 , 0
 
     for batch, (X,y) in enumerate(dataloader):
 
-        print("are we there?")
         X, y = X.to(rank) , y.to(rank)
 
         y_res = model(X).to(rank)
