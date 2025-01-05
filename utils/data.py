@@ -156,6 +156,7 @@ class RexailDataset(datasets.VisionDataset):
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
             for index in indices:
+                print("in")
                 pool.apply_async(self._fill_index,index)
 
 
