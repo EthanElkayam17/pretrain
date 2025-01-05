@@ -151,6 +151,7 @@ class RexailDataset(datasets.VisionDataset):
                     samples: List,
                     data: torch.Tensor,
                     transform: Callable,
+                    lock,
                     loader: Callable = datasets.folder.default_loader):
 
         try:
@@ -162,7 +163,8 @@ class RexailDataset(datasets.VisionDataset):
             if transform is not None:
                 sample = transform(sample)
             
-            data[index] = sample.clone()
+            with lock:
+                data[index] = sample.clone()
         
         except Exception as e:
             print(e)
@@ -170,19 +172,14 @@ class RexailDataset(datasets.VisionDataset):
     
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
-        """with Manager() as manager:
+        with Manager() as manager:
             lock = manager.Lock()
             indices = list(range(0,len(self.samples)))
             filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, lock=lock, loader=self.loader)
             
             print("loading dataset into memory...")
             with Pool(num_workers) as pool:
-                pool.map(filler, indices)"""
-        indices = list(range(0,len(self.samples)))
-        filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
-
-        for index in indices:
-            filler(index=index)
+                pool.map(filler, indices)
 
 
     @staticmethod
