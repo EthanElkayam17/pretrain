@@ -364,6 +364,16 @@ def create_dataloaders_and_samplers_from_shared_datasets(
         batch_size: int,
         num_workers: int = 1,
     ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
+        """Create dataloaders and samplers from shared RexailDatasets
+        
+        Args:
+            world_size: number of processes
+            rank: current process id
+            train_dataset: shared training RexailDataset
+            test_dataset: shared testing RexailDataset
+            batch_size: batch size
+            num_workers: number of workers for dataloaders
+        """
 
         train_data = WrappedRexailDataset(train_dataset)
         test_data = WrappedRexailDataset(test_dataset)
