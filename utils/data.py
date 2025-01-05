@@ -150,7 +150,7 @@ class RexailDataset(datasets.VisionDataset):
     def _load_index(sample: str,
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
-        print("finally")
+
         path, _ = sample
         sample = loader(path)
 
