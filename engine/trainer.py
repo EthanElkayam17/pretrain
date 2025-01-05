@@ -87,6 +87,8 @@ def train_step(model: torch.nn.Module,
 
         loss = loss_fn(y_res,y)
         train_loss += loss.item()
+        
+        print("are we there?")
 
         optimizer.zero_grad()
         loss.backward()
