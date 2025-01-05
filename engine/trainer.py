@@ -81,6 +81,8 @@ def train_step(model: torch.nn.Module,
     train_loss, train_accuracy = 0 , 0
 
     for batch, (X,y) in enumerate(dataloader):
+
+        print("are we there?")
         X, y = X.to(rank) , y.to(rank)
 
         y_res = model(X).to(rank)
@@ -88,7 +90,6 @@ def train_step(model: torch.nn.Module,
         loss = loss_fn(y_res,y)
         train_loss += loss.item()
         
-        print("are we there?")
 
         optimizer.zero_grad()
         loss.backward()
