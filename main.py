@@ -89,6 +89,7 @@ if __name__ == "__main__":
                                               pre_transform=(transforms[idx])[0],
                                               decider=partial(RexailDataset.sha256_modulo_split,ratio=70),
                                               load_into_memory=True,
+                                              ignore_classes=CLASSES_TO_IGNORE_IN_DEBUGGING,
                                               num_workers=train_cfg.get('num_workers'))
                 
                 test_dataset = RexailDataset(root=TEST_DIR,
@@ -96,6 +97,7 @@ if __name__ == "__main__":
                                               pre_transform=(transforms[idx])[0],
                                               decider=partial(RexailDataset.sha256_modulo_split,ratio=70,complement=True),
                                               load_into_memory=True,
+                                              ignore_classes=CLASSES_TO_IGNORE_IN_DEBUGGING,
                                               num_workers=train_cfg.get('num_workers'))
 
                 create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,

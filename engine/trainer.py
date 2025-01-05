@@ -75,6 +75,7 @@ def train_step(model: torch.nn.Module,
     Returns: (loss, accuracy, grad_norms)
     """
 
+    print("are we here??")
     model.train()
 
     train_loss, train_accuracy = 0 , 0
@@ -119,6 +120,7 @@ def test_step(model: torch.nn.Module,
     Returns: (loss, accuracy)
     """
 
+    print("are we here??")
     model.eval()
     
     test_loss, test_accuracy = 0 , 0
