@@ -18,10 +18,6 @@ def default_decider(path: str) -> bool:
         """Default decider"""
         return True
 
-def fill_index(data, dataset, index):
-    print("here?")
-    data[index] = dataset.__getitem__(index=index,only_pre_transform=(dataset.pre_transform is not None))[0]
-
 class RexailDataset(datasets.VisionDataset):
     """A dataset class for loading and partitioning data from rexail's dataset,
     expects directory in one of the following structures: 
@@ -61,7 +57,7 @@ class RexailDataset(datasets.VisionDataset):
         """Args:
             root: Root directory path.
             transform: A transform for the PIL images.
-            pre_transform: a transform to be applied pre-fetch to all the data (usable only if load_into_memory = True)
+            pre_transform: a transform to be applied pre-fetch to all the data (usable only if load_into_memory = True) should return tensor.
             target_transform: A transform for the target.
             loader: A function to load an image given its path.
             decider: A function that takes path of an Image file and decides if its in the dataset.
@@ -113,8 +109,7 @@ class RexailDataset(datasets.VisionDataset):
 
 
     def __getitem__(self, 
-                    index: int,
-                    only_pre_transform: bool = False) -> Tuple:
+                    index: int) -> Tuple:
         """Returns item based on index, in a tuple of the form: (sample, target) 
             where:
                 sample is the tensor representing the image.
@@ -122,7 +117,7 @@ class RexailDataset(datasets.VisionDataset):
         
         Args:
             index: Index
-            only_pre_transform: whether to apply only pre_transform instead of pre_transform+transform """
+        """
         
         if self.loaded_dataset:
             sample = self.data[index]
@@ -133,13 +128,12 @@ class RexailDataset(datasets.VisionDataset):
             
             return tuple([sample,target])
 
-        print(index)
         path, target = self.samples[index]
         sample = self.loader(path)
         if self.pre_transform is not None:
             sample = self.pre_transform(sample)
         
-        if (self.transform is not None) and (not only_pre_transform):
+        if (self.transform is not None):
             sample = self.transform(sample)
         
         if self.target_transform is not None:
@@ -150,16 +144,35 @@ class RexailDataset(datasets.VisionDataset):
         return tuple([sample,target])
 
 
+    @staticmethod
+    def _load_index(index: int,
+                    data: torch.Tensor, 
+                    samples: List, 
+                    transform: Callable,
+                    loader: Callable = datasets.folder.default_loader):
+        
+        path, _ = samples[index]
+        sample = loader(path)
+
+        if transform is not None:
+            sample = transform(sample)
+        
+        data[index] = sample.clone()
+        
+        if index%50 == 0:
+            print(f"just got {index}")
+
+    
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
         
         indices = list(range(len(self.samples)))
 
-        func = partial(fill_index ,data=self.data, dataset=self)
+        filler = partial(RexailDataset._load_index ,data=self.data, samples=self.samples, transform=self.pre_transform, loader=self.loader)
         
         print("loading dataset into memory...")
-        for index in indices:
-            func(index=index)
+        with Pool(num_workers) as pool:
+            pool.map(filler,indices)
 
 
     @staticmethod
