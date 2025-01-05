@@ -3,7 +3,7 @@ import numpy as np
 import os
 import copy
 from torch.utils.data.sampler import Sampler
-from multiprocessing import Pool
+from multiprocessing import Pool, Lock
 from functools import partial
 from hashlib import sha256
 from pathlib import Path
@@ -151,23 +151,30 @@ class RexailDataset(datasets.VisionDataset):
                     samples: List,
                     data: torch.Tensor,
                     transform: Callable,
+                    lock,
                     loader: Callable = datasets.folder.default_loader):
 
-        print(index)
+        try:
+            print(index)
 
-        path, _ = samples[index]
-        sample = loader(path)
+            path, _ = samples[index]
+            sample = loader(path)
 
-        if transform is not None:
-            sample = transform(sample)
+            if transform is not None:
+                sample = transform(sample)
             
-        data[index] = sample.clone()
+            with lock:
+                data[index] = sample.clone()
+        
+        except Exception as e:
+            print(e)
 
     
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
         indices = list(range(0,len(self.samples)))
-        filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
+        lock = Lock()
+        filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, lock=lock, loader=self.loader)
         
         print("loading dataset into memory...")
         with Pool(num_workers) as pool:
