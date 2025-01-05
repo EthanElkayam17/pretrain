@@ -109,7 +109,8 @@ class RexailDataset(datasets.VisionDataset):
 
 
     def __getitem__(self, 
-                    index: int) -> Tuple:
+                    index: int,
+                    only_pre_transform = False) -> Tuple:
         """Returns item based on index, in a tuple of the form: (sample, target) 
             where:
                 sample is the tensor representing the image.
@@ -117,6 +118,7 @@ class RexailDataset(datasets.VisionDataset):
         
         Args:
             index: Index
+            only_pre_transform: whether to disable the main transform.
         """
         
         if self.loaded_dataset:
@@ -133,7 +135,7 @@ class RexailDataset(datasets.VisionDataset):
         if self.pre_transform is not None:
             sample = self.pre_transform(sample)
         
-        if (self.transform is not None):
+        if (self.transform is not None) and (not only_pre_transform):
             sample = self.transform(sample)
         
         if self.target_transform is not None:
