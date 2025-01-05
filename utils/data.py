@@ -158,7 +158,7 @@ class RexailDataset(datasets.VisionDataset):
         func = partial(fill_index ,data=self.data, dataset=self)
         
         print("loading dataset into memory...")
-        with Pool(num_workers) as pool:
+        with Pool(1) as pool:
             pool.map(func,indices)
 
 
