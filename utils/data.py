@@ -387,6 +387,9 @@ def create_dataloaders_and_samplers_from_shared_datasets(
             test_dataset: shared testing RexailDataset
             batch_size: batch size
             num_workers: number of workers for dataloaders
+        
+        Returns:
+            (train_dataloader, train_smapler, test_dataloader, test_sampler)
         """
 
         train_data = WrappedRexailDataset(train_dataset)

@@ -75,20 +75,17 @@ def train_step(model: torch.nn.Module,
     Returns: (loss, accuracy, grad_norms)
     """
 
-    print("are we here??")
     model.train()
 
     train_loss, train_accuracy = 0 , 0
 
     for batch, (X,y) in enumerate(dataloader):
-        print("are we there?")
         X, y = X.to(rank) , y.to(rank)
 
         y_res = model(X).to(rank)
 
         loss = loss_fn(y_res,y)
         train_loss += loss.item()
-        
 
         optimizer.zero_grad()
         loss.backward()
@@ -122,7 +119,6 @@ def test_step(model: torch.nn.Module,
     Returns: (loss, accuracy)
     """
 
-    print("are we here??")
     model.eval()
     
     test_loss, test_accuracy = 0 , 0
