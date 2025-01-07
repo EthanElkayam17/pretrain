@@ -20,8 +20,8 @@ CLASSES_TO_IGNORE_IN_DEBUGGING = ["b0001",  "b0009",  "b0017",  "b0025",  "b0033
 
 if __name__ == "__main__":
 
-        TRAIN_DIR = "/workspace/dataset/train/"
-        TEST_DIR = "/workspace/dataset/train/"
+        TRAIN_DIR = "/workspace/train/"
+        TEST_DIR = "/workspace/train/"
 
         STAGES_SETTINGS_DIR = "configs/training/stages"
         MODEL_CONFIG_DIR = "configs/architecture"
