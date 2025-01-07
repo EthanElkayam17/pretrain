@@ -78,8 +78,9 @@ def train_step(model: torch.nn.Module,
     model.train()
 
     train_loss, train_accuracy = 0 , 0
-
+    print("just before da loop")
     for batch, (X,y) in enumerate(dataloader):
+        print(batch)
         X, y = X.to(rank) , y.to(rank)
 
         y_res = model(X).to(rank)
