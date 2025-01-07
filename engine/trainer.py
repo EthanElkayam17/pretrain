@@ -149,7 +149,7 @@ def setup(rank, world_size):
 
     os.environ["MASTER_ADDR"] = "localhost"
     os.environ["MASTER_PORT"] = "12355"
-    dist.init_process_group(backend="nccl", rank=rank, world_size=world_size)
+    dist.init_process_group(backend="nccl", rank=rank, init_method="env://", world_size=world_size)
     torch.cuda.set_device(rank)
 
 
@@ -221,8 +221,7 @@ def trainer(rank: int,
     
     setup(world_size=world_size, rank=rank)
     model = CFGCNN(cfg_name=model_cfg_name, logger=logger, dropout_prob_override=dropout_prob).to(rank)
-    model = DistributedDataParallel(model, device_ids=[rank])
-
+    model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
 
     if (load_state_dict_path is not None) and (rank == 0):
         model.load_state_dict(torch.load(load_state_dict_path, weights_only=True))
