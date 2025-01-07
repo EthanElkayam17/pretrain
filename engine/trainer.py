@@ -252,7 +252,6 @@ def trainer(rank: int,
     train_sampler: DistributedSampler 
     test_sampler: DistributedSampler
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
-    print(len(train_dataloader))
     logger.info("---Dataloaders created---\n")
 
     
