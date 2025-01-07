@@ -207,7 +207,7 @@ def trainer(rank: int,
     if curr_epoch > epochs:
         return
     
-    if logger is None or rank != 0:
+    if logger is None:
         logger = logging.getLogger('null_logger')
         logger.addHandler(logging.NullHandler)
 
