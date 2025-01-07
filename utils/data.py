@@ -277,12 +277,14 @@ class WrappedRexailDataset(Dataset):
     
 
     def __getitem__(self, index):
+        print("getting an item!")
         sample = self.data[index]
         target = self.targets[index]
             
         if self.transform is not None:
             sample = self.transform(sample)
             
+        print("returning an item!")
         return tuple([sample,target])
 
 
