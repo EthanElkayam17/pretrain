@@ -105,6 +105,8 @@ if __name__ == "__main__":
                                                          test_dataset=test_dataset,
                                                          batch_size=train_cfg.get('batch_size'),
                                                          num_workers=(train_cfg.get('num_workers')//WORLD_SIZE))
+                print(WORLD_SIZE)
+                print((train_cfg.get('num_workers')//WORLD_SIZE))
 
                 logger.info(f"Starting training stage #{str(idx)}")
                 mp.spawn(
