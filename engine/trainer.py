@@ -260,14 +260,14 @@ def trainer(rank: int,
     logger.info("---Dataloaders created---\n")
 
     
-    if not (decay_mode in DECAY_MODE_TO_FUNC.keys()):
+    if not (decay_mode in DECAY_MODE_TO_FUNC.keys()): #MOVE
         raise ValueError(f"Invalid decay mode, should be one of {DECAY_MODE_TO_FUNC.keys()}")
     
     decay = DECAY_MODE_TO_FUNC.get(decay_mode)
 
     
     epoch = curr_epoch
-    while (epoch <= epochs):
+    while (epoch <= epochs): #CHANGE TO FOR-LOOP YOU RETARD
         print("epoch:" + str(epoch))
         
         for idx, param_group in enumerate(optimizer.param_groups):
