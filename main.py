@@ -28,7 +28,8 @@ if __name__ == "__main__":
         TRAINING_CONFIG_DIR = "configs/training/general"
         STATE_DICTS_DIR = "engine/state_dicts"
 
-        MODEL_CONFIG_NAME , STAGES_SETTINGS_NAME, TRAINING_SETTINGS_NAME, MODEL_NAME = sys.argv[1] , sys.argv[2], sys.argv[3], sys.argv[4] #CREATE A MORE COMPREHENSIVE INPUT MANAGING
+        #CREATE A MORE COMPREHENSIVE INPUT MANAGING
+        MODEL_CONFIG_NAME , STAGES_SETTINGS_NAME, TRAINING_SETTINGS_NAME, MODEL_NAME = sys.argv[1] , sys.argv[2], sys.argv[3], sys.argv[4]
         STAGES_SETTINGS_PATH = (dirjoin(STAGES_SETTINGS_DIR,STAGES_SETTINGS_NAME))
         TRAINING_SETTINGS_PATH = (dirjoin(TRAINING_CONFIG_DIR,TRAINING_SETTINGS_NAME))
         START_EPOCH = 1
