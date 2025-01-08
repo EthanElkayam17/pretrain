@@ -28,7 +28,7 @@ if __name__ == "__main__":
         TRAINING_CONFIG_DIR = "configs/training/general"
         STATE_DICTS_DIR = "engine/state_dicts"
 
-        MODEL_CONFIG_NAME , STAGES_SETTINGS_NAME, TRAINING_SETTINGS_NAME, MODEL_NAME = sys.argv[1] , sys.argv[2], sys.argv[3], sys.argv[4]
+        MODEL_CONFIG_NAME , STAGES_SETTINGS_NAME, TRAINING_SETTINGS_NAME, MODEL_NAME = sys.argv[1] , sys.argv[2], sys.argv[3], sys.argv[4] #CREATE A MORE COMPREHENSIVE INPUT MANAGING
         STAGES_SETTINGS_PATH = (dirjoin(STAGES_SETTINGS_DIR,STAGES_SETTINGS_NAME))
         TRAINING_SETTINGS_PATH = (dirjoin(TRAINING_CONFIG_DIR,TRAINING_SETTINGS_NAME))
         START_EPOCH = 1
@@ -84,6 +84,8 @@ if __name__ == "__main__":
 
         for idx, stage in enumerate(stages_cfg.get('training_stages')):
                 
+                #ADD CONFIGURABLE OPTION FOR NOT USING SHARED DATASET
+
                 train_dataset = RexailDataset(root=TRAIN_DIR,
                                               transform=(transforms[idx])[1],
                                               pre_transform=(transforms[idx])[0],
@@ -97,7 +99,7 @@ if __name__ == "__main__":
                                               decider=partial(RexailDataset.sha256_modulo_split,ratio=70,complement=True),
                                               load_into_memory=True,
                                               num_workers=train_cfg.get('num_workers'))
-
+                
                 create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
                                                          train_dataset=train_dataset,
                                                          test_dataset=test_dataset,

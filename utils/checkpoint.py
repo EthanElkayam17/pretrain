@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 from utils.other import dirjoin
 
+#REWRITE EVERYTHING HERE TO BE MORE COMPREHENSIVE
+
 def save_state_dict(model: torch.nn.Module,
                dir: str,
                model_name: str):

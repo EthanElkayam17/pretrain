@@ -149,7 +149,12 @@ def setup(rank, world_size):
 
     os.environ["MASTER_ADDR"] = "localhost"
     os.environ["MASTER_PORT"] = "12355"
-    dist.init_process_group(backend="nccl", rank=rank, init_method="env://", world_size=world_size)
+    
+    dist.init_process_group(backend="nccl", 
+                            rank=rank, 
+                            init_method="env://", 
+                            world_size=world_size)
+    
     torch.cuda.set_device(rank)
 
 
@@ -207,7 +212,7 @@ def trainer(rank: int,
     if curr_epoch > epochs:
         return
     
-    if logger is None:
+    if logger is None: #FIGURE OUT PROBLEM WITH LOGGING WITHIN PROCESSES AND REWRITE ALL THE LOGGINGS
         logger = logging.getLogger('null_logger')
         logger.addHandler(logging.NullHandler)
 

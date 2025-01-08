@@ -151,7 +151,7 @@ class RexailDataset(datasets.VisionDataset):
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
 
-        if index % 1000 == 0:
+        if index % 1000 == 0: #REMOVE AND MAKE A BETTER LOADING INTERFACE
             print(index)
         path, _ = samples[index]
         sample = loader(path)
@@ -261,6 +261,7 @@ class WrappedRexailDataset(Dataset):
                  shared_dataset: RexailDataset):
         """Args:
             shared_dataset: underlying RexailDataset instance"""
+        
         super().__init__()
         
         assert shared_dataset.loaded_dataset is True, "underlying dataset should be loaded into memory"

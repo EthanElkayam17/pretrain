@@ -2,7 +2,7 @@ This folder contains documantation and information about the backbone training.
 backbone = model generated from pre-training on external dataset, to be used as starting point when training on official dataset.
 
 folder structure:
-dataset - information about the dataset used for training the backbone:
+dataset - information about the data used for training the backbone:
 - sources
 - annotations for classes
 - technical information
