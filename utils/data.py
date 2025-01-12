@@ -168,12 +168,9 @@ class RexailDataset(datasets.VisionDataset):
 
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
-        
         indices = list(range(0,len(self.samples)))
         
-
         print("loading dataset into memory...")
-
         with ThreadPoolExecutor(max_workers=num_workers) as executor:
             with tqdm(total=len(indices)) as pbar:
                 filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader, pbar=pbar)
