@@ -153,7 +153,7 @@ class RexailDataset(datasets.VisionDataset):
                     loader: Callable = datasets.folder.default_loader,
                     pbar = None):
         """Load a single index into memory"""
-        
+
         path, _ = samples[index]
         sample = loader(path)
 
@@ -170,13 +170,13 @@ class RexailDataset(datasets.VisionDataset):
         """Parallel loading of the dataset into memory"""
         
         indices = list(range(0,len(self.samples)))
-        filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
         
 
         print("loading dataset into memory...")
 
         with ThreadPoolExecutor(max_workers=num_workers) as executor:
             with tqdm(total=len(indices)) as pbar:
+                filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader, pbar=pbar)
                 list(executor.map(filler, indices))
         
         print("loaded!")
