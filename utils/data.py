@@ -157,7 +157,6 @@ class RexailDataset(datasets.VisionDataset):
             sample = loader(path)
 
             if transform:
-                print(index)
                 sample = transform(sample)
                 print("after transform!")
 
