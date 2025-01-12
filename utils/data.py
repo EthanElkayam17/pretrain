@@ -159,7 +159,7 @@ class RexailDataset(datasets.VisionDataset):
             sample = transform(sample)
             
         data[index] = sample.detach().clone()
-        print("ong")
+        print(index)
 
 
     def _load_everything(self, num_workers: int):
