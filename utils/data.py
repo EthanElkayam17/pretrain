@@ -161,7 +161,7 @@ class RexailDataset(datasets.VisionDataset):
         if transform is not None:
             sample = transform(sample)
             
-        data[index] = sample.clone()
+        data[index] = sample
 
 
     def _load_everything(self, num_workers: int):
