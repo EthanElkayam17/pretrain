@@ -170,7 +170,7 @@ class RexailDataset(datasets.VisionDataset):
             
         print("loading dataset into memory...")  
         with Pool(num_workers) as pool:
-            pool.starmap(RexailDataset._load_batch, [(batch, self.samples, self.data, self.transform, self.loader) for batch in batches])
+            pool.starmap(RexailDataset._load_batch, [(batch, self.samples, self.data, self.pre_transform, self.loader) for batch in batches])
         print("loaded!")
 
 
