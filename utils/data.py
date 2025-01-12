@@ -97,7 +97,7 @@ class RexailDataset(datasets.VisionDataset):
 
             self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float32).contiguous().share_memory_()
 
-            self._load_everything(num_workers=num_workers)
+            self._load_everything(batch_size=(len(self.samples) // (num_workers*5)), num_workers=num_workers)
             
             self.loaded_dataset = True
 
@@ -145,30 +145,31 @@ class RexailDataset(datasets.VisionDataset):
 
 
     @staticmethod
-    def _load_index(index: int,
+    def _load_batch(indices: List,
                     samples: List,
                     data: torch.Tensor,
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
 
-        print(index)
-        path, _ = samples[index]
-        sample = loader(path)
+        for index in indices:
+            path, _ = samples[index]
+            sample = loader(path)
 
-        if transform is not None:
-            sample = transform(sample)
-            
-        data[index] = sample.clone()
+            if transform:
+                sample = transform(sample)
+
+            data[index] = sample.clone()
 
 
-    def _load_everything(self, num_workers: int):
+    def _load_everything(self, batch_size: int, num_workers: int):
         """Parallel loading of the dataset into memory"""
-        indices = list(range(0,len(self.samples)))
+        indices = list(range(len(self.samples)))
+        batches = np.array_split(indices, len(indices) // batch_size)
         filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
             
         print("loading dataset into memory...")  
         with Pool(num_workers) as pool:
-            pool.map(filler, indices)
+            pool.starmap(RexailDataset._load_batch, [(batch, self.samples, self.data, self.transform, self.loader) for batch in batches])
         print("loaded!")
 
 
