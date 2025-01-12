@@ -2,8 +2,9 @@ import torch
 import numpy as np
 import os
 import copy
+from concurrent.futures import ThreadPoolExecutor
 from torch.utils.data.sampler import Sampler
-from multiprocessing import Pool, Lock, Manager
+from multiprocessing import Pool
 from functools import partial
 from hashlib import sha256
 from pathlib import Path
@@ -95,7 +96,7 @@ class RexailDataset(datasets.VisionDataset):
         if load_into_memory:
             data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
 
-            self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float32).contiguous().share_memory_()
+            self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float32).share_memory_()
 
             self._load_everything(num_workers=num_workers)
             
@@ -167,8 +168,11 @@ class RexailDataset(datasets.VisionDataset):
         filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
             
         print("loading dataset into memory...")  
-        with Pool(num_workers) as pool:
-                pool.map(filler, indices)
+        """with Pool(num_workers) as pool:
+                pool.map(filler, indices)"""
+        
+        with ThreadPoolExecutor(max_workers=num_workers) as executor:
+            list(executor.map(filler, indices))
         print("loaded!")
 
 

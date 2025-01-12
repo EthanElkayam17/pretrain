@@ -45,7 +45,7 @@ def get_stage_transforms(settings_name: str,
             cropper_transform = v2.Compose([ 
                 v2.Resize(stage.get('resize')),
                 cropper,
-                v2.ToTensor()
+                v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale=True)])
             ])
 
             augmentation_transform = v2.Compose([
