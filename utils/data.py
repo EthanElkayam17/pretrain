@@ -167,9 +167,8 @@ class RexailDataset(datasets.VisionDataset):
         filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
             
         print("loading dataset into memory...")  
-        if __name__ == '__main__':  
-            with Pool(num_workers) as pool:
-                pool.map(filler, indices)
+        with Pool(num_workers) as pool:
+            pool.map(filler, indices)
         print("loaded!")
 
 
