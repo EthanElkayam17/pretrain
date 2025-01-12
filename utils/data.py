@@ -13,6 +13,7 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Dataset, DistributedSampler
 from utils.transforms import default_transform
 from utils.other import dirjoin
+import torchvision.transforms.v2 as v2
 
 def default_decider(path: str) -> bool:
         """Default decider"""
@@ -164,8 +165,14 @@ class RexailDataset(datasets.VisionDataset):
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
         indices = list(range(0,len(self.samples)))
-        filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
-            
+        cropper_transform = v2.Compose([ 
+                v2.Resize(164),
+                v2.RandomResizedCrop(size=124),
+                v2.ToTensor()
+            ])
+        filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=cropper_transform, loader=self.loader)
+
+
         print("loading dataset into memory...")  
         with Pool(num_workers) as pool:
                 pool.map(filler, indices)
