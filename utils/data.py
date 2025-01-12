@@ -168,7 +168,7 @@ class RexailDataset(datasets.VisionDataset):
             
         print("loading dataset into memory...")  
         with Pool(num_workers) as pool:
-                pool.imap(filler, indices)
+                pool.map(filler, indices)
         print("loaded!")
 
 
