@@ -155,9 +155,9 @@ class RexailDataset(datasets.VisionDataset):
         for index in indices:
             path, _ = samples[index]
             sample = loader(path)
-            print(index)
 
             if transform:
+                print(index)
                 sample = transform(sample)
 
             data[index] = sample.detach().clone()
