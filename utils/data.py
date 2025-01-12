@@ -153,8 +153,7 @@ class RexailDataset(datasets.VisionDataset):
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
 
-        if index % 1000 == 0: #REMOVE AND MAKE A BETTER LOADING INTERFACE
-            print(index)
+        print(index)
         path, _ = samples[index]
         sample = loader(path)
 
