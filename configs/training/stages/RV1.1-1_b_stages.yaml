@@ -3,7 +3,7 @@ training_stages:
   
   - id: 0
     resize: 164
-    res: 124
+    res: 100
     centered: False
     RandAugment_magnitude: 5
     dropout_prob: 0.1
