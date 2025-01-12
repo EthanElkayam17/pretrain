@@ -2,14 +2,14 @@ import torch
 import numpy as np
 import os
 import copy
+from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor
 from torch.utils.data.sampler import Sampler
-from multiprocessing import Pool
 from functools import partial
 from hashlib import sha256
 from pathlib import Path
 from PIL import Image
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union, Iterable
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Dataset, DistributedSampler
 from utils.transforms import default_transform
@@ -150,8 +150,10 @@ class RexailDataset(datasets.VisionDataset):
                     samples: List,
                     data: torch.Tensor,
                     transform: Callable,
-                    loader: Callable = datasets.folder.default_loader):
-
+                    loader: Callable = datasets.folder.default_loader,
+                    pbar = None):
+        """Load a single index into memory"""
+        
         path, _ = samples[index]
         sample = loader(path)
 
@@ -159,20 +161,24 @@ class RexailDataset(datasets.VisionDataset):
             sample = transform(sample)
             
         data[index] = sample.detach().clone()
-        print(index)
+
+        if pbar is not None:
+            pbar.update(1)
 
 
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
+        
         indices = list(range(0,len(self.samples)))
         filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
-            
-        print("loading dataset into memory...")  
-        """with Pool(num_workers) as pool:
-                pool.map(filler, indices)"""
         
+
+        print("loading dataset into memory...")
+
         with ThreadPoolExecutor(max_workers=num_workers) as executor:
-            list(executor.map(filler, indices))
+            with tqdm(total=len(indices)) as pbar:
+                list(executor.map(filler, indices))
+        
         print("loaded!")
 
 
