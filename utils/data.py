@@ -151,6 +151,7 @@ class RexailDataset(datasets.VisionDataset):
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
 
+        print("some batch ig")
         for index in indices:
             path, _ = samples[index]
             sample = loader(path)
@@ -165,7 +166,7 @@ class RexailDataset(datasets.VisionDataset):
         """Parallel loading of the dataset into memory"""
         indices = list(range(len(self.samples)))
         batches = np.array_split(indices, len(indices) // batch_size)
-        filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
+        #filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
             
         print("loading dataset into memory...")  
         with Pool(num_workers) as pool:
