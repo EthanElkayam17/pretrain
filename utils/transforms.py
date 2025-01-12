@@ -46,14 +46,14 @@ def get_stage_transforms(settings_name: str,
                 v2.Resize(stage.get('resize')),
                 cropper,
                 v2.ToImage(),
-                v2.ToDtype(torch.float64,scale=True)
+                v2.ToDtype(torch.float32,scale=True)
             ])
 
             augmentation_transform = v2.Compose([
                 v2.RandomHorizontalFlip(0.5),
                 v2.RandomVerticalFlip(0.5),
                 v2.RandAugment(magnitude=stage.get('RandAugment_magnitude')),
-                v2.ToDtype(torch.float64,scale=True),
+                v2.ToDtype(torch.float32,scale=True),
                 v2.Normalize(mean=mean, std=std)
             ])
             
@@ -67,7 +67,7 @@ def get_stage_transforms(settings_name: str,
                     v2.RandomVerticalFlip(0.5),
                     v2.RandAugment(magnitude=stage.get('RandAugment_magnitude')),
                     v2.ToImage(),
-                    v2.ToDtype(torch.float64,scale=True),
+                    v2.ToDtype(torch.float32,scale=True),
                     v2.Normalize(mean=mean, std=std)
                 ])
             )
