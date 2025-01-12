@@ -153,6 +153,7 @@ class RexailDataset(datasets.VisionDataset):
 
         print("some batch ig")
         for index in indices:
+            print(index)
             path, _ = samples[index]
             sample = loader(path)
 
