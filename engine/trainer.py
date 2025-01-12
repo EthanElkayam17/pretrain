@@ -291,7 +291,7 @@ def trainer(rank: int,
                                    rank=rank)
         
 
-        logger.info(f"Epoch: {epoch}. \n Train loss: {train_loss}, Train Acc: {train_acc}. \n Test loss: {test_loss}, Test acc: {test_acc}. \n")
+        print(f"Epoch: {epoch}. \n Train loss: {train_loss}, Train Acc: {train_acc}. \n Test loss: {test_loss}, Test acc: {test_acc}. \n")
 
     
     if rank == 0:
