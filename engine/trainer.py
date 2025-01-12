@@ -11,7 +11,6 @@ from functools import partial
 from typing import Tuple, Union, Callable, Any
 from utils.checkpoint import save_state_dict
 from models.model import CFGCNN
-from utils.other import set_random_seed
 
 
 def warmup_to_cosine_decay(epoch: int,
@@ -79,7 +78,6 @@ def train_step(model: torch.nn.Module,
 
     train_loss, train_accuracy = 0 , 0
     for batch, (X,y) in enumerate(dataloader):
-        print(batch)
         X, y = X.to(rank) , y.to(rank)
 
         y_res = model(X).to(rank)

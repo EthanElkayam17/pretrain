@@ -262,7 +262,7 @@ class CFGCNN(nn.Module):
         self.net = nn.Sequential(*self.inner_stages)
         self.classifier = nn.Sequential(*classifier_layers)
 
-        for (name, param), raw_name in zip(self.named_parameters(),raw_param_names):
+        for (name, _), raw_name in zip(self.named_parameters(),raw_param_names):
             self.layer_names.append(name.replace(raw_name,""))
         self.layer_names = list(unique_everseen(self.layer_names))
 
