@@ -152,8 +152,6 @@ class RexailDataset(datasets.VisionDataset):
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
 
-        if index % 1800:
-            print("immmm on my wayyy")
         path, _ = samples[index]
         sample = loader(path)
 
@@ -161,6 +159,7 @@ class RexailDataset(datasets.VisionDataset):
             sample = transform(sample)
             
         data[index] = sample.detach().clone()
+        print("ong")
 
 
     def _load_everything(self, num_workers: int):
