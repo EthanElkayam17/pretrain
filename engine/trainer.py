@@ -211,6 +211,12 @@ def trainer(rank: int,
     if curr_epoch > epochs:
         return
     
+    DECAY_MODE_TO_FUNC = {
+                "exp": partial(warmup_to_exponential_decay, lr_min=lr_min,lr_max=lr_max,warmup_epochs=warmup_epochs, decay_factor=exp_decay_factor),
+                "cos": partial(warmup_to_cosine_decay, lr_min=lr_min, lr_max=lr_max, warmup_epochs=warmup_epochs, total_epochs=epochs),
+                "none": None
+            }
+    
     if not (decay_mode in DECAY_MODE_TO_FUNC.keys()):
         raise ValueError(f"Invalid decay mode, should be one of {DECAY_MODE_TO_FUNC.keys()}")
     
@@ -220,12 +226,6 @@ def trainer(rank: int,
         logger = logging.getLogger('null_logger')
         logger.addHandler(logging.NullHandler)
 
-
-    DECAY_MODE_TO_FUNC = {
-                    "exp": partial(warmup_to_exponential_decay, lr_min=lr_min,lr_max=lr_max,warmup_epochs=warmup_epochs, decay_factor=exp_decay_factor),
-                    "cos": partial(warmup_to_cosine_decay, lr_min=lr_min, lr_max=lr_max, warmup_epochs=warmup_epochs, total_epochs=epochs),
-                    "none": None
-                    }
 
     
     setup(world_size=world_size, rank=rank)
