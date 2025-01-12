@@ -159,6 +159,7 @@ class RexailDataset(datasets.VisionDataset):
             if transform:
                 print(index)
                 sample = transform(sample)
+                print("after transform!")
 
             data[index] = sample.detach().clone()
 
