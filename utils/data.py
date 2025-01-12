@@ -95,7 +95,7 @@ class RexailDataset(datasets.VisionDataset):
         if load_into_memory:
             data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
 
-            self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float16).contiguous()
+            self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float32).contiguous()
 
             self.data.share_memory_()
 
@@ -161,7 +161,7 @@ class RexailDataset(datasets.VisionDataset):
         if transform is not None:
             sample = transform(sample)
             
-        data[index] = sample
+        data[index] = sample.clone()
 
 
     def _load_everything(self, num_workers: int):
