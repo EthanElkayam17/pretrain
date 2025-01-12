@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import os
 import copy
+from tqdm import tqdm
 from torch.utils.data.sampler import Sampler
 from multiprocessing import Pool, Lock, Manager
 from functools import partial
@@ -151,7 +152,6 @@ class RexailDataset(datasets.VisionDataset):
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader):
 
-        print(index)
         path, _ = samples[index]
         sample = loader(path)
 
@@ -163,13 +163,10 @@ class RexailDataset(datasets.VisionDataset):
 
     def _load_everything(self, num_workers: int):
         """Parallel loading of the dataset into memory"""
-        indices = list(range(0,len(self.samples)))
+        indices = tqdm(range(0,len(self.samples)))
         filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader)
             
-        print("loading dataset into memory...")  
-        """with Pool(num_workers) as pool:
-                pool.map(filler, indices)"""
-        
+        print("loding dataset into memory...")
         for index in indices:
             filler(index)
         print("loaded!")
