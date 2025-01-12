@@ -155,12 +155,12 @@ class RexailDataset(datasets.VisionDataset):
         for index in indices:
             path, _ = samples[index]
             sample = loader(path)
+            print(index)
 
             if transform:
                 sample = transform(sample)
 
             data[index] = sample.detach().clone()
-            print(index)
 
 
     def _load_everything(self, batch_size: int, num_workers: int):
