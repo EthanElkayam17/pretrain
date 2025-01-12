@@ -160,7 +160,7 @@ class RexailDataset(datasets.VisionDataset):
             if transform:
                 sample = transform(sample)
 
-            data[index] = sample.clone()
+            data[index] = sample.detach().clone()
 
 
     def _load_everything(self, batch_size: int, num_workers: int):
