@@ -34,9 +34,10 @@ class RexailDataset(datasets.VisionDataset):
     When not utilizing load_into_memory the dataset can be used as-is to access directly or create dataloaders,
     only the paths and targets will be stored and the actual data is fetched lazily on __getitem___.
     
-    When load_into_memory is set True the entire dataset will be stored in a large shared tensor in memory,
-    when using with multiple processes (GPUs) one should create one instance of this class outside of the processes
-    and use it to create instances of WrappedRexailDataset in each process, which will be used for samplers/dataloader
+    When load_into_memory is set True the entire dataset will be stored in a large shared tensor in the shared-memory partition,
+    when using this option with multiple processes (GPUs) one should create one instance of this class outside of the processes
+    and use it to create instances of WrappedRexailDataset in each process, which will be used for samplers/dataloader,
+    ENSURE SUFFICIENT SHARED-MEMORY BEFORE ENABLING.
     """
     
     def __init__(
@@ -66,7 +67,7 @@ class RexailDataset(datasets.VisionDataset):
             storewise: whether the directory is partitioned store-wise inside each class.
             weighed: whether the file names contain weight data.
 
-            load_into_memory: whether to load the entire dataset into a shared in-memory block.
+            load_into_memory: whether to load the entire dataset into a shared-memory block.
             num_workers: number of workers to be used to load dataset into memory"""
         
         super().__init__(
@@ -287,7 +288,9 @@ class WrappedRexailDataset(Dataset):
         return tuple([sample,target])
 
 
-def create_dataloaders_from_dirs(
+def create_dataloaders_and_samplers_from_dirs(
+        world_size: int,
+        rank: int,
         train_dir: Union[str, Path],
         test_dir: Union[str, Path],
         batch_size: int,
@@ -303,10 +306,12 @@ def create_dataloaders_from_dirs(
         ignore_classes: List[str] = list(),
         storewise: bool = False,
         weighed: bool = False,
-    ) -> Tuple[DataLoader, DataLoader, List]:
+    ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
     """Creates training/testing dataloaders from training/testing directories
     
     Args:
+        world_size: number of processes
+        rank: current process id
         train_dir: path of training data directory.
         test_dir: path of testing data directory.
         batch_size: amount per batch.
@@ -323,7 +328,7 @@ def create_dataloaders_from_dirs(
         storewise: whether both training and testing directories are partitioned store-wise inside each class.
         weighed: whether the file names contain weight data.
 
-    Returns: (train_dataloader, test_dataloader, class_names)
+    Returns: (train_dataloader, train_sampler, test_dataloader, test_sampler)
     """
 
     train_data = RexailDataset(root=train_dir,
@@ -348,14 +353,16 @@ def create_dataloaders_from_dirs(
                               load_into_memory=False,
                               num_workers=num_workers)
 
+    train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
+    test_sampler = DistributedSampler(test_data, num_replicas=world_size, rank=rank, shuffle=False)
     
-    class_names = train_data.classes
     train_dataloader = DataLoader(
         dataset=train_data,
         batch_size=batch_size,
-        shuffle=True,
+        shuffle=False,
         num_workers=num_workers,
-        
+        sampler=train_sampler,
+
         # Try to avoid costs of transfer between pageable and pinned memory
         pin_memory=True
     )
@@ -365,10 +372,11 @@ def create_dataloaders_from_dirs(
         batch_size=batch_size,
         shuffle=False,  
         num_workers=num_workers,
+        sampler=test_sampler,
         pin_memory=True
     )
 
-    return train_dataloader, test_dataloader, class_names
+    return train_dataloader, test_dataloader
 
 
 def create_dataloaders_and_samplers_from_shared_datasets(

@@ -78,7 +78,6 @@ def train_step(model: torch.nn.Module,
     model.train()
 
     train_loss, train_accuracy = 0 , 0
-    print("just before da loop")
     for batch, (X,y) in enumerate(dataloader):
         print(batch)
         X, y = X.to(rank) , y.to(rank)
@@ -212,6 +211,11 @@ def trainer(rank: int,
     if curr_epoch > epochs:
         return
     
+    if not (decay_mode in DECAY_MODE_TO_FUNC.keys()):
+        raise ValueError(f"Invalid decay mode, should be one of {DECAY_MODE_TO_FUNC.keys()}")
+    
+    decay = DECAY_MODE_TO_FUNC.get(decay_mode)
+
     if logger is None: #FIGURE OUT PROBLEM WITH LOGGING WITHIN PROCESSES AND REWRITE ALL THE LOGGINGS
         logger = logging.getLogger('null_logger')
         logger.addHandler(logging.NullHandler)
@@ -259,15 +263,8 @@ def trainer(rank: int,
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
     logger.info("---Dataloaders created---\n")
 
-    
-    if not (decay_mode in DECAY_MODE_TO_FUNC.keys()): #MOVE
-        raise ValueError(f"Invalid decay mode, should be one of {DECAY_MODE_TO_FUNC.keys()}")
-    
-    decay = DECAY_MODE_TO_FUNC.get(decay_mode)
 
-    
-    epoch = curr_epoch
-    while (epoch <= epochs): #CHANGE TO FOR-LOOP YOU RETARD
+    for epoch in range(curr_epoch,epochs):
         print("epoch:" + str(epoch))
         
         for idx, param_group in enumerate(optimizer.param_groups):
@@ -295,8 +292,7 @@ def trainer(rank: int,
         
 
         logger.info(f"Epoch: {epoch}. \n Train loss: {train_loss}, Train Acc: {train_acc}. \n Test loss: {test_loss}, Test acc: {test_acc}. \n")
-        
-        epoch += 1
+
     
     if rank == 0:
         save_state_dict(model=model, 

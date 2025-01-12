@@ -8,7 +8,8 @@ from functools import partial
 from utils.data import RexailDataset
 from models.model import CFGCNN
 from utils.transforms import get_stage_transforms, default_transform
-from utils.data import create_dataloaders_and_samplers_from_shared_datasets, calculate_mean_std, dirjoin
+from utils.data import create_dataloaders_and_samplers_from_shared_datasets, calculate_mean_std, create_dataloaders_and_samplers_from_dirs
+from utils.other import dirjoin
 from engine.trainer import trainer
 
 CLASSES_TO_IGNORE_IN_DEBUGGING = ["b0001",  "b0009",  "b0017",  "b0025",  "b0033",  "b0041",  "b0049", "b0057",  "b0065",  "b0073",  "b0081",  "b0089",  "b0097",  "b0105",  "b0113",  "b0121",  "b0129",  "b0137",  "b0145",  "b0153",  "b0161",  "b0169",  "b0177",  "b0185",  "b0193",
@@ -19,6 +20,9 @@ CLASSES_TO_IGNORE_IN_DEBUGGING = ["b0001",  "b0009",  "b0017",  "b0025",  "b0033
 "b0006",  "b0014",  "b0022",  "b0030",  "b0038",  "b0046",  "b0054",  "b0062",  "b0070",  "b0078",  "b0086", "b0094",  "b0102",  "b0110",  "b0118",  "b0126",  "b0134"]
 
 if __name__ == "__main__":
+        
+        if len(sys.argv) < 5:
+                raise ValueError("Not enough arguments provided. \n required: MODEL_CONFIG_FILENAME TRAINING_CONFIG_FILENAME STAGES_CONFIG_FILENAME DESIRED_MODEL_NAME")
 
         TRAIN_DIR = "/workspace/train/"
         TEST_DIR = "/workspace/train/"
@@ -28,8 +32,7 @@ if __name__ == "__main__":
         TRAINING_CONFIG_DIR = "configs/training/general"
         STATE_DICTS_DIR = "engine/state_dicts"
 
-        #CREATE A MORE COMPREHENSIVE INPUT MANAGING
-        MODEL_CONFIG_NAME , STAGES_SETTINGS_NAME, TRAINING_SETTINGS_NAME, MODEL_NAME = sys.argv[1] , sys.argv[2], sys.argv[3], sys.argv[4]
+        MODEL_CONFIG_NAME, TRAINING_SETTINGS_NAME, STAGES_SETTINGS_NAME, MODEL_NAME = sys.argv[1] , sys.argv[2], sys.argv[3], sys.argv[4]
         STAGES_SETTINGS_PATH = (dirjoin(STAGES_SETTINGS_DIR,STAGES_SETTINGS_NAME))
         TRAINING_SETTINGS_PATH = (dirjoin(TRAINING_CONFIG_DIR,TRAINING_SETTINGS_NAME))
         START_EPOCH = 1
@@ -46,7 +49,7 @@ if __name__ == "__main__":
                         datefmt='%H:%M:%S',
                         level=logging.INFO)
         logger = logging.getLogger('log')
-        logger.info("------LOGGING: .(" + MODEL_CONFIG_NAME + "," + TRAINING_SETTINGS_NAME + "," + STAGES_SETTINGS_NAME + "). ------")
+        logger.info("------LOGGING: .(" + MODEL_NAME + "). ------")
 
 
         SAVED_MODEL_FNAME = input("If continuing from checkpoint, enter saved model's file name (else, leave null): ")
@@ -85,27 +88,42 @@ if __name__ == "__main__":
 
         for idx, stage in enumerate(stages_cfg.get('training_stages')):
                 
-                #ADD CONFIGURABLE OPTION FOR NOT USING SHARED DATASET
+                train_decider = partial(RexailDataset.sha256_modulo_split,ratio=70)
+                test_decider = partial(RexailDataset.sha256_modulo_split,ratio=70, complement=True)
+                
+                if train_cfg.get('lazy_dataset', False):
+                        create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_dirs,
+                                                                 train_dir=TRAIN_DIR,
+                                                                 test_dir=TEST_DIR,
+                                                                 batch_size=train_cfg.get('batch_size'),
+                                                                 num_workers=train_cfg.get('dataloader_num_workers'),
+                                                                 train_transform=(transforms[idx])[1],
+                                                                 train_pre_transform=(transforms[idx])[0],
+                                                                 test_transform=(transforms[idx])[1],
+                                                                 test_pre_transform=(transforms[idx])[0],
+                                                                 train_decider=train_decider,
+                                                                 test_decider=test_decider)
 
-                train_dataset = RexailDataset(root=TRAIN_DIR,
-                                              transform=(transforms[idx])[1],
-                                              pre_transform=(transforms[idx])[0],
-                                              decider=partial(RexailDataset.sha256_modulo_split,ratio=70),
-                                              load_into_memory=True,
-                                              num_workers=train_cfg.get('num_workers'))
+                else:
+                    train_dataset = RexailDataset(root=TRAIN_DIR,
+                                                transform=(transforms[idx])[1],
+                                                pre_transform=(transforms[idx])[0],
+                                                decider=train_decider,
+                                                load_into_memory=True,
+                                                num_workers=train_cfg.get('dataset_num_workers'))
                 
-                test_dataset = RexailDataset(root=TEST_DIR,
-                                              transform=(transforms[idx])[1],
-                                              pre_transform=(transforms[idx])[0],
-                                              decider=partial(RexailDataset.sha256_modulo_split,ratio=70,complement=True),
-                                              load_into_memory=True,
-                                              num_workers=train_cfg.get('num_workers'))
+                    test_dataset = RexailDataset(root=TEST_DIR,
+                                                transform=(transforms[idx])[1],
+                                                pre_transform=(transforms[idx])[0],
+                                                decider=test_decider,
+                                                load_into_memory=True,
+                                                num_workers=train_cfg.get('dataset_num_workers'))
                 
-                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
-                                                         train_dataset=train_dataset,
-                                                         test_dataset=test_dataset,
-                                                         batch_size=train_cfg.get('batch_size'),
-                                                         num_workers=12)
+                    create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
+                                                            train_dataset=train_dataset,
+                                                            test_dataset=test_dataset,
+                                                            batch_size=train_cfg.get('batch_size'),
+                                                            num_workers=train_cfg.get('dataloader_num_workers'))
 
                 logger.info(f"Starting training stage #{str(idx)}")
                 mp.spawn(

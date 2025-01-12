@@ -31,8 +31,7 @@ def save_state_dict(model: torch.nn.Module,
 def save_to_onnx(model: torch.nn.Module,
               dir: str,
               input_res: tuple,
-              model_name: str,
-              num_tabular: int = 0):
+              model_name: str):
   """Saves model in onnx format
   
   Args:
@@ -40,17 +39,11 @@ def save_to_onnx(model: torch.nn.Module,
     dir: target directory.
     input_res: image resolution that the model expects.
     model_name: name for the saved file.
-    num_tabular: how many tabular parameters does the model expects"""
+"""
   
   path = (dirjoin(dir,f"{model_name}.onnx"))
   model.eval()
 
-  ex_input_visual = torch.randn(1,3,input_res[0],input_res[1])
-  
-  if num_tabular > 0:
-    ex_input_tabular = torch.randn(1,num_tabular)
-    ex_input = (ex_input_visual,ex_input_tabular)
-  else:
-    ex_input = ex_input_visual
+  ex_input = torch.randn(1,3,input_res[0],input_res[1])
   
   torch.onnx.export(model, ex_input, path, verbose=True)
