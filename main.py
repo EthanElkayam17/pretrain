@@ -110,6 +110,7 @@ if __name__ == "__main__":
                                                 pre_transform=(transforms[idx])[0],
                                                 decider=train_decider,
                                                 load_into_memory=True,
+                                                ignore_classes=CLASSES_TO_IGNORE_IN_DEBUGGING,
                                                 num_workers=train_cfg.get('dataset_num_workers'))
                 
                     test_dataset = RexailDataset(root=TEST_DIR,
@@ -117,6 +118,7 @@ if __name__ == "__main__":
                                                 pre_transform=(transforms[idx])[0],
                                                 decider=test_decider,
                                                 load_into_memory=True,
+                                                ignore_classes=CLASSES_TO_IGNORE_IN_DEBUGGING,
                                                 num_workers=train_cfg.get('dataset_num_workers'))
                 
                     create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
