@@ -30,7 +30,7 @@ if __name__ == "__main__":
         STAGES_SETTINGS_DIR = "configs/training/stages"
         MODEL_CONFIG_DIR = "configs/architecture"
         TRAINING_CONFIG_DIR = "configs/training/general"
-        STATE_DICTS_DIR = "engine/state_dicts"
+        STATE_DICTS_DIR = "state_dicts"
 
         MODEL_CONFIG_NAME, TRAINING_SETTINGS_NAME, STAGES_SETTINGS_NAME, MODEL_NAME = sys.argv[1] , sys.argv[2], sys.argv[3], sys.argv[4]
         STAGES_SETTINGS_PATH = (dirjoin(STAGES_SETTINGS_DIR,STAGES_SETTINGS_NAME))

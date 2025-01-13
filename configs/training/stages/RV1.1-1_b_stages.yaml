@@ -2,10 +2,10 @@
 training_stages:
   
   - id: 0
-    resize: 164
-    res: 124
+    resize: 186
+    res: 164
     centered: False
-    RandAugment_magnitude: 5
+    RandAugment_magnitude: 10
     dropout_prob: 0.1
     lr_min: 0.00005
     lr_max: 0.0013
