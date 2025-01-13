@@ -236,7 +236,7 @@ def trainer(rank: int,
     if rank == 0:
         save_state_dict(model=model, 
                         dir="temp_state_dicts",
-                        model_name="temp_state_dict_rank_1.pth")
+                        model_name="temp_state_dict_rank_0.pth")
     dist.barrier()
 
     map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
