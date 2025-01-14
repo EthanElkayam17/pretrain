@@ -61,7 +61,7 @@ def train_step(model: torch.nn.Module,
                loss_fn: torch.nn.Module, 
                optimizer: torch.optim.Optimizer,
                rank: Any,
-               scaler: Any) -> Tuple[float, float]:
+               scaler: torch.cuda.amp.GradScaler) -> Tuple[float, float]:
     
     """Basic train for a single epoch.
 
@@ -90,6 +90,7 @@ def train_step(model: torch.nn.Module,
         scaler.scale(loss).backward()
 
         scaler.step(optimizer)
+        scaler.update()
 
         train_loss += loss.item()
         train_accuracy += ((torch.argmax(torch.softmax(y_res, dim=1), dim=1) == y).sum().item() / len(y_res))
