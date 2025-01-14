@@ -264,7 +264,7 @@ def trainer(rank: int,
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
     logger.info("---Dataloaders created---\n")
 
-    scaler = torch.cuda.amp.GradScaler("cuda")
+    scaler = torch.amp.GradScaler()
 
     for epoch in range(curr_epoch,epochs):
         print("epoch:" + str(epoch))
