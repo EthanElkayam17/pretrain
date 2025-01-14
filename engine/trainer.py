@@ -11,6 +11,7 @@ from functools import partial
 from typing import Tuple, Union, Callable, Any
 from utils.checkpoint import save_state_dict
 from models.model import CFGCNN
+from torchvision.models.efficientnet import efficientnet_v2_s
 
 
 def warmup_to_cosine_decay(epoch: int,
@@ -232,7 +233,7 @@ def trainer(rank: int,
 
     
     setup(world_size=world_size, rank=rank)
-    model = CFGCNN(cfg_name=model_cfg_name, logger=logger, dropout_prob_override=dropout_prob).to(rank)
+    model = efficientnet_v2_s().to(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
 
     if (load_state_dict_path is not None) and (rank == 0):
