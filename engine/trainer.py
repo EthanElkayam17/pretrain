@@ -249,9 +249,8 @@ def trainer(rank: int,
     dist.barrier()
 
     if rank == 0:
-        #os.remove("temp_state_dicts/temp_state_dict_rank_0.pth")
-        #os.rmdir("temp_state_dicts")
-        pass
+        os.remove("temp_state_dicts/temp_state_dict_rank_0.pth")
+        os.rmdir("temp_state_dicts")
 
 
     loss_fn.to(rank)
