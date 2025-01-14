@@ -46,4 +46,4 @@ def save_to_onnx(model: torch.nn.Module,
 
   ex_input = torch.randn(1,3,input_res[0],input_res[1])
   
-  torch.onnx.export(model, ex_input, path, verbose=True)
+  torch.onnx.export(model, ex_input, path,input_names=["INPUT_IMAGE"], output_names=["LOGITS"], verbose=True)

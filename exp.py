@@ -1,4 +1,7 @@
+import PIL.Image
 import torch
+import onnx
+import onnxruntime
 import logging
 import yaml
 import sys
@@ -6,13 +9,18 @@ import os
 import torchvision
 from utils.data import RexailDataset
 from models.model import CFGCNN
-from utils.transforms import get_stage_transforms, default_transform
-from utils.data import create_dataloaders, calculate_mean_std
-from engine.trainer import trainer
+import torchvision.transforms.v2 as v2
 from torchinfo import summary
 from torchvision.models import efficientnet_v2_s
+import PIL
 import time
+from pathlib import Path
+from utils.checkpoint import save_to_onnx
 
-model = CFGCNN("efficientnetv2-s.yaml")
 
-summary(model=model,input_size=(1,3,224,224),depth=5)
+pathtoonxx = "/Users/ethanelkayam/Downloads/RV1.1-1_SHELL_ONLY.onnx"
+
+onnx_model = onnx.load(pathtoonxx)
+onnx.checker.check_model(onnx_model, full_check=True)
+
+

@@ -60,7 +60,8 @@ def train_step(model: torch.nn.Module,
                dataloader: torch.utils.data.DataLoader, 
                loss_fn: torch.nn.Module, 
                optimizer: torch.optim.Optimizer,
-               rank: Any) -> Tuple[float, float]:
+               rank: Any,
+               scaler: Any) -> Tuple[float, float]:
     
     """Basic train for a single epoch.
 
@@ -80,16 +81,17 @@ def train_step(model: torch.nn.Module,
     for batch, (X,y) in enumerate(dataloader):
         X, y = X.to(rank) , y.to(rank)
 
-        y_res = model(X).to(rank)
-
-        loss = loss_fn(y_res,y)
-        train_loss += loss.item()
-
         optimizer.zero_grad()
-        loss.backward()
 
-        optimizer.step()
+        with torch.autocast(device_type="cuda", dtype=torch.float16):
+            y_res = model(X).to(rank)
+            loss = loss_fn(y_res,y)
 
+        scaler.scale(loss).backward()
+
+        scaler.step(optimizer)
+
+        train_loss += loss.item()
         train_accuracy += ((torch.argmax(torch.softmax(y_res, dim=1), dim=1) == y).sum().item() / len(y_res))
 
         if rank == 0 and (batch % 50 == 0):
@@ -262,6 +264,7 @@ def trainer(rank: int,
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
     logger.info("---Dataloaders created---\n")
 
+    scaler = torch.cuda.amp.GradScaler("cuda")
 
     for epoch in range(curr_epoch,epochs):
         print("epoch:" + str(epoch))
@@ -282,7 +285,8 @@ def trainer(rank: int,
                                       dataloader=train_dataloader,
                                       loss_fn=loss_fn,
                                       optimizer=optimizer,
-                                      rank=rank)
+                                      rank=rank,
+                                      scaler=scaler)
         
         test_loss, test_acc = test_step(model=model,
                                    dataloader=test_dataloader,
