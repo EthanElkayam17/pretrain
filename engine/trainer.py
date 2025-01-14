@@ -129,9 +129,11 @@ def test_step(model: torch.nn.Module,
         for batch, (X,y) in enumerate(dataloader):
             X, y = X.to(rank) , y.to(rank)
 
-            y_res = model(X).to(rank)
-
-            test_loss += loss_fn(y_res,y).item()
+            with torch.autocast(device_type="cuda", dtype=torch.float16):
+                y_res = model(X).to(rank)
+                loss = loss_fn(y_res,y)
+            
+            test_loss += loss.item()
 
             test_accuracy += ((torch.argmax(torch.softmax(y_res, dim=1), dim=1) == y).sum().item() / len(y_res))
 
