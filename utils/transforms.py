@@ -49,6 +49,7 @@ def get_stage_transforms(settings_name: str,
             ])
 
             augmentation_transform = v2.Compose([
+                v2.ToDtype(torch.float32, scale=True),
                 v2.RandomHorizontalFlip(0.5),
                 v2.RandomVerticalFlip(0.5),
                 v2.RandAugment(magnitude=stage.get('RandAugment_magnitude')),
