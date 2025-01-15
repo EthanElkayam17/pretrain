@@ -84,14 +84,12 @@ def train_step(model: torch.nn.Module,
 
         optimizer.zero_grad()
 
-        with torch.autocast(device_type="cuda", dtype=torch.float16):
-            y_res = model(X).to(rank)
-            loss = loss_fn(y_res,y)
+        y_res = model(X).to(rank)
+        loss = loss_fn(y_res,y)
 
-        scaler.scale(loss).backward()
+        loss.backward()
 
-        scaler.step(optimizer)
-        scaler.update()
+        optimizer.step()
 
         train_loss += loss.item()
         train_accuracy += ((torch.argmax(torch.softmax(y_res, dim=1), dim=1) == y).sum().item() / len(y_res))
@@ -130,9 +128,8 @@ def test_step(model: torch.nn.Module,
         for batch, (X,y) in enumerate(dataloader):
             X, y = X.to(rank) , y.to(rank)
 
-            with torch.autocast(device_type="cuda", dtype=torch.float16):
-                y_res = model(X).to(rank)
-                loss = loss_fn(y_res,y)
+            y_res = model(X).to(rank)
+            loss = loss_fn(y_res,y)
             
             test_loss += loss.item()
 
@@ -230,10 +227,10 @@ def trainer(rank: int,
         logger = logging.getLogger('null_logger')
         logger.addHandler(logging.NullHandler)
 
-    torch.backends.cuda.matmul.allow_tf32 = True
+
     
     setup(world_size=world_size, rank=rank)
-    model = efficientnet_v2_s().to(rank)
+    model = CFGCNN(cfg_name=model_cfg_name, logger=logger, dropout_prob_override=dropout_prob).to(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
 
     if (load_state_dict_path is not None) and (rank == 0):

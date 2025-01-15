@@ -96,7 +96,7 @@ class RexailDataset(datasets.VisionDataset):
         if load_into_memory:
             data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
 
-            self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float16).share_memory_()
+            self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float32).share_memory_()
 
             self._load_everything(num_workers=num_workers)
             
