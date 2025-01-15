@@ -21,6 +21,8 @@ CLASSES_TO_IGNORE_IN_DEBUGGING = ["b0001",  "b0009",  "b0017",  "b0025",  "b0033
 
 if __name__ == "__main__":
         
+        torch.backends.cuda.matmul.allow_tf32 = True
+
         if len(sys.argv) < 5:
                 raise ValueError("Not enough arguments provided. \n required: MODEL_CONFIG_FILENAME TRAINING_CONFIG_FILENAME STAGES_CONFIG_FILENAME DESIRED_MODEL_NAME")
 

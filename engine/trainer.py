@@ -230,7 +230,7 @@ def trainer(rank: int,
         logger = logging.getLogger('null_logger')
         logger.addHandler(logging.NullHandler)
 
-
+    torch.backends.cuda.matmul.allow_tf32 = True
     
     setup(world_size=world_size, rank=rank)
     model = efficientnet_v2_s().to(rank)
