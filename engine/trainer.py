@@ -275,7 +275,7 @@ def trainer(rank: int,
                 param_group["lr"] = decay(epoch)
                 
             if idx == 0:
-                logger.info(f"Learning rate adjusted to: {param_group['lr']}")
+                print(f"Learning rate adjusted to: {param_group['lr']}")
 
 
         train_sampler.set_epoch(epoch)
