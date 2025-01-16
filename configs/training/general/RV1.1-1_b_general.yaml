@@ -2,7 +2,7 @@
 training_general:
 
   - id: 0
-    batch_size: 256
+    batch_size: 512
     dataloader_num_workers: 20
     dataset_num_workers: 48
     momentum: 0.8
