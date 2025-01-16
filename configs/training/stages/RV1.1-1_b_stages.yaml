@@ -5,11 +5,11 @@ training_stages:
     resize: 164
     res: 124
     centered: False
-    RandAugment_magnitude: 7
+    RandAugment_magnitude: 5
     dropout_prob: 0.1
     lr_min: 0.00075
     lr_max: 0.004
     decay_mode: exp
-    decay_factor: 0.97
-    warmup_epochs: 5
+    decay_factor: 0.982
+    warmup_epochs: 10
     epochs: 90
