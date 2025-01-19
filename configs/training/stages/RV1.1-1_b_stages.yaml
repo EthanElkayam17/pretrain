@@ -10,6 +10,6 @@ training_stages:
     lr_min: 0.00005
     lr_max: 0.00075
     decay_mode: exp
-    decay_factor: 0.986
+    decay_factor: 0.9865
     warmup_epochs: 15
     epochs: 100
