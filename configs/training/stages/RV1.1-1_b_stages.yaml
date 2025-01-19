@@ -8,7 +8,7 @@ training_stages:
     RandAugment_magnitude: 5
     dropout_prob: 0.1
     lr_min: 0.00005
-    lr_max: 0.00075
+    lr_max: 0.00085
     decay_mode: exp
     decay_factor: 0.9865
     warmup_epochs: 15
