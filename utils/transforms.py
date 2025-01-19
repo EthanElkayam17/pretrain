@@ -6,7 +6,7 @@ import torchvision.transforms.v2 as v2
 import yaml
 from utils.other import dirjoin
 
-def get_stage_transforms(settings_name: str,
+def get_stage_per_image_transforms(settings_name: str,
                          settings_dir: str,
                          mean: list,
                          std: list,
@@ -23,7 +23,7 @@ def get_stage_transforms(settings_name: str,
         divide_crop_and_augment: whether to divide each transform into a tuple of cropper transform and augmentation transform
         logger: logging function.
     
-    Returns: [(transform_stage_1), ... , transform_stage_n]
+    Returns: [batched_transform_stage_1, ... , batched_transform_stage_n]
     """
     
     if logger is None:

@@ -5,8 +5,8 @@ training_general:
     batch_size: 256
     dataloader_num_workers: 14
     dataset_num_workers: 32
-    momentum: 0.8
-    weight_decay: 0.00001
+    momentum: 0.78
+    weight_decay: 0.0000125
     lazy_dataset: False
     ds_mean: [0.4925, 0.4561, 0.4017]
     ds_std: [0.2909, 0.2837, 0.2993]

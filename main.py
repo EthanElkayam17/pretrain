@@ -7,7 +7,7 @@ import torch.multiprocessing as mp
 from functools import partial
 from utils.data import RexailDataset
 from models.model import CFGCNN
-from utils.transforms import get_stage_transforms, default_transform
+from utils.transforms import get_stage_per_image_transforms, default_transform
 from utils.data import create_dataloaders_and_samplers_from_shared_datasets, calculate_mean_std, create_dataloaders_and_samplers_from_dirs
 from utils.other import dirjoin
 from engine.trainer import trainer
@@ -21,8 +21,6 @@ CLASSES_TO_IGNORE_IN_DEBUGGING = ["b0001",  "b0009",  "b0017",  "b0025",  "b0033
 
 if __name__ == "__main__":
         
-        torch.backends.cuda.matmul.allow_tf32 = True
-
         if len(sys.argv) < 5:
                 raise ValueError("Not enough arguments provided. \n required: MODEL_CONFIG_FILENAME TRAINING_CONFIG_FILENAME STAGES_CONFIG_FILENAME DESIRED_MODEL_NAME")
 
@@ -35,6 +33,8 @@ if __name__ == "__main__":
         STATE_DICTS_DIR = "state_dicts"
 
         MODEL_CONFIG_NAME, TRAINING_SETTINGS_NAME, STAGES_SETTINGS_NAME, MODEL_NAME = sys.argv[1] , sys.argv[2], sys.argv[3], sys.argv[4]
+        assert MODEL_NAME.endswith(".pth") or MODEL_NAME.endswith(".pt"), "model_name should end with '.pt' or '.pth'"
+        
         STAGES_SETTINGS_PATH = (dirjoin(STAGES_SETTINGS_DIR,STAGES_SETTINGS_NAME))
         TRAINING_SETTINGS_PATH = (dirjoin(TRAINING_CONFIG_DIR,TRAINING_SETTINGS_NAME))
         START_EPOCH = 1
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         logger.info(f"---mean and std calculated: mean : {mean}, std : {std} ---")
 
         logger.info("---Creating stage transforms---")
-        transforms = get_stage_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, True, logger)
+        transforms = get_stage_per_image_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, True, logger)
         logger.info("---Stage transform created---\n")
 
 
@@ -154,5 +154,8 @@ if __name__ == "__main__":
                 
                 START_EPOCH = max((START_EPOCH - stage.get('epochs')), 1)
                 logger.info(f"Finished training stage #{str(idx)} \n")
+
+                del train_dataset
+                del test_dataset
 
         logger.info("---FINISHED TRAINING---\n")

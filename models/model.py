@@ -56,7 +56,7 @@ class InvertedResidualDWBlock(nn.Module):
         self.is_residual = stride==1 and in_channels==out_channels
 
         activation_layer = nn.SiLU
-        norm_layer = partial(nn.BatchNorm2d,eps=0.003,momentum=0.925)
+        norm_layer = partial(nn.BatchNorm2d,eps=0.0015,momentum=0.925)
 
         layers: List[nn.Module] = []
         expanded_channels = int(round(in_channels*expansion_ratio))
@@ -131,7 +131,7 @@ class CFGCNN(nn.Module):
             self,
             cfg_name: str,
             cfg_dir: str = CFG_PATH,
-            stochastic_depth_incremental: float = 0.004,
+            stochastic_depth_incremental: float = 0.005,
             dropout_prob_override: float = -1,
             logger = None) -> None:
         """Constructs CNN based on config file

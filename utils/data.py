@@ -175,8 +175,6 @@ class RexailDataset(datasets.VisionDataset):
             with tqdm(total=len(indices)) as pbar:
                 filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader, pbar=pbar)
                 list(executor.map(filler, indices))
-        
-        print("loaded!")
 
 
     @staticmethod

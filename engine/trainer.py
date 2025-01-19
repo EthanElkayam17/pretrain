@@ -266,7 +266,7 @@ def trainer(rank: int,
 
     scaler = torch.cuda.amp.GradScaler()
 
-    for epoch in range(curr_epoch,epochs):
+    for epoch in range(curr_epoch,epochs+1):
         print("epoch:" + str(epoch))
         
         for idx, param_group in enumerate(optimizer.param_groups):
