@@ -134,6 +134,7 @@ def test_step(model: torch.nn.Module,
             test_loss += loss.item()
 
             test_accuracy += ((torch.argmax(torch.softmax(y_res, dim=1), dim=1) == y).sum().item() / len(y_res))
+            torch.nn.functional.softmax
 
             if rank == 0 and (batch % 50 == 0):
                 print(f"testing batch number #{batch}")
