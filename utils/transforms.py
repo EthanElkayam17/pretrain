@@ -6,7 +6,7 @@ import torchvision.transforms.v2 as v2
 import yaml
 from utils.other import dirjoin
 
-def get_stage_per_image_transforms(settings_name: str,
+def get_stages_image_transforms(settings_name: str,
                          settings_dir: str,
                          mean: list,
                          std: list,

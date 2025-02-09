@@ -7,7 +7,7 @@ import torch.multiprocessing as mp
 from functools import partial
 from utils.data import RexailDataset
 from models.model import CFGCNN
-from utils.transforms import get_stage_per_image_transforms, default_transform
+from utils.transforms import get_stages_image_transforms, default_transform
 from utils.data import create_dataloaders_and_samplers_from_shared_datasets, calculate_mean_std, create_dataloaders_and_samplers_from_dirs
 from utils.other import dirjoin, logp
 from engine.trainer import trainer
@@ -81,7 +81,7 @@ if __name__ == "__main__":
         log(f"---mean and std calculated: mean : {mean}, std : {std} ---")
 
         log("---Creating stage transforms---")
-        transforms = get_stage_per_image_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, True, logger)
+        transforms = get_stages_image_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, True)
         log("---Stage transform created---\n")
 
 
