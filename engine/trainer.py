@@ -226,7 +226,7 @@ def trainer(rank: int,
 
     setup(world_size=world_size, rank=rank)
     
-    if logpath is None:
+    if logpath is None or rank != 0:
         logger = logging.getLogger('null_logger')
         logger.addHandler(logging.NullHandler)
     
@@ -279,7 +279,7 @@ def trainer(rank: int,
 
     for epoch in range(curr_epoch,epochs+1):
         
-        log(f"enter epoch: {str(epoch)} in process {rank}")
+        log(f"entering epoch: {str(epoch)} in process {rank}")
         
         for idx, param_group in enumerate(optimizer.param_groups):
             
