@@ -95,7 +95,6 @@ class RexailDataset(datasets.VisionDataset):
 
         if load_into_memory:
             data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
-            print(data_shape_sample)
 
             self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float16).share_memory_()
 
@@ -161,7 +160,6 @@ class RexailDataset(datasets.VisionDataset):
         if transform is not None:
             sample = transform(sample)
             
-        print(sample.shape)
         data[index] = sample.detach().clone()
 
         if pbar is not None:
