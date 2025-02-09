@@ -241,7 +241,7 @@ def trainer(rank: int,
     log = partial(logp, logger=logger)
 
 
-    model = CFGCNN(cfg_name=model_cfg_name, logger=logger, dropout_prob_override=dropout_prob).to(rank)
+    model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
 
     if (load_state_dict_path is not None) and (rank == 0):
