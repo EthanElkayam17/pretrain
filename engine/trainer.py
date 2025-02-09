@@ -81,8 +81,6 @@ def train_step(model: torch.nn.Module,
 
     train_loss, train_accuracy = 0 , 0
     for batch, (X,y) in enumerate(dataloader):
-        print(X.shape)
-        print(X.dtype)
         X, y = X.to(rank) , y.to(rank)
 
         optimizer.zero_grad()
