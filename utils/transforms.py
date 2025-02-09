@@ -41,7 +41,7 @@ def get_stages_image_transforms(settings_name: str,
             ])
 
             augmentation_transform = v2.Compose([
-                v2.ToImage(),
+                v2.ToDtype(torch.float32, scale=True),
                 cropper,
                 v2.RandomHorizontalFlip(0.5),
                 v2.RandomVerticalFlip(0.5),
