@@ -9,7 +9,7 @@ from utils.data import RexailDataset
 from models.model import CFGCNN
 from utils.transforms import get_stage_per_image_transforms, default_transform
 from utils.data import create_dataloaders_and_samplers_from_shared_datasets, calculate_mean_std, create_dataloaders_and_samplers_from_dirs
-from utils.other import dirjoin
+from utils.other import dirjoin, logp
 from engine.trainer import trainer
 
 CLASSES_TO_IGNORE_IN_DEBUGGING = ["b0001",  "b0009",  "b0017",  "b0025",  "b0033",  "b0041",  "b0049", "b0057",  "b0065",  "b0073",  "b0081",  "b0089",  "b0097",  "b0105",  "b0113",  "b0121",  "b0129",  "b0137",  "b0145",  "b0153",  "b0161",  "b0169",  "b0177",  "b0185",  "b0193",
@@ -22,10 +22,10 @@ CLASSES_TO_IGNORE_IN_DEBUGGING = ["b0001",  "b0009",  "b0017",  "b0025",  "b0033
 if __name__ == "__main__":
         
         if len(sys.argv) < 5:
-                raise ValueError("Not enough arguments provided. \n required: MODEL_CONFIG_FILENAME TRAINING_CONFIG_FILENAME STAGES_CONFIG_FILENAME DESIRED_MODEL_NAME")
+                raise ValueError("Not enough arguments provided. \n required: MODEL_CONFIG_FILENAME , TRAINING_CONFIG_FILENAME , STAGES_CONFIG_FILENAME , DESIRED_MODEL_NAME")
 
-        TRAIN_DIR = "/workspace/train/"
-        TEST_DIR = "/workspace/train/"
+        TRAIN_DIR = "/workspace/dataset/train/"
+        TEST_DIR = "/workspace/dataset/train/"
 
         STAGES_SETTINGS_DIR = "configs/training/stages"
         MODEL_CONFIG_DIR = "configs/architecture"
@@ -43,15 +43,17 @@ if __name__ == "__main__":
 
         if not os.path.exists("logs/"): 
                 os.makedirs("logs/")
-        logname = (f"logs/{sys.argv[5]}" if len(sys.argv) >= 6 else "logs/log.txt")
+        logpath = (f"logs/{sys.argv[5]}" if len(sys.argv) >= 6 else "logs/log.txt")
 
-        logging.basicConfig(filename=logname,
+        logging.basicConfig(filename=logpath,
                         filemode='a',
                         format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                         datefmt='%H:%M:%S',
                         level=logging.INFO)
         logger = logging.getLogger('log')
-        logger.info("------LOGGING: .(" + MODEL_NAME + "). ------")
+        log = partial(logp, logger=logger)
+        
+        log("------LOGGING: .(" + MODEL_NAME + "). ------")
 
 
         SAVED_MODEL_FNAME = input("If continuing from checkpoint, enter saved model's file name (else, leave null): ")
@@ -64,26 +66,26 @@ if __name__ == "__main__":
                 else:
                         START_EPOCH = 1
 
-        logger.info("---Model created---\n")
+        log("---Model created---\n")
 
-        logger.info("Setting up training env")
+        log("Setting up training env")
         with open(TRAINING_SETTINGS_PATH, 'r') as training_settings_file:
                 train_cfg = (yaml.safe_load(training_settings_file)).get('training_general')[0]
 
-        logger.info("---Calculating std and mean across training set---")
+        log("---Calculating std and mean across training set---")
         mean, std = train_cfg.get('ds_mean'), train_cfg.get('ds_std')
 
         if (mean is None) or (std is None):
                 mean, std = calculate_mean_std(TRAIN_DIR)
 
-        logger.info(f"---mean and std calculated: mean : {mean}, std : {std} ---")
+        log(f"---mean and std calculated: mean : {mean}, std : {std} ---")
 
-        logger.info("---Creating stage transforms---")
+        log("---Creating stage transforms---")
         transforms = get_stage_per_image_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, True, logger)
-        logger.info("---Stage transform created---\n")
+        log("---Stage transform created---\n")
 
 
-        logger.info("---STARTING TRAINING---")
+        log("---STARTING TRAINING---")
         with open(STAGES_SETTINGS_PATH, 'r') as stages_settings_file:
                 stages_cfg = (yaml.safe_load(stages_settings_file))
 
@@ -127,7 +129,7 @@ if __name__ == "__main__":
                                                             batch_size=train_cfg.get('batch_size'),
                                                             num_workers=train_cfg.get('dataloader_num_workers'))
 
-                logger.info(f"Starting training stage #{str(idx)}")
+                log(f"Starting training stage #{str(idx)}")
                 mp.spawn(
                     trainer,
                     args=(WORLD_SIZE, 
@@ -147,15 +149,12 @@ if __name__ == "__main__":
                           START_EPOCH,
                           MODEL_NAME,
                           SAVED_MODEL_PATH,
-                          logger),
+                          logpath),
                     nprocs=WORLD_SIZE,
                     join=True
                 )
                 
                 START_EPOCH = max((START_EPOCH - stage.get('epochs')), 1)
-                logger.info(f"Finished training stage #{str(idx)} \n")
+                log(f"Finished training stage #{str(idx)} \n")
 
-                del train_dataset
-                del test_dataset
-
-        logger.info("---FINISHED TRAINING---\n")
+        log("---FINISHED TRAINING---\n")

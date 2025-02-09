@@ -5,6 +5,7 @@ import os
 import torch.distributed as dist
 import torch.multiprocessing as mp
 import torch.optim.optimizer
+from utils.other import logp
 from torch.utils.data import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel
 from functools import partial
@@ -183,7 +184,7 @@ def trainer(rank: int,
           curr_epoch: int = 1,
           model_name: str = "model",
           load_state_dict_path: str = None,
-          logger = None):
+          logpath = None):
 
     """Train and test CFGCNN networks using multiple GPUs
     
@@ -207,7 +208,7 @@ def trainer(rank: int,
         curr_epoch: current epoch (in case of model checkpoint loading).
         model_name: name of model's state_dict file that will be saved.
         load_state_dict_path: path to state dict to load at the start of training.
-        logger: logging function.
+        logpath: logging file name path.
     """
 
     if curr_epoch > epochs:
@@ -221,16 +222,25 @@ def trainer(rank: int,
     
     if not (decay_mode in DECAY_MODE_TO_FUNC.keys()):
         raise ValueError(f"Invalid decay mode, should be one of {DECAY_MODE_TO_FUNC.keys()}")
-    
     decay = DECAY_MODE_TO_FUNC.get(decay_mode)
 
-    if logger is None: #FIGURE OUT PROBLEM WITH LOGGING WITHIN PROCESSES AND REWRITE ALL THE LOGGINGS
+    setup(world_size=world_size, rank=rank)
+    
+    if logpath is None:
         logger = logging.getLogger('null_logger')
         logger.addHandler(logging.NullHandler)
-
-
     
-    setup(world_size=world_size, rank=rank)
+    else:
+        logging.basicConfig(filename=logpath,
+                        filemode='a',
+                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                        datefmt='%H:%M:%S',
+                        level=logging.INFO)
+        logger = logging.getLogger('log')
+    
+    log = partial(logp, logger=logger)
+
+
     model = CFGCNN(cfg_name=model_cfg_name, logger=logger, dropout_prob_override=dropout_prob).to(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
 
@@ -259,24 +269,25 @@ def trainer(rank: int,
                                 weight_decay=weight_decay)
 
 
-    logger.info(f"---Creating dataloaders..---")
+    log(f"---Creating dataloaders in process {rank}..---")
     train_sampler: DistributedSampler 
     test_sampler: DistributedSampler
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
-    logger.info("---Dataloaders created---\n")
+    log(f"---Dataloaders in process {rank} created---\n")
 
     scaler = torch.cuda.amp.GradScaler()
 
     for epoch in range(curr_epoch,epochs+1):
-        print("epoch:" + str(epoch))
+        
+        log(f"enter epoch: {str(epoch)} in process {rank}")
         
         for idx, param_group in enumerate(optimizer.param_groups):
             
             if decay is not None:
                 param_group["lr"] = decay(epoch)
                 
-            if idx == 0:
-                print(f"Learning rate adjusted to: {param_group['lr']}")
+            if idx == 0 and rank == 0:
+                log(f"Learning rate adjusted to: {param_group['lr']}")
 
 
         train_sampler.set_epoch(epoch)
@@ -295,7 +306,7 @@ def trainer(rank: int,
                                    rank=rank)
         
 
-        print(f"Epoch: {epoch}. \n Train loss: {train_loss}, Train Acc: {train_acc}. \n Test loss: {test_loss}, Test acc: {test_acc}. \n")
+        log(f"Rank: {rank}. \n Epoch: {epoch}. \n Train loss: {train_loss}, Train Acc: {train_acc}. \n Test loss: {test_loss}, Test acc: {test_acc}. \n")
 
     
     if rank == 0:

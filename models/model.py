@@ -56,7 +56,7 @@ class InvertedResidualDWBlock(nn.Module):
         self.is_residual = stride==1 and in_channels==out_channels
 
         activation_layer = nn.SiLU
-        norm_layer = partial(nn.BatchNorm2d,eps=0.0015,momentum=0.975)
+        norm_layer = partial(nn.BatchNorm2d,eps=0.0015,momentum=0.925)
 
         layers: List[nn.Module] = []
         expanded_channels = int(round(in_channels*expansion_ratio))
@@ -132,8 +132,7 @@ class CFGCNN(nn.Module):
             cfg_name: str,
             cfg_dir: str = CFG_PATH,
             stochastic_depth_incremental: float = 0.0055,
-            dropout_prob_override: float = -1,
-            logger = None) -> None:
+            dropout_prob_override: float = -1) -> None:
         """Constructs CNN based on config file
         
         Args:
@@ -141,7 +140,6 @@ class CFGCNN(nn.Module):
             cfg_dir: path to config directory.
             stochastic_depth_incremental: step size for stochastic depth for each layer.
             dropout_prob_override: override dropout_prob on config file.
-            logger: logging function.
         """
         
         super().__init__()
@@ -155,19 +153,13 @@ class CFGCNN(nn.Module):
         raw_param_names = []
         current_stochastic_depth = 0
 
-        
-        if logger is None:
-            logger = logging.getLogger('null_logger')
-            logger.addHandler(logging.NullHandler)
 
-        logger.info("Creating CFGCNN")
         cfg_path = (dirjoin(cfg_dir,cfg_name))
         with open(cfg_path, 'r') as cfg_file:
             cfg = (yaml.safe_load(cfg_file))
         
 
         for stage in cfg.get('model_stages'):
-            logger.info(f"Adding {stage.get('type')} stage")
             match stage.get('type'):
                 case 'conv':
                     layers.append(
@@ -175,7 +167,7 @@ class CFGCNN(nn.Module):
                                             stride=stage.get('stride'),
                                             in_channels=stage.get('in_channels'),
                                             out_channels=stage.get('out_channels'),
-                                            norm_layer=partial(nn.BatchNorm2d,eps=0.0015,momentum=0.975),
+                                            norm_layer=partial(nn.BatchNorm2d,eps=0.0015,momentum=0.925),
                                             activation_layer=nn.SiLU)
                     )
                     

@@ -10,8 +10,7 @@ def get_stage_per_image_transforms(settings_name: str,
                          settings_dir: str,
                          mean: list,
                          std: list,
-                         divide_crop_and_augment: bool = False,
-                         logger = None):
+                         divide_crop_and_augment: bool = False):
     
     """Create custom transform based on each training stage in settings.yaml file.
     
@@ -21,15 +20,10 @@ def get_stage_per_image_transforms(settings_name: str,
         mean: mean rgb value to normalize by.
         std: standard deviation to normalize by.
         divide_crop_and_augment: whether to divide each transform into a tuple of cropper transform and augmentation transform
-        logger: logging function.
     
     Returns: [batched_transform_stage_1, ... , batched_transform_stage_n]
     """
-    
-    if logger is None:
-            logger = logging.getLogger('null_logger')
-            logger.addHandler(logging.NullHandler)
-    
+     
     SETTINGS_PATH = dirjoin(settings_dir,settings_name)
     transforms: List[v2.Transform] = []
 
@@ -38,7 +32,6 @@ def get_stage_per_image_transforms(settings_name: str,
     
 
     for idx, stage in enumerate(settings.get('training_stages')):
-        logger.info("Creating #" + str(idx) + " transform")
         cropper = v2.CenterCrop(size=stage.get('res')) if stage.get('centered') else v2.RandomResizedCrop(size=stage.get('res'))
         
         if divide_crop_and_augment:
