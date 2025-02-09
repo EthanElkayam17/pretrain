@@ -32,11 +32,11 @@ def get_stages_image_transforms(settings_name: str,
     
 
     for idx, stage in enumerate(settings.get('training_stages')):
-        cropper = v2.CenterCrop(size=(stage.get('res'),stage.get('res'))) if stage.get('centered') else v2.RandomResizedCrop(size=(stage.get('res'),stage.get('res')))
+        cropper = v2.CenterCrop(size=(stage.get('res'),stage.get('res'))) if stage.get('centered') else v2.RandomResizedCrop(size=(stage.get('res'),stage.get('res')), antialias=True)
         
         if divide_crop_and_augment:
             cropper_transform = v2.Compose([ 
-                v2.Resize((stage.get('resize'),stage.get('resize'))),
+                v2.Resize(size=(stage.get('resize'),stage.get('resize')), antialias=True),
                 v2.Compose([v2.ToImage(), v2.ToDtype(torch.float16, scale=True)])
             ])
 
