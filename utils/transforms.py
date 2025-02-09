@@ -37,12 +37,12 @@ def get_stages_image_transforms(settings_name: str,
         if divide_crop_and_augment:
             cropper_transform = v2.Compose([ 
                 v2.Resize(stage.get('resize')),
-                cropper,
                 v2.Compose([v2.ToImage(), v2.ToDtype(torch.float16, scale=True)])
             ])
 
             augmentation_transform = v2.Compose([
-                v2.ToDtype(torch.float32, scale=True),
+                v2.ToImage(),
+                cropper,
                 v2.RandomHorizontalFlip(0.5),
                 v2.RandomVerticalFlip(0.5),
                 v2.RandAugment(magnitude=stage.get('RandAugment_magnitude')),
