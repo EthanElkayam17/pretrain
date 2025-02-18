@@ -2,7 +2,7 @@
 training_stages:
   
   - id: 0
-    resize: 164
+    resize: 146
     res: 124
     centered: False
     RandAugment_magnitude: 5
