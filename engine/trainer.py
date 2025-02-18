@@ -3,8 +3,8 @@ import logging
 import math
 import os
 import torch.distributed as dist
-import torch.multiprocessing as mp
 import torch.optim.optimizer
+from torch import Tensor
 from utils.other import logp
 from torch.utils.data import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel
@@ -12,7 +12,6 @@ from functools import partial
 from typing import Tuple, Union, Callable, Any
 from utils.checkpoint import save_state_dict
 from models.model import CFGCNN
-from torchvision.models.efficientnet import efficientnet_v2_s
 
 
 def warmup_to_cosine_decay(epoch: int,
@@ -62,8 +61,8 @@ def train_step(model: torch.nn.Module,
                dataloader: torch.utils.data.DataLoader, 
                loss_fn: torch.nn.Module, 
                optimizer: torch.optim.Optimizer,
-               rank: Any,
-               scaler: torch.cuda.amp.GradScaler) -> Tuple[float, float]:
+               rank: Any
+               ) -> Tuple[float, float]:
     
     """Basic train for a single epoch.
 
@@ -182,7 +181,7 @@ def trainer(rank: int,
           decay_mode: str = "none",
           exp_decay_factor: float = 0,
           curr_epoch: int = 1,
-          model_name: str = "model",
+          model_name: str = "model.pth",
           load_state_dict_path: str = None,
           logpath = None):
 
@@ -272,10 +271,10 @@ def trainer(rank: int,
     log(f"---Creating dataloaders in process {rank}..---")
     train_sampler: DistributedSampler 
     test_sampler: DistributedSampler
+
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
     log(f"---Dataloaders in process {rank} created---\n")
 
-    scaler = torch.cuda.amp.GradScaler()
 
     for epoch in range(curr_epoch,epochs+1):
         
@@ -297,8 +296,7 @@ def trainer(rank: int,
                                       dataloader=train_dataloader,
                                       loss_fn=loss_fn,
                                       optimizer=optimizer,
-                                      rank=rank,
-                                      scaler=scaler)
+                                      rank=rank)
         
         test_loss, test_acc = test_step(model=model,
                                    dataloader=test_dataloader,

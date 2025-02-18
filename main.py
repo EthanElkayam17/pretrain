@@ -7,7 +7,7 @@ import torch.multiprocessing as mp
 from functools import partial
 from utils.data import RexailDataset
 from models.model import CFGCNN
-from utils.transforms import get_stages_image_transforms, default_transform
+from utils.transforms import get_stages_image_transforms, collate_cutmix_or_mixup_transform
 from utils.data import create_dataloaders_and_samplers_from_shared_datasets, calculate_mean_std, create_dataloaders_and_samplers_from_dirs
 from utils.other import dirjoin, logp
 from engine.trainer import trainer
@@ -108,7 +108,10 @@ if __name__ == "__main__":
                                                                  test_transform=(transforms[idx])[1],
                                                                  test_pre_transform=(transforms[idx])[0],
                                                                  train_decider=train_decider,
-                                                                 test_decider=test_decider)
+                                                                 test_decider=test_decider,
+                                                                 external_collate_func_builder=partial(collate_cutmix_or_mixup_transform,
+                                                                                                  cutmix_alpha=stage.get('cutmix_alpha'),
+                                                                                                  mixup_alpha=stage.get('mixup_alpha')))
 
                 else:
                     train_dataset = RexailDataset(root=TRAIN_DIR,
@@ -129,7 +132,10 @@ if __name__ == "__main__":
                                                             train_dataset=train_dataset,
                                                             test_dataset=test_dataset,
                                                             batch_size=train_cfg.get('batch_size'),
-                                                            num_workers=train_cfg.get('dataloader_num_workers'))
+                                                            num_workers=train_cfg.get('dataloader_num_workers'),
+                                                            external_collate_func_builder=partial(collate_cutmix_or_mixup_transform,
+                                                                                                  cutmix_alpha=stage.get('cutmix_alpha'),
+                                                                                                  mixup_alpha=stage.get('mixup_alpha')))
 
                 log(f"Starting training stage #{str(idx)}")
                 mp.spawn(

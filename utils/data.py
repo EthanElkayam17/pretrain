@@ -11,9 +11,10 @@ from pathlib import Path
 from PIL import Image
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, Dataset, DistributedSampler
+from torch.utils.data import DataLoader, Dataset, DistributedSampler, default_collate
 from utils.transforms import default_transform
 from utils.other import dirjoin
+from torch import Tensor
 
 def default_decider(path: str) -> bool:
         """Default decider"""
@@ -89,6 +90,7 @@ class RexailDataset(datasets.VisionDataset):
         self.extensions = extensions
 
         self.classes = classes
+        self.num_classes = len(classes)
 
         self.samples = self.make_dataset()
         self.targets = [s[1] for s in self.samples]
@@ -273,6 +275,8 @@ class WrappedRexailDataset(Dataset):
         self.targets = copy.deepcopy(shared_dataset.targets)
         self.data = shared_dataset.data
         self.transform = shared_dataset.transform
+        self.classes = shared_dataset.classes
+        self.num_classes = shared_dataset.num_classes
     
 
     def __len__(self) -> int:
@@ -289,6 +293,13 @@ class WrappedRexailDataset(Dataset):
             sample = self.transform(sample)
             
         return tuple([sample,target])
+
+
+def custom_collate_fn(func: Callable[[Tensor,Tensor], Tuple[Tensor,Tensor]],
+                      batch: Tuple[Tensor, Tensor]):
+    """Apply custom function to bath of data fetched from dataloader"""
+
+    return func(*default_collate(batch))
 
 
 def create_dataloaders_and_samplers_from_dirs(
@@ -309,6 +320,7 @@ def create_dataloaders_and_samplers_from_dirs(
         ignore_classes: List[str] = list(),
         storewise: bool = False,
         weighed: bool = False,
+        external_collate_func_builder: Union[Callable, None] = None
     ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
     """Creates training/testing dataloaders from training/testing directories
     
@@ -330,6 +342,7 @@ def create_dataloaders_and_samplers_from_dirs(
         ignore_classes: classes to ignore when making training/testing sets.
         storewise: whether both training and testing directories are partitioned store-wise inside each class.
         weighed: whether the file names contain weight data.
+        external_collate_func_builder: builder for external collate function that should expect num_classes.
 
     Returns: (train_dataloader, train_sampler, test_dataloader, test_sampler)
     """
@@ -359,12 +372,21 @@ def create_dataloaders_and_samplers_from_dirs(
     train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
     test_sampler = DistributedSampler(test_data, num_replicas=world_size, rank=rank, shuffle=False)
     
+    if external_collate_func_builder is not None:
+        external_collate_func = external_collate_func_builder(train_data.num_classes)
+        collate_fn = partial(custom_collate_fn,
+                            external_collate_func)
+    
+    else:
+        collate_fn = None
+
     train_dataloader = DataLoader(
         dataset=train_data,
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
         sampler=train_sampler,
+        collate_fn=collate_fn,
 
         # Try to avoid costs of transfer between pageable and pinned memory
         pin_memory=True
@@ -389,6 +411,7 @@ def create_dataloaders_and_samplers_from_shared_datasets(
         test_dataset: RexailDataset,
         batch_size: int,
         num_workers: int = 0,
+        external_collate_func_builder: Union[Callable, None] = None
     ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
         """Create dataloaders and samplers from shared RexailDatasets
         
@@ -410,12 +433,21 @@ def create_dataloaders_and_samplers_from_shared_datasets(
         train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
         test_sampler = DistributedSampler(test_data, num_replicas=world_size, rank=rank, shuffle=False)
 
+        if external_collate_func_builder is not None:
+            external_collate_func = external_collate_func_builder(train_data.num_classes)
+            collate_fn = partial(custom_collate_fn,
+                                external_collate_func)
+        
+        else:
+            collate_fn = None
+
         train_dataloader = DataLoader(
             dataset=train_data,
             batch_size=batch_size,
             shuffle=False,
             num_workers=num_workers,
             sampler=train_sampler,
+            collate_fn=collate_fn,
 
             # Try to avoid costs of transfer between pageable and pinned memory
             pin_memory=True

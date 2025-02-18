@@ -89,3 +89,22 @@ def default_transform(resize: tuple = (224,224),
                 v2.Normalize(mean=mean, std=std)
            ])
      return res
+
+
+def collate_cutmix_or_mixup_transform(mixup_alpha: float,
+                                      cutmix_alpha: float,
+                                      numclasses: int):
+    """Apply cutmix or mixup on batches fetched from dataloader
+    
+    Args:
+        cutmix_alpha: alpha coefficient for cutmix
+        mixup_alpha: alpha coefficient for mixup
+        numclasses: number of classes
+    """
+    
+    mixup = v2.MixUp(num_classes=numclasses, alpha=mixup_alpha)
+    cutmix = v2.CutMix(num_classes=numclasses, alpha=cutmix_alpha)
+
+    func = v2.RandomChoice([cutmix,mixup])
+    
+    return func
