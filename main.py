@@ -94,8 +94,8 @@ if __name__ == "__main__":
 
         for idx, stage in enumerate(stages_cfg.get('training_stages')):
                 
-                train_decider = partial(RexailDataset.sha256_modulo_split,ratio=70)
-                test_decider = partial(RexailDataset.sha256_modulo_split,ratio=70, complement=True)
+                train_decider = partial(RexailDataset.sha256_modulo_split,ratio=80)
+                test_decider = partial(RexailDataset.sha256_modulo_split,ratio=80, complement=True)
                 
                 if train_cfg.get('lazy_dataset', False):
                         create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_dirs,
@@ -144,7 +144,7 @@ if __name__ == "__main__":
                           stage.get('dropout_prob'),
                           stage.get('warmup_epochs'),
                           torch.optim.RMSprop,
-                          torch.nn.CrossEntropyLoss(),
+                          torch.nn.CrossEntropyLoss(label_smoothing=0.1),
                           stage.get('epochs'),
                           stage.get('decay_mode'),
                           stage.get('decay_factor', 0),

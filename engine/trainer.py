@@ -279,7 +279,7 @@ def trainer(rank: int,
 
     for epoch in range(curr_epoch,epochs+1):
         
-        log(f"entering epoch: {str(epoch)} in process {rank}")
+        log(f"entering epoch: {str(epoch)} in process {rank} \n")
         
         for idx, param_group in enumerate(optimizer.param_groups):
             
@@ -306,7 +306,7 @@ def trainer(rank: int,
                                    rank=rank)
         
 
-        log(f"Rank: {rank}. \n Epoch: {epoch}. \n Train loss: {train_loss}, Train Acc: {train_acc}. \n Test loss: {test_loss}, Test acc: {test_acc}. \n")
+        log(f"Rank: {rank}. \n Epoch: {epoch}. \n Train loss: {train_loss}, Train Acc: {train_acc}. \n Test loss: {test_loss}, Test acc: {test_acc}.")
 
     
     if rank == 0:
