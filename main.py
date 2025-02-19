@@ -163,6 +163,7 @@ if __name__ == "__main__":
                 )
                 
                 START_EPOCH = max((START_EPOCH - stage.get('epochs')), 1)
+                SAVED_MODEL_PATH = f"state_dicts/{MODEL_NAME}"
                 log(f"Finished training stage #{str(idx)} \n")
 
         log("---FINISHED TRAINING---\n")
