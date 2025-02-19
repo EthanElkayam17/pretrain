@@ -10,8 +10,24 @@ training_stages:
     lr_min: 0.00005
     lr_max: 0.0005
     decay_mode: exp
-    decay_factor: 0.9845
+    decay_factor: 0.9825
     warmup_epochs: 15
     epochs: 100
-    cutmix_alpha: 1.0
-    mixup_alpha: 0.1
+    cutmix_alpha: 0.0
+    mixup_alpha: 0.0
+
+  - id: 0
+    resize: 184
+    res: 168
+    centered: False
+    RandAugment_magnitude: 8
+    dropout_prob: 0.15
+    lr_min: 0.0000125
+    lr_max: 0.000125
+    decay_mode: exp
+    decay_factor: 0.975
+    warmup_epochs: 15
+    epochs: 100
+    cutmix_alpha: 0.0
+    mixup_alpha: 0.0
+
