@@ -82,10 +82,14 @@ def train_step(model: torch.nn.Module,
     for batch, (X,y) in enumerate(dataloader):
         X, y = X.to(rank) , y.to(rank)
 
+        print(X.shape)
+        print(y.shape)
+
         optimizer.zero_grad()
 
         y_res = model(X).to(rank)
         loss = loss_fn(y_res,y)
+        print(y_res.shape)
 
         loss.backward()
 
