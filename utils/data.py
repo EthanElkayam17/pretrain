@@ -295,8 +295,8 @@ class WrappedRexailDataset(Dataset):
         return tuple([sample,target])
 
 
-def custom_collate_fn(func: Callable[[Tensor,Tensor], Tuple[Tensor,Tensor]],
-                      batch: Tuple[Tensor, Tensor]):
+def custom_collate_fn(batch: Tuple[Tensor, Tensor],
+                      func: Callable[[Tensor,Tensor], Tuple[Tensor,Tensor]]):
     """Apply custom function to bath of data fetched from dataloader"""
 
     return func(*default_collate(batch))

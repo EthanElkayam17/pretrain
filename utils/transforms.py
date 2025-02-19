@@ -91,9 +91,9 @@ def default_transform(resize: tuple = (224,224),
      return res
 
 
-def collate_cutmix_or_mixup_transform(mixup_alpha: float,
-                                      cutmix_alpha: float,
-                                      numclasses: int):
+def collate_cutmix_or_mixup_transform(numclasses: int,
+                                      mixup_alpha: float,
+                                      cutmix_alpha: float):
     """Apply cutmix or mixup on batches fetched from dataloader
     
     Args:
