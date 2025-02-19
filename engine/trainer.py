@@ -88,8 +88,8 @@ def train_step(model: torch.nn.Module,
         optimizer.zero_grad()
 
         y_res = model(X).to(rank)
-        loss = loss_fn(y_res,y)
         print(y_res.shape)
+        loss = loss_fn(y_res,y)
 
         loss.backward()
 
