@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
         for idx, stage in enumerate(stages_cfg.get('training_stages')):                
                 
-                if START_EPOCH == stage.get('epochs'):       
+                if START_EPOCH < stage.get('epochs'):       
                     train_decider = partial(RexailDataset.sha256_modulo_split,ratio=80)
                     test_decider = partial(RexailDataset.sha256_modulo_split,ratio=80, complement=True)
                     
