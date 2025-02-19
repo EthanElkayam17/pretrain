@@ -132,10 +132,7 @@ if __name__ == "__main__":
                                                             train_dataset=train_dataset,
                                                             test_dataset=test_dataset,
                                                             batch_size=train_cfg.get('batch_size'),
-                                                            num_workers=train_cfg.get('dataloader_num_workers'),
-                                                            external_collate_func_builder=partial(collate_cutmix_or_mixup_transform,
-                                                                                                  cutmix_alpha=stage.get('cutmix_alpha'),
-                                                                                                  mixup_alpha=stage.get('mixup_alpha')))
+                                                            num_workers=train_cfg.get('dataloader_num_workers'))
 
                 log(f"Starting training stage #{str(idx)}")
                 mp.spawn(
@@ -150,7 +147,7 @@ if __name__ == "__main__":
                           stage.get('dropout_prob'),
                           stage.get('warmup_epochs'),
                           torch.optim.RMSprop,
-                          torch.nn.CrossEntropyLoss(label_smoothing=0.02),
+                          torch.nn.CrossEntropyLoss(label_smoothing=0),
                           stage.get('epochs'),
                           stage.get('decay_mode'),
                           stage.get('decay_factor', 0),
