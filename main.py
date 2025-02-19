@@ -173,8 +173,7 @@ if __name__ == "__main__":
                         del train_dataset
                         del test_dataset
 
-                    log(f"Finished training stage #{str(idx)} \n")
-
+                log(f"Finished training stage #{str(idx)} \n")
                 START_EPOCH = max((START_EPOCH - stage.get('epochs')), 1)
 
         log("---FINISHED TRAINING---\n")
