@@ -97,6 +97,14 @@ if __name__ == "__main__":
                 train_decider = partial(RexailDataset.sha256_modulo_split,ratio=80)
                 test_decider = partial(RexailDataset.sha256_modulo_split,ratio=80, complement=True)
                 
+                if stage.get('cutmix_alpha') == 0.0 or stage.get('mixup_alpha') == 0.0:
+                        external_collate_func_builder = None
+                
+                else:
+                    external_collate_func_builder=partial(collate_cutmix_or_mixup_transform,
+                                                          cutmix_alpha=stage.get('cutmix_alpha'),
+                                                          mixup_alpha=stage.get('mixup_alpha'))
+
                 if train_cfg.get('lazy_dataset', False):
                         create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_dirs,
                                                                  train_dir=TRAIN_DIR,
@@ -109,9 +117,7 @@ if __name__ == "__main__":
                                                                  test_pre_transform=(transforms[idx])[0],
                                                                  train_decider=train_decider,
                                                                  test_decider=test_decider,
-                                                                 external_collate_func_builder=partial(collate_cutmix_or_mixup_transform,
-                                                                                                  cutmix_alpha=stage.get('cutmix_alpha'),
-                                                                                                  mixup_alpha=stage.get('mixup_alpha')))
+                                                                 external_collate_func_builder=external_collate_func_builder)
 
                 else:
                     train_dataset = RexailDataset(root=TRAIN_DIR,
@@ -133,9 +139,7 @@ if __name__ == "__main__":
                                                             test_dataset=test_dataset,
                                                             batch_size=train_cfg.get('batch_size'),
                                                             num_workers=train_cfg.get('dataloader_num_workers'),
-                                                            external_collate_func_builder=partial(collate_cutmix_or_mixup_transform,
-                                                                                                  cutmix_alpha=stage.get('cutmix_alpha'),
-                                                                                                  mixup_alpha=stage.get('mixup_alpha')))
+                                                            external_collate_func_builder=external_collate_func_builder)
 
                 log(f"Starting training stage #{str(idx)}")
                 mp.spawn(
