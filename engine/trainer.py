@@ -57,6 +57,28 @@ def warmup_to_exponential_decay(epoch: int,
         return max((lr_max * (decay_factor**(epoch-warmup_epochs))),lr_min)
 
 
+def top1acc(y_pred: Tensor,
+            y_real: Tensor) -> float:
+    """Calculate the top 1 accuracy of a single prediction
+    
+    Args:
+        y_pred: The predicted tensor, should be of shape [batchsize, num_of_classes] or [batch_size]
+        y_real: The real tensor to be predicted, should be of shape [batchsize] 
+    """
+
+    preds = torch.argmax(y_pred, dim=1)
+    
+    if y_real.dim() == 2:
+        targets = torch.argmax(y_real, dim=1)
+    else:
+        targets = y_real
+
+    correct = (preds == targets).sum().item()
+    accuracy = correct / len(targets)
+
+    return accuracy
+
+
 def train_step(model: torch.nn.Module, 
                dataloader: torch.utils.data.DataLoader, 
                loss_fn: torch.nn.Module, 
@@ -82,13 +104,9 @@ def train_step(model: torch.nn.Module,
     for batch, (X,y) in enumerate(dataloader):
         X, y = X.to(rank) , y.to(rank)
 
-        print(X.shape)
-        print(y.shape)
-
         optimizer.zero_grad()
 
         y_res = model(X).to(rank)
-        print(y_res.shape)
         loss = loss_fn(y_res,y)
 
         loss.backward()
@@ -96,7 +114,7 @@ def train_step(model: torch.nn.Module,
         optimizer.step()
 
         train_loss += loss.item()
-        train_accuracy += ((torch.argmax(torch.softmax(y_res, dim=1), dim=1) == y).sum().item() / len(y_res))
+        train_accuracy += top1acc(y_res,y)
 
         if rank == 0 and (batch % 50 == 0):
             print(f"training batch number #{batch}")
