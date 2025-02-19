@@ -435,8 +435,9 @@ def create_dataloaders_and_samplers_from_shared_datasets(
 
         if external_collate_func_builder is not None:
             external_collate_func = external_collate_func_builder(train_data.num_classes)
+            print(train_data.num_classes) #REMOVE
             collate_fn = partial(custom_collate_fn,
-                                external_collate_func)
+                                func=external_collate_func)
         
         else:
             collate_fn = None
