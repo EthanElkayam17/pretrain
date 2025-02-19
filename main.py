@@ -92,87 +92,89 @@ if __name__ == "__main__":
                 stages_cfg = (yaml.safe_load(stages_settings_file))
 
 
-        for idx, stage in enumerate(stages_cfg.get('training_stages')):
+        for idx, stage in enumerate(stages_cfg.get('training_stages')):                
                 
-                train_decider = partial(RexailDataset.sha256_modulo_split,ratio=80)
-                test_decider = partial(RexailDataset.sha256_modulo_split,ratio=80, complement=True)
-                
-                if stage.get('cutmix_alpha') == 0.0 or stage.get('mixup_alpha') == 0.0:
-                        external_collate_func_builder = None
-                
-                else:
-                    external_collate_func_builder=partial(collate_cutmix_or_mixup_transform,
-                                                          cutmix_alpha=stage.get('cutmix_alpha'),
-                                                          mixup_alpha=stage.get('mixup_alpha'))
+                if START_EPOCH == stage.get('epochs'):       
+                    train_decider = partial(RexailDataset.sha256_modulo_split,ratio=80)
+                    test_decider = partial(RexailDataset.sha256_modulo_split,ratio=80, complement=True)
+                    
+                    if stage.get('cutmix_alpha') == 0.0 or stage.get('mixup_alpha') == 0.0:
+                            external_collate_func_builder = None
+                    
+                    else:
+                        external_collate_func_builder=partial(collate_cutmix_or_mixup_transform,
+                                                            cutmix_alpha=stage.get('cutmix_alpha'),
+                                                            mixup_alpha=stage.get('mixup_alpha'))
 
-                if train_cfg.get('lazy_dataset', False):
-                        create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_dirs,
-                                                                 train_dir=TRAIN_DIR,
-                                                                 test_dir=TEST_DIR,
-                                                                 batch_size=train_cfg.get('batch_size'),
-                                                                 num_workers=train_cfg.get('dataloader_num_workers'),
-                                                                 train_transform=(transforms[idx])[1],
-                                                                 train_pre_transform=(transforms[idx])[0],
-                                                                 test_transform=(transforms[idx])[1],
-                                                                 test_pre_transform=(transforms[idx])[0],
-                                                                 train_decider=train_decider,
-                                                                 test_decider=test_decider,
-                                                                 external_collate_func_builder=external_collate_func_builder)
+                    if train_cfg.get('lazy_dataset', False):
+                            create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_dirs,
+                                                                    train_dir=TRAIN_DIR,
+                                                                    test_dir=TEST_DIR,
+                                                                    batch_size=train_cfg.get('batch_size'),
+                                                                    num_workers=train_cfg.get('dataloader_num_workers'),
+                                                                    train_transform=(transforms[idx])[1],
+                                                                    train_pre_transform=(transforms[idx])[0],
+                                                                    test_transform=(transforms[idx])[1],
+                                                                    test_pre_transform=(transforms[idx])[0],
+                                                                    train_decider=train_decider,
+                                                                    test_decider=test_decider,
+                                                                    external_collate_func_builder=external_collate_func_builder)
 
-                else:
-                    train_dataset = RexailDataset(root=TRAIN_DIR,
-                                                transform=(transforms[idx])[1],
-                                                pre_transform=(transforms[idx])[0],
-                                                decider=train_decider,
-                                                load_into_memory=True,
-                                                num_workers=train_cfg.get('dataset_num_workers'))
-                
-                    test_dataset = RexailDataset(root=TEST_DIR,
-                                                transform=(transforms[idx])[1],
-                                                pre_transform=(transforms[idx])[0],
-                                                decider=test_decider,
-                                                load_into_memory=True,
-                                                num_workers=train_cfg.get('dataset_num_workers'))
-                                    
-                    create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
-                                                            train_dataset=train_dataset,
-                                                            test_dataset=test_dataset,
-                                                            batch_size=train_cfg.get('batch_size'),
-                                                            num_workers=train_cfg.get('dataloader_num_workers'),
-                                                            external_collate_func_builder=external_collate_func_builder)
+                    else:
+                        train_dataset = RexailDataset(root=TRAIN_DIR,
+                                                    transform=(transforms[idx])[1],
+                                                    pre_transform=(transforms[idx])[0],
+                                                    decider=train_decider,
+                                                    load_into_memory=True,
+                                                    num_workers=train_cfg.get('dataset_num_workers'))
+                    
+                        test_dataset = RexailDataset(root=TEST_DIR,
+                                                    transform=(transforms[idx])[1],
+                                                    pre_transform=(transforms[idx])[0],
+                                                    decider=test_decider,
+                                                    load_into_memory=True,
+                                                    num_workers=train_cfg.get('dataset_num_workers'))
+                                        
+                        create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
+                                                                train_dataset=train_dataset,
+                                                                test_dataset=test_dataset,
+                                                                batch_size=train_cfg.get('batch_size'),
+                                                                num_workers=train_cfg.get('dataloader_num_workers'),
+                                                                external_collate_func_builder=external_collate_func_builder)
 
-                log(f"Starting training stage #{str(idx)}")
-                mp.spawn(
-                    trainer,
-                    args=(WORLD_SIZE, 
-                          MODEL_CONFIG_NAME,
-                          create_dataloaders_per_process,
-                          train_cfg.get('momentum'),
-                          train_cfg.get('weight_decay'),
-                          stage.get('lr_min'),
-                          stage.get('lr_max'),
-                          stage.get('dropout_prob'),
-                          stage.get('warmup_epochs'),
-                          torch.optim.RMSprop,
-                          torch.nn.CrossEntropyLoss(label_smoothing=0),
-                          stage.get('epochs'),
-                          stage.get('decay_mode'),
-                          stage.get('decay_factor', 0),
-                          START_EPOCH,
-                          MODEL_NAME,
-                          SAVED_MODEL_PATH,
-                          logpath),
-                    nprocs=WORLD_SIZE,
-                    join=True
-                )
-                
+                    log(f"Starting training stage #{str(idx)}")
+                    mp.spawn(
+                        trainer,
+                        args=(WORLD_SIZE, 
+                            MODEL_CONFIG_NAME,
+                            create_dataloaders_per_process,
+                            train_cfg.get('momentum'),
+                            train_cfg.get('weight_decay'),
+                            stage.get('lr_min'),
+                            stage.get('lr_max'),
+                            stage.get('dropout_prob'),
+                            stage.get('warmup_epochs'),
+                            torch.optim.RMSprop,
+                            torch.nn.CrossEntropyLoss(label_smoothing=0),
+                            stage.get('epochs'),
+                            stage.get('decay_mode'),
+                            stage.get('decay_factor', 0),
+                            START_EPOCH,
+                            MODEL_NAME,
+                            SAVED_MODEL_PATH,
+                            logpath),
+                        nprocs=WORLD_SIZE,
+                        join=True
+                    )
+                    
+                    SAVED_MODEL_PATH = f"state_dicts/{MODEL_NAME}"
+
+                    if (not train_cfg.get('lazy_dataset', False)):                       
+                        del train_dataset
+                        del test_dataset
+
+                    log(f"Finished training stage #{str(idx)} \n")
+
                 START_EPOCH = max((START_EPOCH - stage.get('epochs')), 1)
-                SAVED_MODEL_PATH = f"state_dicts/{MODEL_NAME}"
-
-                if (not train_cfg.get('lazy_dataset', False)):                       
-                    del train_dataset
-                    del test_dataset
-
-                log(f"Finished training stage #{str(idx)} \n")
 
         log("---FINISHED TRAINING---\n")
