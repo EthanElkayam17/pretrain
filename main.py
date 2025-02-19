@@ -150,7 +150,7 @@ if __name__ == "__main__":
                           stage.get('dropout_prob'),
                           stage.get('warmup_epochs'),
                           torch.optim.RMSprop,
-                          torch.nn.CrossEntropyLoss(label_smoothing=0.1),
+                          torch.nn.CrossEntropyLoss(label_smoothing=0.02),
                           stage.get('epochs'),
                           stage.get('decay_mode'),
                           stage.get('decay_factor', 0),
