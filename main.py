@@ -95,8 +95,8 @@ if __name__ == "__main__":
         for idx, stage in enumerate(stages_cfg.get('training_stages')):                
                 
                 if START_EPOCH < stage.get('epochs'):       
-                    train_decider = partial(RexailDataset.sha256_modulo_split,ratio=80)
-                    test_decider = partial(RexailDataset.sha256_modulo_split,ratio=80, complement=True)
+                    train_decider = partial(RexailDataset.sha256_modulo_split,ratio=75)
+                    test_decider = partial(RexailDataset.sha256_modulo_split,ratio=75, complement=True)
                     
                     if stage.get('cutmix_alpha') == 0.0 or stage.get('mixup_alpha') == 0.0:
                             external_collate_func_builder = None

@@ -33,13 +33,19 @@ class RexailDataset(datasets.VisionDataset):
     
     Data should be filtered/partitioned by using the 'decider' parameter.
     
-    When not utilizing load_into_memory the dataset can be used as-is to access directly or create dataloaders,
+    
+    When not utilizing 'load_into_memory' the dataset can be used as-is to access directly or create dataloaders,
     only the paths and targets will be stored and the actual data is fetched lazily on __getitem___.
     
-    When load_into_memory is set True the entire dataset will be stored in a large shared tensor in the shared-memory partition,
+    When 'load_into_memory' is set True the entire dataset will be stored in a large shared tensor in shared-memory space,
+    this option takes up significant memory (oftentimes more than the space taken up by the dataset on disk, because the tensor
+    does not take advantage of compression), but effectively removes the bottleneck of reading the images from disk during training.
+    When this option is enabled, one must define 'pre_transform' to transform the images into the tensors that will be stored (and
+    hence it is recommended to keep 'pre_transform' deterministic), furthermore 'pre_transform' must produce a fixed-shape tensor
+    regardless of the image that is being transformed.
+
     when using this option with multiple processes (GPUs) one should create one instance of this class outside of the processes
-    and use it to create instances of WrappedRexailDataset in each process, which will be used for samplers/dataloader,
-    ENSURE SUFFICIENT SHARED-MEMORY BEFORE ENABLING.
+    and use it to create instances of WrappedRexailDataset in each process, which will be used for samplers/dataloaders.
     """
     
     def __init__(
@@ -96,6 +102,8 @@ class RexailDataset(datasets.VisionDataset):
         self.targets = [s[1] for s in self.samples]
 
         if load_into_memory:
+            assert self.pre_transform is not None, "pre_transform is required when loading dataset into memory"
+
             data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
 
             self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float16).share_memory_()
@@ -325,12 +333,12 @@ def create_dataloaders_and_samplers_from_dirs(
     """Creates training/testing dataloaders from training/testing directories
     
     Args:
-        world_size: number of processes
-        rank: current process id
+        world_size: number of processes.
+        rank: current process id.
         train_dir: path of training data directory.
         test_dir: path of testing data directory.
         batch_size: amount per batch.
-        num_workers: int = 0,
+        num_workers: for dataloader.
         train_transform: transforms to apply to training data.
         train_pre_transform: pre_transform to apply to training data.
         test_transform: transforms to apply to testing data.
@@ -356,7 +364,7 @@ def create_dataloaders_and_samplers_from_dirs(
                                storewise=storewise,
                                weighed=weighed,
                                load_into_memory=False,
-                               num_workers=num_workers)
+                               num_workers=0)
     
     test_data = RexailDataset(root=test_dir, 
                               transform=test_transform,
@@ -367,7 +375,7 @@ def create_dataloaders_and_samplers_from_dirs(
                               storewise=storewise,
                               weighed=weighed,
                               load_into_memory=False,
-                              num_workers=num_workers)
+                              num_workers=0)
 
     train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
     test_sampler = DistributedSampler(test_data, num_replicas=world_size, rank=rank, shuffle=False)
@@ -401,7 +409,7 @@ def create_dataloaders_and_samplers_from_dirs(
         pin_memory=True
     )
 
-    return train_dataloader, test_dataloader
+    return train_dataloader, train_sampler, test_dataloader, test_sampler
 
 
 def create_dataloaders_and_samplers_from_shared_datasets(

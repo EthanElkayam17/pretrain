@@ -27,7 +27,7 @@ training_stages:
     decay_mode: exp
     decay_factor: 0.975
     warmup_epochs: 10
-    epochs: 100
+    epochs: 70
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
 
