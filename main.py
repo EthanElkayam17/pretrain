@@ -111,14 +111,14 @@ if __name__ == "__main__":
                                                     transform=(transforms[idx])[1],
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=train_decider,
-                                                    load_into_memory=True,
+                                                    load_into_memory=False,
                                                     num_workers=train_cfg.get('dataset_num_workers', 0))
                     
                             test_dataset = RexailDataset(root=TEST_DIR,
                                                     transform=(transforms[idx])[1],
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=test_decider,
-                                                    load_into_memory=True,
+                                                    load_into_memory=False,
                                                     num_workers=train_cfg.get('dataset_num_workers', 0))
                             
                             create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_datasets,
