@@ -412,6 +412,65 @@ def create_dataloaders_and_samplers_from_dirs(
     return train_dataloader, train_sampler, test_dataloader, test_sampler
 
 
+def create_dataloaders_and_samplers_from_datasets(
+        world_size: int,
+        rank: int,
+        train_dataset: RexailDataset,
+        test_dataset: RexailDataset,
+        batch_size: int,
+        num_workers: int = 0,
+        external_collate_func_builder: Union[Callable, None] = None
+    ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
+        """Create dataloaders and samplers from shared RexailDatasets
+        
+        Args:
+            world_size: number of processes
+            rank: current process id
+            train_dataset: shared training RexailDataset
+            test_dataset: shared testing RexailDataset
+            batch_size: batch size
+            num_workers: number of workers for dataloaders
+        
+        Returns:
+            (train_dataloader, train_smapler, test_dataloader, test_sampler)
+        """
+
+
+        train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
+        test_sampler = DistributedSampler(test_dataset, num_replicas=world_size, rank=rank, shuffle=False)
+
+        if external_collate_func_builder is not None:
+            external_collate_func = external_collate_func_builder(train_dataset.num_classes)
+            collate_fn = partial(custom_collate_fn,
+                                func=external_collate_func)
+        
+        else:
+            collate_fn = None
+
+        train_dataloader = DataLoader(
+            dataset=train_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=num_workers,
+            sampler=train_sampler,
+            collate_fn=collate_fn,
+
+            # Try to avoid costs of transfer between pageable and pinned memory
+            pin_memory=True
+        )
+
+        test_dataloader = DataLoader(
+            dataset=test_dataset,
+            batch_size=batch_size,
+            shuffle=False,  
+            num_workers=num_workers,
+            sampler=test_sampler,
+            pin_memory=True
+        )
+
+        return train_dataloader, train_sampler, test_dataloader, test_sampler, 
+
+
 def create_dataloaders_and_samplers_from_shared_datasets(
         world_size: int,
         rank: int,
