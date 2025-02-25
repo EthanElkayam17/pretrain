@@ -474,7 +474,7 @@ def create_dataloaders_and_samplers_from_shared_datasets(
 
 
 def calculate_mean_std(dir: Union[str, Path]) -> Tuple[List, List]:
-    """Calculates mean and standard deviation of each channel across a directory
+    """Calculates mean and standard deviation of each channel across a directory of images
     
     Args:
         dir: path to directory

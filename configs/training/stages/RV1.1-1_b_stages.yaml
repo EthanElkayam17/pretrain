@@ -12,22 +12,55 @@ training_stages:
     decay_mode: exp
     decay_factor: 0.9825
     warmup_epochs: 15
-    epochs: 100
+    epochs: 70
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
+    label_smoothing: 0.0
 
-  - id: 0
+  - id: 1
     resize: 184
     res: 168
     centered: False
     RandAugment_magnitude: 8
     dropout_prob: 0.15
-    lr_min: 0.000005
-    lr_max: 0.00005
+    lr_min: 0.0000025
+    lr_max: 0.000025
     decay_mode: exp
     decay_factor: 0.975
     warmup_epochs: 10
     epochs: 70
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
+    label_smoothing: 0.0
 
+  - id: 2
+    resize: 224
+    res: 184
+    centered: False
+    RandAugment_magnitude: 12
+    dropout_prob: 0.15
+    lr_min: 0.00000125
+    lr_max: 0.0000125
+    decay_mode: exp
+    decay_factor: 0.975
+    warmup_epochs: 10
+    epochs: 70
+    cutmix_alpha: 0.0
+    mixup_alpha: 0.0
+    label_smoothing: 0.0
+
+  - id: 3
+    resize: 256
+    res: 224
+    centered: True
+    RandAugment_magnitude: 15
+    dropout_prob: 0.15
+    lr_min: 0.000000625
+    lr_max: 0.00000625
+    decay_mode: exp
+    decay_factor: 0.975
+    warmup_epochs: 10
+    epochs: 70
+    cutmix_alpha: 1.0
+    mixup_alpha: 0.1
+    label_smoothing: 0.1

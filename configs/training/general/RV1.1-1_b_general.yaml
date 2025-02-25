@@ -8,5 +8,5 @@ training_general:
     momentum: 0.8
     weight_decay: 0.00005
     lazy_dataset: True
-    ds_mean: [0.485, 0.456, 0.406]
-    ds_std: [0.229, 0.224, 0.225]
+    ds_mean: [0.4925, 0.4561, 0.4017]
+    ds_std: [0.2909, 0.2837, 0.2993]

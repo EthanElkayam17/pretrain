@@ -98,20 +98,20 @@ if __name__ == "__main__":
                     train_decider = partial(RexailDataset.sha256_modulo_split,ratio=75)
                     test_decider = partial(RexailDataset.sha256_modulo_split,ratio=75, complement=True)
                     
-                    if stage.get('cutmix_alpha') == 0.0 or stage.get('mixup_alpha') == 0.0:
+                    if stage.get('cutmix_alpha', 0.0) == 0.0 or stage.get('mixup_alpha', 0.0) == 0.0:
                             external_collate_func_builder = None
                     
                     else:
                         external_collate_func_builder=partial(collate_cutmix_or_mixup_transform,
-                                                            cutmix_alpha=stage.get('cutmix_alpha'),
-                                                            mixup_alpha=stage.get('mixup_alpha'))
+                                                            cutmix_alpha=stage.get('cutmix_alpha', 0.0),
+                                                            mixup_alpha=stage.get('mixup_alpha', 0.0))
 
                     if train_cfg.get('lazy_dataset', False):
                             create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_dirs,
                                                                     train_dir=TRAIN_DIR,
                                                                     test_dir=TEST_DIR,
                                                                     batch_size=train_cfg.get('batch_size'),
-                                                                    num_workers=train_cfg.get('dataloader_num_workers'),
+                                                                    num_workers=train_cfg.get('dataloader_num_workers', 0),
                                                                     train_transform=(transforms[idx])[1],
                                                                     train_pre_transform=(transforms[idx])[0],
                                                                     test_transform=(transforms[idx])[1],
@@ -126,20 +126,20 @@ if __name__ == "__main__":
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=train_decider,
                                                     load_into_memory=True,
-                                                    num_workers=train_cfg.get('dataset_num_workers'))
+                                                    num_workers=train_cfg.get('dataset_num_workers', 0))
                     
                         test_dataset = RexailDataset(root=TEST_DIR,
                                                     transform=(transforms[idx])[1],
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=test_decider,
                                                     load_into_memory=True,
-                                                    num_workers=train_cfg.get('dataset_num_workers'))
+                                                    num_workers=train_cfg.get('dataset_num_workers', 0))
                                         
                         create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
                                                                 train_dataset=train_dataset,
                                                                 test_dataset=test_dataset,
                                                                 batch_size=train_cfg.get('batch_size'),
-                                                                num_workers=train_cfg.get('dataloader_num_workers'),
+                                                                num_workers=train_cfg.get('dataloader_num_workers', 0),
                                                                 external_collate_func_builder=external_collate_func_builder)
 
                     log(f"Starting training stage #{str(idx)}")
@@ -155,7 +155,7 @@ if __name__ == "__main__":
                             stage.get('dropout_prob'),
                             stage.get('warmup_epochs'),
                             torch.optim.RMSprop,
-                            torch.nn.CrossEntropyLoss(label_smoothing=0),
+                            torch.nn.CrossEntropyLoss(label_smoothing=stage.get('label_smoothing', 0.0)),
                             stage.get('epochs'),
                             stage.get('decay_mode'),
                             stage.get('decay_factor', 0),
