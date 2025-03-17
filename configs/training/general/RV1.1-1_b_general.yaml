@@ -3,9 +3,9 @@ training_general:
 
   - id: 0
     batch_size: 128
-    dataloader_num_workers: 14
-    dataset_num_workers: 32
-    momentum: 0.8
+    dataloader_num_workers: 18
+    dataset_num_workers: 56
+    momentum: 0.85
     weight_decay: 0.00005
     lazy_dataset: False
     ds_mean: [0.4925, 0.4561, 0.4017]

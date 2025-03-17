@@ -116,8 +116,6 @@ def train_step(model: torch.nn.Module,
         train_loss += loss.item()
         train_accuracy += top1acc(y_res,y)
 
-        print(f"batch {batch}")
-
         if rank == 0 and (batch % 50 == 0):
             print(f"training batch number #{batch}")
 
