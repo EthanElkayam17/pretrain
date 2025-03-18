@@ -11,7 +11,7 @@ training_stages:
     lr_max: 0.001
     decay_mode: exp
     decay_factor: 0.9825
-    warmup_epochs: 15
+    warmup_epochs: 25
     epochs: 70
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
@@ -27,7 +27,7 @@ training_stages:
     lr_max: 0.0005
     decay_mode: exp
     decay_factor: 0.975
-    warmup_epochs: 10
+    warmup_epochs: 25
     epochs: 70
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
@@ -43,7 +43,7 @@ training_stages:
     lr_max: 0.00025
     decay_mode: exp
     decay_factor: 0.975
-    warmup_epochs: 10
+    warmup_epochs: 25
     epochs: 70
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
@@ -59,7 +59,7 @@ training_stages:
     lr_max: 0.000125
     decay_mode: exp
     decay_factor: 0.975
-    warmup_epochs: 10
+    warmup_epochs: 25
     epochs: 70
     cutmix_alpha: 1.0
     mixup_alpha: 0.1
