@@ -167,7 +167,7 @@ class CFGCNN(nn.Module):
                                             stride=stage.get('stride'),
                                             in_channels=stage.get('in_channels'),
                                             out_channels=stage.get('out_channels'),
-                                            norm_layer=partial(nn.BatchNorm2d,eps=0.0015,momentum=0.925),
+                                            norm_layer=partial(nn.BatchNorm2d,eps=0.0015,momentum=0.875),
                                             activation_layer=nn.SiLU)
                     )
                     
