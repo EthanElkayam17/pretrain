@@ -83,8 +83,9 @@ def train_step(model: torch.nn.Module,
                dataloader: torch.utils.data.DataLoader, 
                loss_fn: torch.nn.Module, 
                optimizer: torch.optim.Optimizer,
-               rank: Any
-               ) -> Tuple[float, float]:
+               rank: Any,
+               scaler: Any,
+               half_precision: bool = True) -> Tuple[float, float]:
     
     """Basic train for a single epoch.
 
@@ -107,16 +108,25 @@ def train_step(model: torch.nn.Module,
         optimizer.zero_grad()
 
         y_res = model(X).to(rank)
-        loss = loss_fn(y_res,y)
 
-        loss.backward()
+        if half_precision:
+            with torch.amp.autocast('cuda'):
+                loss = loss_fn(y_res,y)
 
-        optimizer.step()
+            scaler.scale(loss).backward()
+
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            loss = loss_fn(y_res,y)
+            loss.backwards()
+
+            optimizer.step()
 
         train_loss += loss.item()
         train_accuracy += top1acc(y_res,y)
 
-        if rank == 0 and (batch % 300 == 0):
+        if rank == 0 and (batch % 50 == 0):
             print(f"training batch number #{batch}")
 
     train_loss = train_loss / len(dataloader)
@@ -200,6 +210,7 @@ def trainer(rank: int,
           optimizer: torch.optim.Optimizer,
           loss_fn: torch.nn.Module,
           epochs: int,
+          half_precision: bool = True,
           decay_mode: str = "none",
           exp_decay_factor: float = 0,
           curr_epoch: int = 1,
@@ -224,6 +235,7 @@ def trainer(rank: int,
         optimizer: optimizer function for training.
         loss_fn: loss function.
         epochs: number of epochs for current stage.
+        half_precision: whether to compute in half precision.
         save_freq: how many epochs between model saves.
         exp_decay_factor: decay factor if using 'exp' decay.
         curr_epoch: current epoch (in case of model checkpoint loading).
@@ -297,6 +309,7 @@ def trainer(rank: int,
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
     log(f"---Dataloaders in process {rank} created---\n")
 
+    scaler = torch.amp.GradScaler("cuda")
 
     for epoch in range(curr_epoch,epochs+1):
         
@@ -318,7 +331,9 @@ def trainer(rank: int,
                                       dataloader=train_dataloader,
                                       loss_fn=loss_fn,
                                       optimizer=optimizer,
-                                      rank=rank)
+                                      rank=rank,
+                                      scaler=scaler,
+                                      half_precision=half_precision)
         
         test_loss, test_acc = test_step(model=model,
                                    dataloader=test_dataloader,
