@@ -107,10 +107,9 @@ def train_step(model: torch.nn.Module,
 
         optimizer.zero_grad()
 
-        y_res = model(X).to(rank)
-
         if half_precision:
             with torch.cuda.amp.autocast():
+                y_res = model(X).to(rank)
                 loss = loss_fn(y_res,y)
 
             scaler.scale(loss).backward()
@@ -276,9 +275,7 @@ def trainer(rank: int,
 
     model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
-    
-    if half_precision:
-        model.half()
+
 
     if (load_state_dict_path is not None) and (rank == 0):
         model.load_state_dict(torch.load(load_state_dict_path, weights_only=True))
