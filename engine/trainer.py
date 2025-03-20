@@ -123,7 +123,7 @@ def train_step(model: torch.nn.Module,
         else:
             y_res = model(X).to(rank)
             loss = loss_fn(y_res,y)
-            loss.backwards()
+            loss.backward()
 
             optimizer.step()
 
