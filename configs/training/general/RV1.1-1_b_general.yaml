@@ -7,6 +7,6 @@ training_general:
     dataset_num_workers: 56
     momentum: 0.85
     weight_decay: 0.00001
-    lazy_dataset: False
+    lazy_dataset: True
     ds_mean: [0.4925, 0.4561, 0.4017]
     ds_std: [0.2909, 0.2837, 0.2993]
