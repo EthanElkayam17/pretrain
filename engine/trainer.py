@@ -110,7 +110,7 @@ def train_step(model: torch.nn.Module,
         y_res = model(X).to(rank)
 
         if half_precision:
-            with torch.amp.autocast('cuda'):
+            with torch.cuda.amp.autocast():
                 loss = loss_fn(y_res,y)
 
             scaler.scale(loss).backward()
@@ -309,7 +309,7 @@ def trainer(rank: int,
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
     log(f"---Dataloaders in process {rank} created---\n")
 
-    scaler = torch.amp.GradScaler("cuda")
+    scaler = torch.cuda.amp.GradScaler()
 
     for epoch in range(curr_epoch,epochs+1):
         
