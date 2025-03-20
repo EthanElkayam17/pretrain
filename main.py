@@ -172,6 +172,7 @@ if __name__ == "__main__":
                             torch.nn.CrossEntropyLoss(label_smoothing=stage.get('label_smoothing', 0.0)),
                             stage.get('epochs'),
                             stage.get('decay_mode'),
+                            HALF_PRECISION,
                             stage.get('decay_factor', 0),
                             START_EPOCH,
                             MODEL_NAME,
