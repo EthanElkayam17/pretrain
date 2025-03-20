@@ -12,6 +12,7 @@ from functools import partial
 from typing import Tuple, Union, Callable, Any
 from utils.checkpoint import save_state_dict
 from models.model import CFGCNN
+from torch.cuda.amp import autocast
 
 
 def warmup_to_cosine_decay(epoch: int,
@@ -95,6 +96,8 @@ def train_step(model: torch.nn.Module,
         loss_fn: loss function.
         optimizer: optimizer function.
         rank: device to compute on.
+        scaler: gradient scaler for half precision purposes.
+        half_precision: whether to compute in half_precision.
     
     Returns: (loss, accuracy, grad_norms)
     """
@@ -108,7 +111,7 @@ def train_step(model: torch.nn.Module,
         optimizer.zero_grad()
 
         if half_precision:
-            with torch.cuda.amp.autocast():
+            with autocast():
                 y_res = model(X).to(rank)
                 loss = loss_fn(y_res,y)
 
@@ -137,7 +140,8 @@ def train_step(model: torch.nn.Module,
 def test_step(model: torch.nn.Module, 
               dataloader: torch.utils.data.DataLoader, 
               loss_fn: torch.nn.Module,
-              rank: Any) -> Tuple[float, float]:
+              rank: Any,
+              half_precision: bool = True) -> Tuple[float, float]:
     
     """Basic test for a single epoch.
 
@@ -146,6 +150,7 @@ def test_step(model: torch.nn.Module,
         dataloader: dataloader to use for test.
         loss_fn: loss function.
         rank: device to compute on.
+        half_precision: whether to compute in half precision.
     
     Returns: (loss, accuracy)
     """
@@ -159,8 +164,14 @@ def test_step(model: torch.nn.Module,
         for batch, (X,y) in enumerate(dataloader):
             X, y = X.to(rank) , y.to(rank)
 
-            y_res = model(X).to(rank)
-            loss = loss_fn(y_res,y)
+            if half_precision:
+                with torch.cuda.amp.autocast():
+                    y_res = model(X).to(rank)
+                    loss = loss_fn(y_res,y)
+
+            else:
+                y_res = model(X).to(rank)
+                loss = loss_fn(y_res,y)
             
             test_loss += loss.item()
 
