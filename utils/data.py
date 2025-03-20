@@ -61,6 +61,7 @@ class RexailDataset(datasets.VisionDataset):
         storewise: bool = False,
         weighed: bool = False,
         load_into_memory: bool = False,
+        dtype: torch.dtype = torch.float16,
         num_workers: int = 0,
     ):
         """Args:
@@ -76,6 +77,7 @@ class RexailDataset(datasets.VisionDataset):
             weighed: whether the file names contain weight data.
 
             load_into_memory: whether to load the entire dataset into a shared-memory block.
+            dtype: data type for loaded tensors.
             num_workers: number of workers to be used to load dataset into memory"""
         
         super().__init__(
@@ -106,7 +108,7 @@ class RexailDataset(datasets.VisionDataset):
 
             data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
 
-            self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=torch.float16).share_memory_()
+            self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=dtype).share_memory_()
 
             self._load_everything(num_workers=num_workers)
             

@@ -73,6 +73,8 @@ if __name__ == "__main__":
         log("Setting up training env")
         with open(TRAINING_SETTINGS_PATH, 'r') as training_settings_file:
                 train_cfg = (yaml.safe_load(training_settings_file)).get('training_general')[0]
+                HALF_PRECISION = train_cfg.get("half_precision", True)
+                DTYPE = torch.float16 if HALF_PRECISION else torch.float32
 
         log("---Calculating std and mean across training set---")
         mean, std = train_cfg.get('ds_mean'), train_cfg.get('ds_std')
@@ -83,7 +85,7 @@ if __name__ == "__main__":
         log(f"---mean and std calculated: mean : {mean}, std : {std} ---")
 
         log("---Creating stage transforms---")
-        transforms = get_stages_image_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, True)
+        transforms = get_stages_image_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, DTYPE, True)
         log("---Stage transform created---\n")
 
 
@@ -112,6 +114,7 @@ if __name__ == "__main__":
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=train_decider,
                                                     load_into_memory=False,
+                                                    dtype=DTYPE,
                                                     num_workers=0)
                     
                             test_dataset = RexailDataset(root=TEST_DIR,
@@ -119,6 +122,7 @@ if __name__ == "__main__":
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=test_decider,
                                                     load_into_memory=False,
+                                                    dtype=DTYPE,
                                                     num_workers=0)
                             
                             create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_datasets,
@@ -134,6 +138,7 @@ if __name__ == "__main__":
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=train_decider,
                                                     load_into_memory=True,
+                                                    dtype=DTYPE,
                                                     num_workers=train_cfg.get('dataset_num_workers', 0))
                     
                         test_dataset = RexailDataset(root=TEST_DIR,
@@ -141,6 +146,7 @@ if __name__ == "__main__":
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=test_decider,
                                                     load_into_memory=True,
+                                                    dtype=DTYPE,
                                                     num_workers=train_cfg.get('dataset_num_workers', 0))
                                         
                         create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
