@@ -119,6 +119,7 @@ def train_step(model: torch.nn.Module,
 
             scaler.step(optimizer)
             scaler.update()
+        
         else:
             loss = loss_fn(y_res,y)
             loss.backwards()

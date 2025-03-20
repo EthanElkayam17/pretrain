@@ -85,7 +85,12 @@ if __name__ == "__main__":
         log(f"---mean and std calculated: mean : {mean}, std : {std} ---")
 
         log("---Creating stage transforms---")
-        transforms = get_stages_image_transforms(STAGES_SETTINGS_NAME, STAGES_SETTINGS_DIR, mean, std, DTYPE, True)
+        transforms = get_stages_image_transforms(settings_name=STAGES_SETTINGS_NAME, 
+                                                 settings_dir=STAGES_SETTINGS_DIR, 
+                                                 mean=mean, 
+                                                 std=std, 
+                                                 dtype=DTYPE, 
+                                                 divide_crop_and_augment=True)
         log("---Stage transform created---\n")
 
 
