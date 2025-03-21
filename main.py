@@ -142,7 +142,6 @@ if __name__ == "__main__":
                                                     transform=(transforms[idx])[1],
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=train_decider,
-                                                    ignore_classes=CLASSES_TO_IGNORE_IN_DEBUGGING,
                                                     load_into_memory=True,
                                                     dtype=DTYPE,
                                                     num_workers=train_cfg.get('dataset_num_workers', 0))
@@ -151,7 +150,6 @@ if __name__ == "__main__":
                                                     transform=(transforms[idx])[1],
                                                     pre_transform=(transforms[idx])[0],
                                                     decider=test_decider,
-                                                    ignore_classes=CLASSES_TO_IGNORE_IN_DEBUGGING,
                                                     load_into_memory=True,
                                                     dtype=DTYPE,
                                                     num_workers=train_cfg.get('dataset_num_workers', 0))
