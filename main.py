@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 if START_EPOCH.isdigit():
                         START_EPOCH = int(START_EPOCH) + 1
                 else:
-                        START_EPOCH = 1
+                        START_EPOCH = 0
 
         log("---Model created---\n")
 
@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
         for idx, stage in enumerate(stages_cfg.get('training_stages')):                
                 
-                if START_EPOCH < stage.get('epochs'):       
+                if START_EPOCH <= stage.get('epochs'):       
                     train_decider = partial(RexailDataset.sha256_modulo_split,ratio=75)
                     test_decider = partial(RexailDataset.sha256_modulo_split,ratio=75, complement=True)
                     
