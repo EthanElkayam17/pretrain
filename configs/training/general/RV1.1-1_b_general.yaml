@@ -5,7 +5,7 @@ training_general:
     batch_size: 124
     dataloader_num_workers: 24
     dataset_num_workers: 24
-    momentum: 0.85
+    momentum: 0.9
     weight_decay: 0.00005
     lazy_dataset: True
     half_precision: False
