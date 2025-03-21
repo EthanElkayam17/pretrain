@@ -2,12 +2,12 @@
 training_general:
 
   - id: 0
-    batch_size: 512
+    batch_size: 124
     dataloader_num_workers: 24
     dataset_num_workers: 24
     momentum: 0.85
     weight_decay: 0.00001
     lazy_dataset: True
-    half_precision: True
+    half_precision: False
     ds_mean: [0.4925, 0.4561, 0.4017]
     ds_std: [0.2909, 0.2837, 0.2993]
