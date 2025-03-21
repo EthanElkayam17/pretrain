@@ -56,7 +56,7 @@ class InvertedResidualDWBlock(nn.Module):
         self.is_residual = stride==1 and in_channels==out_channels
 
         activation_layer = nn.SiLU
-        norm_layer = partial(nn.BatchNorm2d,eps=0.0015,momentum=0.875)
+        norm_layer = partial(nn.BatchNorm2d,eps=0.0015,momentum=0.925)
 
         layers: List[nn.Module] = []
         expanded_channels = int(round(in_channels*expansion_ratio))
@@ -167,7 +167,7 @@ class CFGCNN(nn.Module):
                                             stride=stage.get('stride'),
                                             in_channels=stage.get('in_channels'),
                                             out_channels=stage.get('out_channels'),
-                                            norm_layer=partial(nn.BatchNorm2d,eps=0.0015,momentum=0.875),
+                                            norm_layer=partial(nn.BatchNorm2d,eps=0.0015,momentum=0.925),
                                             activation_layer=nn.SiLU)
                     )
                     
