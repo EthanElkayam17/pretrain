@@ -6,7 +6,7 @@ training_general:
     dataloader_num_workers: 24
     dataset_num_workers: 24
     momentum: 0.9
-    weight_decay: 0.00005
+    weight_decay: 0.00001
     lazy_dataset: True
     half_precision: False
     ds_mean: [0.4925, 0.4561, 0.4017]
