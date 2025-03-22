@@ -2,7 +2,7 @@
 training_stages:
   
   - id: 0
-    resize: 146
+    resize: 124
     res: 124
     centered: False
     RandAugment_magnitude: 5
@@ -18,7 +18,7 @@ training_stages:
     label_smoothing: 0.0
 
   - id: 1
-    resize: 184
+    resize: 168
     res: 168
     centered: False
     RandAugment_magnitude: 8
@@ -26,7 +26,7 @@ training_stages:
     lr_min: 0.000125
     lr_max: 0.00125
     decay_mode: exp
-    decay_factor: 0.975
+    decay_factor: 0.98
     warmup_epochs: 25
     epochs: 70
     cutmix_alpha: 0.0
@@ -34,7 +34,7 @@ training_stages:
     label_smoothing: 0.0
 
   - id: 2
-    resize: 224
+    resize: 184
     res: 184
     centered: False
     RandAugment_magnitude: 12
@@ -42,7 +42,7 @@ training_stages:
     lr_min: 0.000075
     lr_max: 0.00075
     decay_mode: exp
-    decay_factor: 0.975
+    decay_factor: 0.98
     warmup_epochs: 25
     epochs: 70
     cutmix_alpha: 0.0
@@ -58,9 +58,9 @@ training_stages:
     lr_min: 0.0000375
     lr_max: 0.000375
     decay_mode: exp
-    decay_factor: 0.975
+    decay_factor: 0.98
     warmup_epochs: 25
     epochs: 70
     cutmix_alpha: 1.0
     mixup_alpha: 0.1
-    label_smoothing: 0.1
+    label_smoothing: 0.0
