@@ -7,8 +7,8 @@ training_stages:
     centered: False
     RandAugment_magnitude: 5
     dropout_prob: 0.1
-    lr_min: 0.000064
-    lr_max: 0.064
+    lr_min: 0.00000064
+    lr_max: 0.00064
     decay_mode: exp
     decay_factor: 0.9873
     warmup_epochs: 25
@@ -23,8 +23,8 @@ training_stages:
     centered: False
     RandAugment_magnitude: 8
     dropout_prob: 0.15
-    lr_min: 0.000002
-    lr_max: 0.02615
+    lr_min: 0.00000002
+    lr_max: 0.0002615
     decay_mode: exp
     decay_factor: 0.9873
     warmup_epochs: 20
@@ -39,8 +39,8 @@ training_stages:
     centered: False
     RandAugment_magnitude: 12
     dropout_prob: 0.2
-    lr_min: 0.00002
-    lr_max: 0.01
+    lr_min: 0.0000002
+    lr_max: 0.0001
     decay_mode: exp
     decay_factor: 0.9873
     warmup_epochs: 15
@@ -55,8 +55,8 @@ training_stages:
     centered: True
     RandAugment_magnitude: 15
     dropout_prob: 0.25
-    lr_min: 0.000001
-    lr_max: 0.004
+    lr_min: 0.00000001
+    lr_max: 0.00004
     decay_mode: exp
     decay_factor: 0.9873
     warmup_epochs: 10
