@@ -8,6 +8,6 @@ training_general:
     momentum: 0.9
     weight_decay: 0.00001
     lazy_dataset: True
-    half_precision: False
+    half_precision: True
     ds_mean: [0.4925, 0.4561, 0.4017]
     ds_std: [0.2909, 0.2837, 0.2993]
