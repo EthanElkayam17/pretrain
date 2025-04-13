@@ -11,7 +11,7 @@ training_stages:
     lr_max: 0.00064
     decay_mode: exp
     decay_factor: 0.9873
-    warmup_epochs: 25
+    warmup_epochs: 20
     epochs: 70
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
