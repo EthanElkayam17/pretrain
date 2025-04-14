@@ -172,7 +172,7 @@ if __name__ == "__main__":
                             stage.get('lr_min'),
                             stage.get('lr_max'),
                             stage.get('dropout_prob'),
-                            stage.get('warmup_epochs'),
+                            stage.get('warmup_epochs', 0),
                             torch.optim.RMSprop,
                             torch.nn.CrossEntropyLoss(label_smoothing=stage.get('label_smoothing', 0.0)),
                             stage.get('epochs'),
