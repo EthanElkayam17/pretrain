@@ -31,18 +31,19 @@ class RexailDataset(datasets.VisionDataset):
     the flag 'weighed' can be true when including weight data in {image_name}
     such that {image_name} is in the form: '{image_id}${weight}$' 
     
-    Data should be filtered/partitioned by using the 'decider' parameter.
+    Data should be filtered/partitioned by using the 'decider' parameter, if not internally.
     
     
     When not utilizing 'load_into_memory' the dataset can be used as-is to access directly or create dataloaders,
     only the paths and targets will be stored and the actual data is fetched lazily on __getitem___.
     
-    When 'load_into_memory' is set True the entire dataset will be stored in a large shared tensor in shared-memory space,
+    When 'load_into_memory' is called the entire dataset will be stored in a large shared tensor in shared-memory space,
     this option takes up significant memory (oftentimes more than the space taken up by the dataset on disk, because the tensor
-    does not take advantage of compression), but effectively removes the bottleneck of reading the images from disk during training.
-    When this option is enabled, one must define 'pre_transform' to transform the images into the tensors that will be stored (and
-    hence it is recommended to keep 'pre_transform' deterministic), furthermore 'pre_transform' must produce a fixed-shape tensor
-    regardless of the image that is being transformed.
+    does not take advantage of compression), but effectively removes the bottleneck of reading the images from disk during access.
+    When this method is called - one have defined 'pre_transform' to transform the images into the tensors that will be stored (and
+    hence it is recommended to keep 'pre_transform' deterministic), furthermore 'pre_transform' MUST produce a fixed-shape tensor
+    regardless of the image that is being transformed. NOTICE: upon loading the dataset into memory the 'transform' must expect the
+    stored tensor as input as opposed to the output of the loader (which is the expected input of 'transform' pre-loading).
 
     when using this option with multiple processes (GPUs) one should create one instance of this class outside of the processes
     and use it to create instances of WrappedRexailDataset in each process, which will be used for samplers/dataloaders.
@@ -51,7 +52,7 @@ class RexailDataset(datasets.VisionDataset):
     def __init__(
         self,
         root: str,
-        transform: Union[Callable] = None,
+        transform: Callable = None,
         pre_transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,
         loader: Callable[[str], Any] = datasets.folder.default_loader,
@@ -60,10 +61,7 @@ class RexailDataset(datasets.VisionDataset):
         ignore_classes: List[str] = list(),
         storewise: bool = False,
         weighed: bool = False,
-        load_into_memory: bool = False,
-        dtype: torch.dtype = torch.float16,
-        num_workers: int = 0,
-    ):
+        ):
         """Args:
             root: Root directory path.
             transform: A transform for the PIL images.
@@ -74,11 +72,7 @@ class RexailDataset(datasets.VisionDataset):
             extensions: file extensions that are acceptable.
             ignore_classes: classes to ignore when making dataset.
             storewise: whether the directory is partitioned store-wise inside each class.
-            weighed: whether the file names contain weight data.
-
-            load_into_memory: whether to load the entire dataset into a shared-memory block.
-            dtype: data type for loaded tensors.
-            num_workers: number of workers to be used to load dataset into memory"""
+            weighed: whether the file names contain weight data."""
         
         super().__init__(
             root=root,
@@ -102,17 +96,6 @@ class RexailDataset(datasets.VisionDataset):
 
         self.samples = self.make_dataset()
         self.targets = [s[1] for s in self.samples]
-
-        if load_into_memory:
-            assert self.pre_transform is not None, "pre_transform is required when loading dataset into memory"
-
-            data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
-
-            self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=dtype).share_memory_()
-
-            self._load_everything(num_workers=num_workers)
-            
-            self.loaded_dataset = True
 
 
     def __len__(self) -> int:
@@ -188,23 +171,31 @@ class RexailDataset(datasets.VisionDataset):
                 filler = partial(RexailDataset._load_index, samples=self.samples, data=self.data, transform=self.pre_transform, loader=self.loader, pbar=pbar)
                 list(executor.map(filler, indices))
 
-
-    @staticmethod
-    def find_classes(directory: Union[str, Path], 
-                    ignore_classes: List[str] = []) -> Tuple[List[str], Dict[str, int]]:
-        """Creates (list_of_classes,map_class_to_idx)
+    
+    def load_into_memory(self,
+                         num_workers: int = 0,
+                         dtype: torch.dtype = torch.float16) -> None:
+        """Load dataset into memory as a large tensor in shared-memory
         
         Args:
-            directory: directory containing the classes
-            ignore_classes: classes to ignore"""
-        
-        classes = sorted(entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes)))
-        if not classes:
-            raise FileNotFoundError(f"Couldn't find any class folder in {directory}.")
+            num_workers: number of workers to work on the operation
+            dtype: desired dtype for tensor"""        
 
-        class_to_idx = {cls_name: i for i, cls_name in enumerate(classes)}
-        return classes, class_to_idx
+        assert self.pre_transform is not None, "pre_transform is required when loading dataset into memory"
 
+        data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
+        self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=dtype).share_memory_()
+
+        self._load_everything(num_workers=num_workers)
+        self.loaded_dataset = True
+    
+
+    def set_pre_transform(self,
+                        pre_transform: Callable) -> None:
+        """Setter for transform parameter"""
+
+        self.pre_transform = pre_transform
+    
 
     def is_valid_file(self, path: str) -> bool:
             """Whether or not a file can be in the dataset
@@ -235,6 +226,23 @@ class RexailDataset(datasets.VisionDataset):
 
 
     @staticmethod
+    def find_classes(directory: Union[str, Path], 
+                    ignore_classes: List[str] = []) -> Tuple[List[str], Dict[str, int]]:
+        """Creates (list_of_classes,map_class_to_idx)
+        
+        Args:
+            directory: directory containing the classes
+            ignore_classes: classes to ignore"""
+        
+        classes = sorted(entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes)))
+        if not classes:
+            raise FileNotFoundError(f"Couldn't find any class folder in {directory}.")
+
+        class_to_idx = {cls_name: i for i, cls_name in enumerate(classes)}
+        return classes, class_to_idx
+
+
+    @staticmethod
     def sha256_modulo_split(path: str, ratio: int, complement: bool = False) -> bool:
         """A decider function that partitions the data according to the remainder of an hashed image_id
         
@@ -243,6 +251,8 @@ class RexailDataset(datasets.VisionDataset):
             ratio: ~percentage of samples to be included in the dataset
             complement: whether to produce the complement set of data"""
 
+        assert ratio is not None, "train_split ratio not initialized"
+        
         if ratio > 100 or ratio < 0:
             raise ValueError("ratio needs to be between 0 and 100")
 
@@ -283,6 +293,7 @@ class WrappedRexailDataset(Dataset):
         assert shared_dataset.loaded_dataset is True, "underlying dataset should be loaded into memory"
 
         self.targets = copy.deepcopy(shared_dataset.targets)
+        self.samples = copy.deepcopy(shared_dataset.samples)
         self.data = shared_dataset.data
         self.transform = shared_dataset.transform
         self.classes = shared_dataset.classes
@@ -534,11 +545,13 @@ def create_dataloaders_and_samplers_from_shared_datasets(
         return train_dataloader, train_sampler, test_dataloader, test_sampler, 
 
 
-def calculate_mean_std(dir: Union[str, Path]) -> Tuple[List, List]:
+def calculate_mean_std(dir: Union[str, Path],
+                       decider: Callable[[str], bool] = default_decider) -> Tuple[List, List]:
     """Calculates mean and standard deviation of each channel across a directory of images
     
     Args:
         dir: path to directory
+        decider (optional): decider function for filtering unwanted paths
     
     returns: mean,std"""
 
@@ -548,17 +561,21 @@ def calculate_mean_std(dir: Union[str, Path]) -> Tuple[List, List]:
     
     for root, _, files in os.walk(dir):
         for image_name in files:
+            
             image_path = dirjoin(root, image_name)
-            try:
-                image = Image.open(image_path).convert('RGB') 
-                image_np = np.array(image) / 255.0 
+            
+            if decider(image_path):
+                try:
+                    image = Image.open(image_path).convert('RGB') 
+                    image_np = np.array(image) / 255.0 
 
-                channel_sum += np.sum(image_np, axis=(0, 1))
-                channel_sum_squared += np.sum(image_np ** 2, axis=(0, 1))
+                    channel_sum += np.sum(image_np, axis=(0, 1))
+                    channel_sum_squared += np.sum(image_np ** 2, axis=(0, 1))
 
-                total_pixels += image_np.shape[0] * image_np.shape[1]
-            except Exception:
-                print(f"Skipping {image_path}")
+                    total_pixels += image_np.shape[0] * image_np.shape[1]
+                
+                except Exception:
+                    print(f"Skipping {image_path}")
     
     if total_pixels == 0:
         return [0,0,0] , [1,1,1]

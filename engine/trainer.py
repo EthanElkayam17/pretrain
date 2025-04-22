@@ -3,7 +3,6 @@ import logging
 import math
 import os
 import torch.distributed as dist
-import torch.optim.optimizer
 from torch import Tensor
 from utils.other import logp
 from torch.utils.data import DistributedSampler
