@@ -58,7 +58,7 @@ class RexailDataset(datasets.VisionDataset):
         loader: Callable[[str], Any] = datasets.folder.default_loader,
         decider: Callable[[str], bool] = default_decider,
         extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
-        ignore_classes: List[str] = list(),
+        ignore_classes: List[str] = None,
         storewise: bool = False,
         weighed: bool = False,
         ):
@@ -79,8 +79,12 @@ class RexailDataset(datasets.VisionDataset):
             transform=transform,
             target_transform=target_transform
         )
-        self.pre_transform = pre_transform
         self.ignore_classes = ignore_classes
+
+        if self.ignore_classes is None:
+            self.ignore_classes = []
+
+        self.pre_transform = pre_transform
         classes, class_to_idx = RexailDataset.find_classes(self.root, self.ignore_classes)
         self.class_to_idx = class_to_idx
 
@@ -231,7 +235,7 @@ class RexailDataset(datasets.VisionDataset):
 
     @staticmethod
     def find_classes(directory: Union[str, Path], 
-                    ignore_classes: List[str] = []) -> Tuple[List[str], Dict[str, int]]:
+                    ignore_classes: List[str] = None) -> Tuple[List[str], Dict[str, int]]:
         """Creates a list of the classes and provides a mapping to indices.
         
         Args:
@@ -241,6 +245,9 @@ class RexailDataset(datasets.VisionDataset):
         Returns:
             Tuple - (list_of_classes,map_class_to_idx)
         """
+
+        if ignore_classes is None:
+            ignore_classes = []
         
         classes = sorted(entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes)))
         if not classes:
@@ -289,7 +296,7 @@ class RexailDataset(datasets.VisionDataset):
         Returns:
             bool - should the image be included in the dataset according to the filter
         """
-        
+
         sID = path.split("/")[-2]
         return sID in stores_lst
 
@@ -356,7 +363,7 @@ def create_dataloaders_and_samplers_from_dirs(
         train_decider: Callable[[str], bool] = default_decider,
         test_extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
         test_decider: Callable[[str], bool] = default_decider,
-        ignore_classes: List[str] = list(),
+        ignore_classes: List[str] = None,
         storewise: bool = False,
         weighed: bool = False,
         external_collate_func_builder: Union[Callable, None] = None
@@ -386,6 +393,9 @@ def create_dataloaders_and_samplers_from_dirs(
     Returns:
         (train_dataloader, train_sampler, test_dataloader, test_sampler)
     """
+
+    if ignore_classes is None:
+        ignore_classes = []
 
     train_data = RexailDataset(root=train_dir,
                                transform=train_transform,

@@ -74,8 +74,8 @@ def get_stages_image_transforms(settings_name: str,
 
 def default_transform(resize: tuple = (224,224),
                     crop_size: tuple = (224,224), 
-                    mean: list = [0,0,0], 
-                    std: list = [1,1,1],
+                    mean: list = None, 
+                    std: list = None,
                     dtype: torch.dtype = torch.float16):
     """Returns testing transform
      
@@ -89,6 +89,12 @@ def default_transform(resize: tuple = (224,224),
     Returns:
         Callable - default transform
     """
+
+    if mean is None:
+        mean = [0,0,0]
+    
+    if std is None:
+        std = [1,1,1]
      
     res = v2.Compose([
                 v2.Resize(size=resize),
