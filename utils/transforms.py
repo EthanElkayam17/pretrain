@@ -7,11 +7,11 @@ import yaml
 from utils.other import dirjoin
 
 def get_stages_image_transforms(settings_name: str,
-                         settings_dir: str,
-                         mean: list,
-                         std: list,
-                         dtype: torch.dtype = torch.float16,
-                         divide_crop_and_augment: bool = False):
+                                settings_dir: str,
+                                mean: list,
+                                std: list,
+                                dtype: torch.dtype = torch.float16,
+                                divide_crop_and_augment: bool = False) -> List[v2.Transform]:
     
     """Create custom transform based on each training stage in settings.yaml file.
     
@@ -23,7 +23,8 @@ def get_stages_image_transforms(settings_name: str,
         dtype: data type for resulting tensor. 
         divide_crop_and_augment: whether to divide each transform into a tuple of cropper transform and augmentation transform
     
-    Returns: [batched_transform_stage_1, ... , batched_transform_stage_n]
+    Returns:
+        List[v2.Transform] - [batched_transform_stage_1, ... , batched_transform_stage_n]
     """
      
     SETTINGS_PATH = dirjoin(settings_dir,settings_name)
@@ -72,28 +73,31 @@ def get_stages_image_transforms(settings_name: str,
 
 
 def default_transform(resize: tuple = (224,224),
-                   crop_size: tuple = (224,224), 
-                   mean: list = [0,0,0], 
-                   std: list = [1,1,1],
-                   dtype: torch.dtype = torch.float16):
-     """Returns testing transform
+                    crop_size: tuple = (224,224), 
+                    mean: list = [0,0,0], 
+                    std: list = [1,1,1],
+                    dtype: torch.dtype = torch.float16):
+    """Returns testing transform
      
-     Args:
+    Args:
         resize: resize size before crop.
         crop_size: final output image-size.
         mean: mean rgb value to normalize by.
         std: standard deviation to normalize by.
         dtype: data type for resulting tensor.
+    
+    Returns:
+        Callable - default transform
     """
      
-     res = v2.Compose([
+    res = v2.Compose([
                 v2.Resize(size=resize),
                 v2.CenterCrop(size=crop_size),
                 v2.ToImage(),
                 v2.ToDtype(dtype=dtype,scale=True),
                 v2.Normalize(mean=mean, std=std)
            ])
-     return res
+    return res
 
 
 def collate_cutmix_or_mixup_transform(numclasses: int,
@@ -105,6 +109,9 @@ def collate_cutmix_or_mixup_transform(numclasses: int,
         cutmix_alpha: alpha coefficient for cutmix
         mixup_alpha: alpha coefficient for mixup
         numclasses: number of classes
+    
+    Returns:
+        Callable - collate function with cutmix/mixup
     """
     
     mixup = v2.MixUp(num_classes=numclasses, alpha=mixup_alpha)

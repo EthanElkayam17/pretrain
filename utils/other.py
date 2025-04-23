@@ -18,7 +18,7 @@ def set_random_seed(seed):
     torch.cuda.manual_seed_all(seed)
 
 def logp(str: str,
-         logger: Logger):
+        logger: Logger):
     """log and print"""
 
     assert isinstance(logger, Logger), "Can't log with non-Logger type"

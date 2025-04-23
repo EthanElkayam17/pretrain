@@ -285,10 +285,14 @@ class CFGCNN(nn.Module):
 
 
     def named_parameters_by_layer(self, layer: Union[str, int]) -> Iterator[Tuple[str, Parameter]]:
-        """Return iterator over module's named parameters from a given layer 
+        """Finds the named parameters of a given layer.
         
         Args:
-            layer_name: name (string) or index (int) of layer."""
+            layer_name: name (string) or index (int) of layer.
+        
+        Returns:
+            iterator over module's named parameters in the given layer.
+        """
         
         if isinstance(layer,int):
             layer = self.layer_names[layer]

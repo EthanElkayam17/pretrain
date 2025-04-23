@@ -17,8 +17,8 @@ from utils.other import dirjoin
 from torch import Tensor
 
 def default_decider(path: str) -> bool:
-        """Default decider"""
-        return True
+    """Default decider"""
+    return True
 
 class RexailDataset(datasets.VisionDataset):
     """A dataset class for loading and partitioning data from rexail's dataset,
@@ -107,14 +107,15 @@ class RexailDataset(datasets.VisionDataset):
     def __getitem__(self, 
                     index: int,
                     only_pre_transform = False) -> Tuple:
-        """Returns item based on index, in a tuple of the form: (sample, target) 
-            where:
-                sample is the tensor representing the image.
-                target is class_index of the target class.
+        """Finds item based on index
         
         Args:
             index: Index
             only_pre_transform: whether to disable the main transform.
+        
+        Returns: 
+            Tuple - sample,target
+            where: sample is the tensor representing the image, target is class_index of the target class.
         """
         
         if self.loaded_dataset:
@@ -146,7 +147,7 @@ class RexailDataset(datasets.VisionDataset):
                     data: torch.Tensor,
                     transform: Callable,
                     loader: Callable = datasets.folder.default_loader,
-                    pbar = None):
+                    pbar = None) -> None:
         """Load a single index into memory"""
 
         path, _ = samples[index]
@@ -161,8 +162,9 @@ class RexailDataset(datasets.VisionDataset):
             pbar.update(1)
 
 
-    def _load_everything(self, num_workers: int):
+    def _load_everything(self, num_workers: int) -> None:
         """Parallel loading of the dataset into memory"""
+        
         indices = list(range(0,len(self.samples)))
         
         print("loading dataset into memory...")
@@ -173,13 +175,17 @@ class RexailDataset(datasets.VisionDataset):
 
     
     def load_into_memory(self,
-                         num_workers: int = 0,
-                         dtype: torch.dtype = torch.float16) -> None:
+                        num_workers: int = 0,
+                        dtype: torch.dtype = torch.float16) -> None:
         """Load dataset into memory as a large tensor in shared-memory
         
         Args:
             num_workers: number of workers to work on the operation
-            dtype: desired dtype for tensor"""        
+            dtype: desired dtype for tensor
+
+        Returns:
+            None    
+        """        
 
         assert self.pre_transform is not None, "pre_transform is required when loading dataset into memory"
 
@@ -197,13 +203,11 @@ class RexailDataset(datasets.VisionDataset):
         self.pre_transform = pre_transform
     
 
-    def is_valid_file(self, path: str) -> bool:
-            """Whether or not a file can be in the dataset
-            
-            Args:
-                path: path to file"""
-            
-            return ((self.extensions is None) or (path.lower().endswith(self.extensions))) and self.decider(path)
+    def is_valid_file(self, 
+                    path: str) -> bool:
+        """Whether or not a file can be in the dataset by its path"""
+        
+        return ((self.extensions is None) or (path.lower().endswith(self.extensions))) and self.decider(path)
 
 
     def make_dataset(self) -> List[Tuple[str, int]]:
@@ -228,11 +232,15 @@ class RexailDataset(datasets.VisionDataset):
     @staticmethod
     def find_classes(directory: Union[str, Path], 
                     ignore_classes: List[str] = []) -> Tuple[List[str], Dict[str, int]]:
-        """Creates (list_of_classes,map_class_to_idx)
+        """Creates a list of the classes and provides a mapping to indices.
         
         Args:
             directory: directory containing the classes
-            ignore_classes: classes to ignore"""
+            ignore_classes: classes to ignore
+        
+        Returns:
+            Tuple - (list_of_classes,map_class_to_idx)
+        """
         
         classes = sorted(entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes)))
         if not classes:
@@ -249,7 +257,11 @@ class RexailDataset(datasets.VisionDataset):
         Args:
             path: path to file
             ratio: ~percentage of samples to be included in the dataset
-            complement: whether to produce the complement set of data"""
+            complement: whether to produce the complement set of data
+        
+        Returns:
+            bool - should the image be included in the dataset according to the split
+        """
 
         assert ratio is not None, "train_split ratio not initialized"
         
@@ -272,7 +284,11 @@ class RexailDataset(datasets.VisionDataset):
         
         Args:
             path: path to file
-            stores_lst: List of acceptable stores"""
+            stores_lst: List of acceptable stores
+        
+        Returns:
+            bool - should the image be included in the dataset according to the filter
+        """
         
         sID = path.split("/")[-2]
         return sID in stores_lst
@@ -306,7 +322,9 @@ class WrappedRexailDataset(Dataset):
         return self.data.size(0)
     
 
-    def __getitem__(self, index):
+    def __getitem__(self, index) -> Tuple:
+        """Finds item based on index, similar form to RexailDataset's '__getitem__'"""
+
         sample = self.data[index]
         target = self.targets[index]
             
@@ -318,7 +336,7 @@ class WrappedRexailDataset(Dataset):
 
 def custom_collate_fn(batch: Tuple[Tensor, Tensor],
                       func: Callable[[Tensor,Tensor], Tuple[Tensor,Tensor]]):
-    """Apply custom function to bath of data fetched from dataloader"""
+    """Applies custom function to batch of data fetched from dataloader"""
 
     return func(*default_collate(batch))
 
@@ -365,7 +383,8 @@ def create_dataloaders_and_samplers_from_dirs(
         weighed: whether the file names contain weight data.
         external_collate_func_builder: builder for external collate function that should expect num_classes.
 
-    Returns: (train_dataloader, train_sampler, test_dataloader, test_sampler)
+    Returns:
+        (train_dataloader, train_sampler, test_dataloader, test_sampler)
     """
 
     train_data = RexailDataset(root=train_dir,
@@ -447,7 +466,6 @@ def create_dataloaders_and_samplers_from_datasets(
         Returns:
             (train_dataloader, train_smapler, test_dataloader, test_sampler)
         """
-
 
         train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
         test_sampler = DistributedSampler(test_dataset, num_replicas=world_size, rank=rank, shuffle=False)
@@ -553,7 +571,9 @@ def calculate_mean_std(dir: Union[str, Path],
         dir: path to directory
         decider (optional): decider function for filtering unwanted paths
     
-    returns: mean,std"""
+    Returns:
+        Tuple - (mean,std)
+    """
 
     channel_sum = np.zeros(3)
     channel_sum_squared = np.zeros(3)

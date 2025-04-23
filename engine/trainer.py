@@ -18,15 +18,19 @@ def warmup_to_cosine_decay(epoch: int,
                     lr_min: float,
                     lr_max: float,
                     warmup_epochs: int,
-                    total_epochs: int):
+                    total_epochs: int) -> float:
     """Linearly warm up learning rate for warmup epochs then decay with cosine annealing.
      
-     Args:
+    Args:
         epoch: current epoch.
         lr_min: minimum learning rate.
         lr_max: maximum learning rate.
         warmup_epochs: on how many epochs should the warmup span.
-        total amount of epochs in training."""
+        total amount of epochs in training.
+    
+    Returns:
+        float - decayed/warmed learning rate.
+    """
      
     if epoch <= warmup_epochs:
         return (epoch*lr_max)/warmup_epochs
@@ -39,16 +43,19 @@ def warmup_to_exponential_decay(epoch: int,
                     lr_min: float,
                     lr_max: float,
                     warmup_epochs: int,
-                    decay_factor: float,):
+                    decay_factor: float) -> float:
     """Linearly warm up learning rate for warmup epochs then decay exponentialy.
      
-     Args:
+    Args:
         epoch: current epoch.
         lr_min: minimum learning rate.
         lr_max: maximum learning rate.
         decay_factor: constant to decay by.
         warmup_epochs: on how many epochs should the warmup span.
-        """
+    
+    Returns:
+        float - decayed/warmed learning rate.
+    """
     
     if epoch <= warmup_epochs:
         return lr_min + (epoch*(lr_max-lr_min))/warmup_epochs
@@ -64,6 +71,9 @@ def top1acc(y_pred: Tensor,
     Args:
         y_pred: The predicted tensor, should be of shape [batchsize, num_of_classes] or [batch_size]
         y_real: The real tensor to be predicted, should be of shape [batchsize] 
+    
+    Returns:
+        float - Top 1 accuracy (i.e regular accuracy)
     """
 
     preds = torch.argmax(y_pred, dim=1)
@@ -87,7 +97,7 @@ def train_step(model: torch.nn.Module,
                scaler: Any,
                half_precision: bool = True) -> Tuple[float, float]:
     
-    """Basic train for a single epoch.
+    """Basic train for a single epoch, can be either half or full precision
 
     Args:
         model: model to train.
@@ -98,7 +108,8 @@ def train_step(model: torch.nn.Module,
         scaler: gradient scaler for half precision purposes.
         half_precision: whether to compute in half_precision.
     
-    Returns: (loss, accuracy, grad_norms)
+    Returns:
+        Tuple - (loss, accuracy, grad_norms)
     """
 
     model.train()
@@ -153,7 +164,8 @@ def test_step(model: torch.nn.Module,
         rank: device to compute on.
         half_precision: whether to compute in half precision.
     
-    Returns: (loss, accuracy)
+    Returns:
+        Tuple - (loss, accuracy)
     """
 
     model.eval()
@@ -253,16 +265,19 @@ def trainer(rank: int,
         model_name: name of model's state_dict file that will be saved.
         load_state_dict_path: path to state dict to load at the start of training.
         logpath: logging file name path.
+    
+    Returns:
+        None
     """
 
     if curr_epoch > epochs:
         return
     
     DECAY_MODE_TO_FUNC = {
-                "exp": partial(warmup_to_exponential_decay, lr_min=lr_min,lr_max=lr_max,warmup_epochs=warmup_epochs, decay_factor=exp_decay_factor),
-                "cos": partial(warmup_to_cosine_decay, lr_min=lr_min, lr_max=lr_max, warmup_epochs=warmup_epochs, total_epochs=epochs),
-                "none": None
-            }
+        "exp": partial(warmup_to_exponential_decay, lr_min=lr_min,lr_max=lr_max,warmup_epochs=warmup_epochs, decay_factor=exp_decay_factor),
+        "cos": partial(warmup_to_cosine_decay, lr_min=lr_min, lr_max=lr_max, warmup_epochs=warmup_epochs, total_epochs=epochs),
+        "none": None
+    }
     
     if not (decay_mode in DECAY_MODE_TO_FUNC.keys()):
         raise ValueError(f"Invalid decay mode, should be one of {DECAY_MODE_TO_FUNC.keys()}")
