@@ -11,7 +11,6 @@ from utils.data import create_dataloaders_and_samplers_from_shared_datasets, cal
 from utils.other import dirjoin, logp
 from engine.trainer import trainer
 
-#STYLE OR REMOVE!
 CLASSES_TO_IGNORE_IN_DEBUGGING = ["b0001",  "b0009",  "b0017",  "b0025",  "b0033",  "b0041",  "b0049", "b0057",  "b0065",  "b0073",  "b0081",  "b0089",  "b0097",  "b0105",  "b0113",  "b0121",  "b0129",  "b0137",  "b0145",  "b0153",  "b0161",  "b0169",  "b0177",  "b0185",  "b0193",
 "b0002",  "b0010",  "b0018",  "b0026",  "b0034",  "b0042",  "b0050",  "b0058",  "b0066",  "b0074",  "b0082",  "b0090",  "b0098",  "b0106",  "b0114",  "b0122",  "b0130",  "b0138",  "b0146",  "b0154",  "b0162",  "b0170",  "b0178",  "b0186",  "b0194",
 "b0003",  "b0011",  "b0019",  "b0027",  "b0035",  "b0043",  "b0051",  "b0059",  "b0067",  "b0075",  "b0083", "b0091",  "b0099",  "b0107",  "b0115",  "b0123",  "b0131",  "b0139",  "b0147",  "b0155",  "b0163",  "b0171",  "b0179",  "b0187",  "b0195",
