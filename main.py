@@ -38,7 +38,6 @@ if __name__ == "__main__":
     
     STAGES_SETTINGS_PATH = (dirjoin(STAGES_SETTINGS_DIR,STAGES_SETTINGS_NAME))
     TRAINING_SETTINGS_PATH = (dirjoin(TRAINING_CONFIG_DIR,TRAINING_SETTINGS_NAME))
-    START_EPOCH = 1
     WORLD_SIZE = torch.cuda.device_count()
     print(WORLD_SIZE)
     SAVED_MODEL_PATH = None

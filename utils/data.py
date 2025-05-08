@@ -533,6 +533,7 @@ def create_dataloaders_and_samplers_from_datasets(
         Returns:
             (train_dataloader, train_smapler, test_dataloader, test_sampler)
         """
+        print("in")
 
         train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
         test_sampler = DistributedSampler(test_dataset, num_replicas=world_size, rank=rank, shuffle=False)
