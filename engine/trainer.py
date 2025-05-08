@@ -285,6 +285,7 @@ def trainer(rank: int,
     decay = DECAY_MODE_TO_FUNC.get(decay_mode)
 
     setup(world_size=world_size, rank=rank)
+    dist.barrier()
     
     if logpath is None or rank != 0:
         logger = logging.getLogger('null_logger')
@@ -305,7 +306,6 @@ def trainer(rank: int,
     model.cuda(rank)
     #model = efficientnet_v2_s(weights=EfficientNet_V2_S_Weights.DEFAULT).to(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
-    dist.barrier()
 
 
     if (load_state_dict_path is not None) and (rank == 0):
