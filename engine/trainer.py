@@ -285,7 +285,6 @@ def trainer(rank: int,
     decay = DECAY_MODE_TO_FUNC.get(decay_mode)
 
     setup(world_size=world_size, rank=rank)
-    dist.barrier()
     
     if logpath is None or rank != 0:
         logger = logging.getLogger('null_logger')
