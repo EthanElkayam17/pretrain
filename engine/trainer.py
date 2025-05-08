@@ -300,6 +300,7 @@ def trainer(rank: int,
     
     log = partial(logp, logger=logger)
 
+    print("---------------------------------------------------------------------------------")
 
     model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
     model.cuda(rank)
