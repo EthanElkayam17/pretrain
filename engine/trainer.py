@@ -207,6 +207,7 @@ def setup(rank, world_size):
     os.environ["MASTER_ADDR"] = "localhost"
     os.environ["MASTER_PORT"] = "12355"
     
+    print("rank")
     torch.cuda.set_device(rank)
 
     dist.init_process_group(backend="nccl", 
