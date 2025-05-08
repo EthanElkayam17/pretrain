@@ -1,0 +1,12 @@
+---
+training_general:
+
+  - id: 0
+    batch_size: 128
+    dataloader_num_workers: 24
+    dataset_num_workers: 24
+    momentum: 0.9
+    weight_decay: 0.00001
+    lazy_dataset: True
+    half_precision: False
+    train_split: 75
