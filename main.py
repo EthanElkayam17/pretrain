@@ -39,8 +39,8 @@ if __name__ == "__main__":
     STAGES_SETTINGS_PATH = (dirjoin(STAGES_SETTINGS_DIR,STAGES_SETTINGS_NAME))
     TRAINING_SETTINGS_PATH = (dirjoin(TRAINING_CONFIG_DIR,TRAINING_SETTINGS_NAME))
     WORLD_SIZE = torch.cuda.device_count()
-    print(WORLD_SIZE)
     SAVED_MODEL_PATH = None
+    START_EPOCH = 0
 
     SAVED_MODEL_FNAME = input("If continuing from checkpoint, enter saved model's file name (else, leave null): ")
     if SAVED_MODEL_FNAME != "":
