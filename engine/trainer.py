@@ -302,7 +302,7 @@ def trainer(rank: int,
 
 
     #model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
-    model = efficientnet_v2_s(weights=EfficientNet_V2_S_Weights.DEFAULT)
+    model = efficientnet_v2_s(weights=EfficientNet_V2_S_Weights.DEFAULT).to(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
 
 
