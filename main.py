@@ -108,11 +108,21 @@ if __name__ == "__main__":
 
             train_dataset = RexailDataset(root=TRAIN_DIR,
                                         transform=(transforms[idx])[1],
-                                        pre_transform=(transforms[idx])[0])
+                                        pre_transform=(transforms[idx])[0],
+                                        class_decider=partial(RexailDataset.filter_by_min,
+                                                              threshold=500),
+                                        max_class_size=500,
+                                        ratio=90,
+                                        complement_ratio=False)
             
             test_dataset = RexailDataset(root=TEST_DIR,
                                         transform=(transforms[idx])[1],
-                                        pre_transform=(transforms[idx])[0])
+                                        pre_transform=(transforms[idx])[0],
+                                        class_decider=partial(RexailDataset.filter_by_min,
+                                                              threshold=500),
+                                        max_class_size=500,
+                                        ratio=90,
+                                        complement_ratio=True)
             
             if (mean is None) or (std is None):
                 log("---Calculating std and mean across training set---")
@@ -120,7 +130,7 @@ if __name__ == "__main__":
                 log(f"---mean and std calculated: mean : {mean}, std : {std} ---")
             
             if train_cfg.get('lazy_dataset', False):
-                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_datasets, #FIX
+                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_datasets,
                                                         train_dataset=train_dataset,
                                                         test_dataset=test_dataset,
                                                         batch_size=train_cfg.get('batch_size'),
@@ -135,7 +145,7 @@ if __name__ == "__main__":
                 test_dataset.load_into_memory(num_workers=train_cfg.get('dataset_num_workers', 0),
                                                 dtype=DTYPE)
                                 
-                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets, #FIX
+                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
                                                         train_dataset=train_dataset,
                                                         test_dataset=test_dataset,
                                                         batch_size=train_cfg.get('batch_size'),
