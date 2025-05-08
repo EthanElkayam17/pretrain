@@ -12,3 +12,19 @@ from utils.other import dirjoin, logp
 from engine.trainer import trainer
 from collections import Counter
 
+TRAIN_DIR = "/root/.cache/kagglehub/datasets/ethanelkayam/example-dataset/versions/1/data"
+
+
+train_dataset = RexailDataset(root=TRAIN_DIR,
+                                        transform=None,
+                                        pre_transform=None,
+                                        class_decider=partial(RexailDataset.filter_by_min,
+                                                              threshold=500),
+                                        max_class_size=500,
+                                        ratio=90,
+                                        complement_ratio=False)
+
+
+mean, std = calculate_mean_std(train_dataset)
+print(mean)
+print(std)
