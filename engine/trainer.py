@@ -12,6 +12,7 @@ from typing import Tuple, Union, Callable, Any
 from utils.checkpoint import save_state_dict
 from models.model import CFGCNN
 from torch.cuda.amp import autocast
+from torchvision.models import efficientnet_v2_s, EfficientNet_V2_S_Weights
 
 
 def warmup_to_cosine_decay(epoch: int,
@@ -300,7 +301,8 @@ def trainer(rank: int,
     log = partial(logp, logger=logger)
 
 
-    model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
+    #model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
+    model = efficientnet_v2_s(weights=EfficientNet_V2_S_Weights.DEFAULT)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
 
 
