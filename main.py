@@ -155,6 +155,7 @@ if __name__ == "__main__":
                                                         external_collate_func_builder=external_collate_func_builder)
 
             log(f"Starting training stage #{str(idx)}")
+            torch.cuda.empty_cache()
             mp.spawn(
                 trainer,
                 args=(WORLD_SIZE, 
