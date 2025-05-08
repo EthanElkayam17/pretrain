@@ -335,9 +335,7 @@ def trainer(rank: int,
     train_sampler: DistributedSampler 
     test_sampler: DistributedSampler
 
-    print("1")
     train_dataloader, train_sampler, test_dataloader, test_sampler = create_dataloaders_and_samplers(world_size=world_size,rank=rank)
-    print("2")
     log(f"---Dataloaders in process {rank} created---\n")
 
     scaler = torch.cuda.amp.GradScaler()
