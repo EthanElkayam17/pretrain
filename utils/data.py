@@ -16,22 +16,26 @@ from utils.transforms import default_transform
 from utils.other import dirjoin
 from torch import Tensor
 
-def default_decider(path: str) -> bool:
-    """Default decider"""
+
+def default_class_decider(cpath: str) -> bool:
+    """Default file_decider"""
+    return True
+
+def default_store_decider(store_id: str) -> bool:
+    """Default store_decider"""
     return True
 
 class RexailDataset(datasets.VisionDataset):
     """A dataset class for loading and partitioning data from rexail's dataset,
     expects directory in one of the following structures: 
-        root/{product_id}/{store_id}/{image_name}.png
+        root/{store_id}/{product_id}/{image_name}.png
         /
         root/{product_id}/{image_name}.png
     
     the flag 'storewise' can be true only when the first form is present,
-    the flag 'weighed' can be true when including weight data in {image_name}
-    such that {image_name} is in the form: '{image_id}${weight}$' 
     
-    Data should be filtered/partitioned by using the 'decider' parameter, if not internally.
+    Data should be filtered/partitioned by using the 'ratio','complement_ratio','max_class_size','class_decider','store_decider' parameters, 
+    if not internally.
     
     
     When not utilizing 'load_into_memory' the dataset can be used as-is to access directly or create dataloaders,
@@ -56,11 +60,14 @@ class RexailDataset(datasets.VisionDataset):
         pre_transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,
         loader: Callable[[str], Any] = datasets.folder.default_loader,
-        decider: Callable[[str], bool] = default_decider,
+        class_decider: Callable[[str], bool] = default_class_decider,
+        store_decider: Callable[[str], bool] = default_store_decider,
+        max_class_size: int = -1,
+        ratio: int = 100,
+        complement_ratio: bool = False,
         extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
         ignore_classes: List[str] = None,
-        storewise: bool = False,
-        weighed: bool = False,
+        storewise: bool = False        
         ):
         """Args:
             root: Root directory path.
@@ -68,33 +75,44 @@ class RexailDataset(datasets.VisionDataset):
             pre_transform: a transform to be applied pre-fetch to all the data (usable only if load_into_memory = True) should return tensor.
             target_transform: A transform for the target.
             loader: A function to load an image given its path.
-            decider: A function that takes path of an Image file and decides if its in the dataset.
+            class_decider: A function that takes a path of class and decides if it should be in the dataset.
+            store_decider: A function that takes a name of store and decides if it should be in the dataset (only useful with storewise=True).
+            max_class_size: maximum size of a single class (total images), cuts randomly (but deterministically) to this amount if exceeds.
+            ratio: ratio of images in every class that should be in the database (0-100).
+            complement_ratio: whether to take the complement set of pictures filtered by the ratio.
             extensions: file extensions that are acceptable.
             ignore_classes: classes to ignore when making dataset.
-            storewise: whether the directory is partitioned store-wise inside each class.
-            weighed: whether the file names contain weight data."""
+            storewise: whether the directory is partitioned store-wise."""
         
         super().__init__(
             root=root,
             transform=transform,
             target_transform=target_transform
         )
-        self.ignore_classes = ignore_classes
+        assert max_class_size >= -1, "max_class_size must be positive integer (or -1 for no cap)"
 
+        self.max_class_size = max_class_size
+        self.ratio = ratio
+        self.complement_ratio = complement_ratio
+        self.ignore_classes = ignore_classes
+        self.class_decider = class_decider
+        self.store_decider = store_decider
+        self.storewise = storewise
+        self.pre_transform = pre_transform
+
+        self.loaded_dataset = False
+        self.loader = loader
+        self.extensions = extensions
+    
         if self.ignore_classes is None:
             self.ignore_classes = []
 
-        self.pre_transform = pre_transform
-        classes, class_to_idx = RexailDataset.find_classes(self.root, self.ignore_classes)
+        classes, class_to_idx = RexailDataset.find_classes(directory=self.root, 
+                                                           ignore_classes=self.ignore_classes, 
+                                                           storewise=self.storewise, 
+                                                           class_decider=self.class_decider, 
+                                                           store_decider=self.store_decider)
         self.class_to_idx = class_to_idx
-
-        self.loaded_dataset = False
-        self.storewise = storewise
-        self.weighed = weighed
-        self.decider = decider
-        self.loader = loader
-        self.extensions = extensions
-
         self.classes = classes
         self.num_classes = len(classes)
 
@@ -128,6 +146,9 @@ class RexailDataset(datasets.VisionDataset):
             
             if self.transform is not None:
                 sample = self.transform(sample)
+            
+            if self.target_transform is not None:
+                target = self.target_transform(target)
             
             return tuple([sample,target])
 
@@ -211,20 +232,43 @@ class RexailDataset(datasets.VisionDataset):
                     path: str) -> bool:
         """Whether or not a file can be in the dataset by its path"""
         
-        return ((self.extensions is None) or (path.lower().endswith(self.extensions))) and self.decider(path)
+        return ((self.extensions is None) or (path.lower().endswith(self.extensions)))
 
 
     def make_dataset(self) -> List[Tuple[str, int]]:
-        """Makes a list of pairs (sample,target) of the dataset"""
+        """Makes a list of pairs (sample,target) of the dataset
+        Note: dataset is partitioned and filtered using the partition/filter params, in deterministic way"""
 
         directory = os.path.expanduser(self.root)
         
+        keyed = []
         res = []
         for target_class in sorted(self.class_to_idx.keys()):
             class_idx = self.class_to_idx[target_class]
             target_dir = dirjoin(directory, target_class)
             for root, _, fnames in sorted(os.walk(target_dir, followlinks=True)):
-                for fname in sorted(fnames):
+                
+                keyed = [
+                    (sha256(name.encode("utf-8")).hexdigest(), name)
+                    for name in fnames
+                ]
+                
+                keyed.sort()
+                sorted_names = [n for _, n in keyed]
+
+                if self.max_class_size == -1:
+                    universe = sorted_names
+                else:
+                    universe = sorted_names[:self.max_class_size]
+
+                cut_index = (len(universe) * self.ratio) // 100
+
+                if self.complement_ratio:
+                    filtered_fnames = universe[cut_index:]
+                else:
+                    filtered_fnames = universe[:cut_index]
+
+                for fname in filtered_fnames:
                     path = dirjoin(root, fname)
                     if self.is_valid_file(path):
                         item = path, class_idx
@@ -235,59 +279,48 @@ class RexailDataset(datasets.VisionDataset):
 
     @staticmethod
     def find_classes(directory: Union[str, Path], 
-                    ignore_classes: List[str] = None) -> Tuple[List[str], Dict[str, int]]:
+                    ignore_classes: List[str] = None,
+                    storewise: bool = False,
+                    class_decider: Callable[[str], bool] = default_class_decider,
+                    store_decider: Callable[[str], bool] = default_store_decider) -> Tuple[List[str], Dict[str, int]]:
         """Creates a list of the classes and provides a mapping to indices.
         
         Args:
             directory: directory containing the classes
             ignore_classes: classes to ignore
-        
+            storewise: whether directory is partitioned firstly by store_id
+            class_decider: A function that takes a path of class and decides if it should be in the dataset.
+            store_decider: A function that takes a name of store and decides if it should be in the dataset (only useful with storewise=True).
+
         Returns:
-            Tuple - (list_of_classes,map_class_to_idx)
+            Tuple - (list_of_classes, map_class_to_idx)
         """
+        root = Path(directory)
 
         if ignore_classes is None:
             ignore_classes = []
         
-        classes = sorted(entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes)))
+        if storewise:
+            classes = [
+                f"{store.name}/{product.name}"
+                for store in root.iterdir() if (store.is_dir() and store_decider(store.name))
+                for product in store.iterdir() if product.is_dir()
+            ]
+        else:
+            classes = sorted(entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes)))
+        
+        classes = [c for c in classes if class_decider(dirjoin(directory, c))]
+
         if not classes:
-            raise FileNotFoundError(f"Couldn't find any class folder in {directory}.")
+            raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")
 
         class_to_idx = {cls_name: i for i, cls_name in enumerate(classes)}
         return classes, class_to_idx
-
-
-    @staticmethod
-    def sha256_modulo_split(path: str, ratio: int, complement: bool = False) -> bool:
-        """A decider function that partitions the data according to the remainder of an hashed image_id
-        
-        Args:
-            path: path to file
-            ratio: ~percentage of samples to be included in the dataset
-            complement: whether to produce the complement set of data
-        
-        Returns:
-            bool - should the image be included in the dataset according to the split
-        """
-
-        assert ratio is not None, "train_split ratio not initialized"
-        
-        if ratio > 100 or ratio < 0:
-            raise ValueError("ratio needs to be between 0 and 100")
-
-        fname = path.split('/')[-1]
-
-        image_id = fname.split("$")[0]
-        image_id_bytes = image_id.encode('utf-8')
     
-        hashed_id = int(sha256(image_id_bytes).hexdigest(), 16)
-
-        return (hashed_id%100 < ratio) if (not complement) else (not (hashed_id%100 < ratio))
-
 
     @staticmethod
-    def filter_by_store(path:str, stores_lst: List[str]) -> bool:
-        """A decider function that accepts data only from stores in {stores_lst}
+    def filter_by_store(store_id:str, stores_lst: List[str]) -> bool:
+        """A file_decider function that accepts data only from stores in {stores_lst}
         
         Args:
             path: path to file
@@ -297,8 +330,23 @@ class RexailDataset(datasets.VisionDataset):
             bool - should the image be included in the dataset according to the filter
         """
 
-        sID = path.split("/")[-2]
-        return sID in stores_lst
+        return store_id in stores_lst
+    
+
+    @staticmethod
+    def filter_by_min(cpath: str, threshold: int):
+        """A class_decider function that accepts classes with minimum amount of pictures
+        
+        Args:
+            cpath: path to class.
+            minimum: minimum amount of pictures
+        
+        Returns:
+            bool - should the class be included in the dataset according to the filter.
+        """
+
+        num_files = len(os.listdir(cpath))
+        return num_files >= threshold
 
 
 class WrappedRexailDataset(Dataset):
@@ -360,12 +408,15 @@ def create_dataloaders_and_samplers_from_dirs(
         test_transform: Union[torch.nn.Sequential, transforms.Compose] = default_transform(),
         test_pre_transform: Optional[Callable] = None,
         train_extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
-        train_decider: Callable[[str], bool] = default_decider,
+        train_store_decider: Callable[[str], bool] = default_store_decider,
+        train_class_decider: Callable[[str], bool] = default_class_decider,
         test_extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
-        test_decider: Callable[[str], bool] = default_decider,
+        test_store_decider: Callable[[str], bool] = default_store_decider,
+        test_class_decider: Callable[[str], bool] = default_class_decider,        
         ignore_classes: List[str] = None,
         storewise: bool = False,
-        weighed: bool = False,
+        max_class_size: int = -1,
+        ratio: int = 100,
         external_collate_func_builder: Union[Callable, None] = None
     ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
     """Creates training/testing dataloaders from training/testing directories
@@ -381,13 +432,17 @@ def create_dataloaders_and_samplers_from_dirs(
         train_pre_transform: pre_transform to apply to training data.
         test_transform: transforms to apply to testing data.
         test_pre_transform: pre_transform to apply to testing data.
-        train_decider: A function that takes path of an Image file and decides if its in the training dataset.
         train_extensions: file extensions that are acceptable in the training dataset.
-        test_decider: A function that takes path of an Image file and decides if its in the testing dataset.
+        train_store_decider: A function that takes a store name and decides if its classes are in the training dataset.
+        train_class_decider: A function that class path and decides if its in the training dataset.
+        test_file_decider: A function that takes path of an Image file and decides if its in the testing dataset.
         test_extensions: file extensions that are acceptable in the testing dataset.
+        test_store_decider: A function that takes a store name and decides if its classes are in the testing dataset.
+        test_class_decider: A function that class path and decides if its in the testing dataset.
         ignore_classes: classes to ignore when making training/testing sets.
         storewise: whether both training and testing directories are partitioned store-wise inside each class.
-        weighed: whether the file names contain weight data.
+        max_class_size: maximum amount of images in any class (will cut uniformly if exceeds).
+        ratio: ratio of split between training data and testing data.
         external_collate_func_builder: builder for external collate function that should expect num_classes.
 
     Returns:
@@ -400,24 +455,26 @@ def create_dataloaders_and_samplers_from_dirs(
     train_data = RexailDataset(root=train_dir,
                                transform=train_transform,
                                pre_transform=train_pre_transform,
-                               decider=train_decider,
+                               class_decider=train_class_decider,
+                               store_decider=train_store_decider,
+                               max_class_size=max_class_size,
+                               ratio=ratio,
+                               complement_ratio=False,
                                extensions=train_extensions,
                                ignore_classes=ignore_classes,
-                               storewise=storewise,
-                               weighed=weighed,
-                               load_into_memory=False,
-                               num_workers=0)
+                               storewise=storewise)
     
-    test_data = RexailDataset(root=test_dir, 
-                              transform=test_transform,
-                              pre_transform=test_pre_transform,
-                              decider=test_decider,
-                              extensions=test_extensions,
-                              ignore_classes=ignore_classes,
-                              storewise=storewise,
-                              weighed=weighed,
-                              load_into_memory=False,
-                              num_workers=0)
+    test_data = RexailDataset(root=test_dir,
+                               transform=test_transform,
+                               pre_transform=test_pre_transform,
+                               class_decider=test_class_decider,
+                               store_decider=test_store_decider,
+                               max_class_size=max_class_size,
+                               ratio=ratio,
+                               complement_ratio=True,
+                               extensions=train_extensions,
+                               ignore_classes=ignore_classes,
+                               storewise=storewise)
 
     train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
     test_sampler = DistributedSampler(test_data, num_replicas=world_size, rank=rank, shuffle=False)
@@ -573,39 +630,32 @@ def create_dataloaders_and_samplers_from_shared_datasets(
         return train_dataloader, train_sampler, test_dataloader, test_sampler, 
 
 
-def calculate_mean_std(dir: Union[str, Path],
-                       decider: Callable[[str], bool] = default_decider) -> Tuple[List, List]:
-    """Calculates mean and standard deviation of each channel across a directory of images
+def calculate_mean_std(dataset: RexailDataset) -> Tuple[List, List]:
+    """Calculates mean and standard deviation of each channel across a RexailDataset
     
     Args:
-        dir: path to directory
-        decider (optional): decider function for filtering unwanted paths
+        dataset: a RexailDataset instance
     
     Returns:
-        Tuple - (mean,std)
+        List - [mean,std]
     """
 
     channel_sum = np.zeros(3)
     channel_sum_squared = np.zeros(3)
     total_pixels = 0
     
-    for root, _, files in os.walk(dir):
-        for image_name in files:
-            
-            image_path = dirjoin(root, image_name)
-            
-            if decider(image_path):
-                try:
-                    image = Image.open(image_path).convert('RGB') 
-                    image_np = np.array(image) / 255.0 
+    for image_path, _ in dataset.samples:
+        try:
+            image = Image.open(image_path).convert('RGB') 
+            image_np = np.array(image) / 255.0 
 
-                    channel_sum += np.sum(image_np, axis=(0, 1))
-                    channel_sum_squared += np.sum(image_np ** 2, axis=(0, 1))
+            channel_sum += np.sum(image_np, axis=(0, 1))
+            channel_sum_squared += np.sum(image_np ** 2, axis=(0, 1))
 
-                    total_pixels += image_np.shape[0] * image_np.shape[1]
-                
-                except Exception:
-                    print(f"Skipping {image_path}")
+            total_pixels += image_np.shape[0] * image_np.shape[1]
+        
+        except Exception:
+            print(f"Skipping {image_path}")
     
     if total_pixels == 0:
         return [0,0,0] , [1,1,1]

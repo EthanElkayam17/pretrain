@@ -25,8 +25,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 5:
         raise ValueError("Not enough arguments provided. \n required: MODEL_CONFIG_FILENAME , TRAINING_CONFIG_FILENAME , STAGES_CONFIG_FILENAME , DESIRED_MODEL_NAME")
 
-    TRAIN_DIR = "~/.cache/kagglehub/datasets/ethanelkayam/pretraindata/versions/1/Data/CLS-LOC/train"
-    TEST_DIR = "~/.cache/kagglehub/datasets/ethanelkayam/pretraindata/versions/1/Data/CLS-LOC/train"
+    TRAIN_DIR = "~/RexailData"
+    TEST_DIR = "~/RexailData"
 
     STAGES_SETTINGS_DIR = "configs/training/stages"
     MODEL_CONFIG_DIR = "configs/architecture"
@@ -76,17 +76,8 @@ if __name__ == "__main__":
     
     HALF_PRECISION = train_cfg.get("half_precision", True)
     DTYPE = torch.float16 if HALF_PRECISION else torch.float32
-    
-    train_decider = partial(RexailDataset.sha256_modulo_split,ratio=train_cfg.get('train_split'))
-    test_decider = partial(RexailDataset.sha256_modulo_split,ratio=train_cfg.get('train_split'), complement=True)
-
-    log("---Calculating std and mean across training set---")
     mean, std = train_cfg.get('ds_mean'), train_cfg.get('ds_std')
-
-    if (mean is None) or (std is None):
-        mean, std = calculate_mean_std(TRAIN_DIR, train_decider)
-
-    log(f"---mean and std calculated: mean : {mean}, std : {std} ---")
+    
 
     log("---Creating stage transforms---")
     transforms = get_stages_image_transforms(settings_name=STAGES_SETTINGS_NAME, 
@@ -117,16 +108,19 @@ if __name__ == "__main__":
 
             train_dataset = RexailDataset(root=TRAIN_DIR,
                                         transform=(transforms[idx])[1],
-                                        pre_transform=(transforms[idx])[0],
-                                        decider=train_decider)
+                                        pre_transform=(transforms[idx])[0])
             
             test_dataset = RexailDataset(root=TEST_DIR,
                                         transform=(transforms[idx])[1],
-                                        pre_transform=(transforms[idx])[0],
-                                        decider=test_decider)
+                                        pre_transform=(transforms[idx])[0])
+            
+            if (mean is None) or (std is None):
+                log("---Calculating std and mean across training set---")
+                mean, std = calculate_mean_std(train_dataset)
+                log(f"---mean and std calculated: mean : {mean}, std : {std} ---")
             
             if train_cfg.get('lazy_dataset', False):
-                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_datasets,
+                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_datasets, #FIX
                                                         train_dataset=train_dataset,
                                                         test_dataset=test_dataset,
                                                         batch_size=train_cfg.get('batch_size'),
@@ -141,7 +135,7 @@ if __name__ == "__main__":
                 test_dataset.load_into_memory(num_workers=train_cfg.get('dataset_num_workers', 0),
                                                 dtype=DTYPE)
                                 
-                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
+                create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets, #FIX
                                                         train_dataset=train_dataset,
                                                         test_dataset=test_dataset,
                                                         batch_size=train_cfg.get('batch_size'),

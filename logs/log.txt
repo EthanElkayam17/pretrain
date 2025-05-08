@@ -1,0 +1,428 @@
+15:01:27,618 log INFO ------LOGGING: .(mod.pth). ------
+15:01:27,619 log INFO ---Model created---
+
+15:01:27,619 log INFO Setting up training env
+15:01:52,51 log INFO ------LOGGING: .(mod.pth). ------
+15:01:52,51 log INFO ---Model created---
+
+15:01:52,51 log INFO Setting up training env
+15:01:52,55 log INFO ---Calculating std and mean across training set---
+15:01:52,55 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:01:52,56 log INFO ---Creating stage transforms---
+15:01:52,59 log INFO ---Stage transform created---
+
+15:01:52,59 log INFO ---STARTING TRAINING---
+15:02:07,435 log INFO ------LOGGING: .(mod.pth). ------
+15:02:07,435 log INFO ---Model created---
+
+15:02:07,435 log INFO Setting up training env
+15:02:07,439 log INFO ---Calculating std and mean across training set---
+15:02:07,439 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:02:07,439 log INFO ---Creating stage transforms---
+15:02:07,442 log INFO ---Stage transform created---
+
+15:02:07,442 log INFO ---STARTING TRAINING---
+15:02:57,99 log INFO ------LOGGING: .(mod.pth). ------
+15:02:57,100 log INFO ---Model created---
+
+15:02:57,100 log INFO Setting up training env
+15:02:57,102 log INFO ---Calculating std and mean across training set---
+15:02:57,102 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:02:57,103 log INFO ---Creating stage transforms---
+15:02:57,105 log INFO ---Stage transform created---
+
+15:02:57,105 log INFO ---STARTING TRAINING---
+15:04:27,184 log INFO ------LOGGING: .(mod.pth). ------
+15:04:27,185 log INFO ---Model created---
+
+15:04:27,185 log INFO Setting up training env
+15:04:27,188 log INFO ---Calculating std and mean across training set---
+15:04:27,188 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:04:27,188 log INFO ---Creating stage transforms---
+15:04:27,191 log INFO ---Stage transform created---
+
+15:04:27,191 log INFO ---STARTING TRAINING---
+15:05:37,627 log INFO ------LOGGING: .(mod.pth). ------
+15:05:37,627 log INFO ---Model created---
+
+15:05:37,627 log INFO Setting up training env
+15:05:37,629 log INFO ---Calculating std and mean across training set---
+15:05:37,629 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:05:37,629 log INFO ---Creating stage transforms---
+15:05:37,630 log INFO ---Stage transform created---
+
+15:05:37,630 log INFO ---STARTING TRAINING---
+15:06:21,862 log INFO ------LOGGING: .(mod.pth). ------
+15:06:21,862 log INFO ---Model created---
+
+15:06:21,862 log INFO Setting up training env
+15:06:21,864 log INFO ---Calculating std and mean across training set---
+15:06:21,864 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:06:21,864 log INFO ---Creating stage transforms---
+15:06:21,865 log INFO ---Stage transform created---
+
+15:06:21,865 log INFO ---STARTING TRAINING---
+15:07:26,447 log INFO ------LOGGING: .(mod.pth). ------
+15:07:26,447 log INFO ---Model created---
+
+15:07:26,447 log INFO Setting up training env
+15:07:26,448 log INFO ---Calculating std and mean across training set---
+15:07:26,448 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:07:26,448 log INFO ---Creating stage transforms---
+15:07:26,449 log INFO ---Stage transform created---
+
+15:07:26,449 log INFO ---STARTING TRAINING---
+15:17:31,874 log INFO ------LOGGING: .(mod.pth). ------
+15:17:31,874 log INFO ---Model created---
+
+15:17:31,874 log INFO Setting up training env
+15:17:31,877 log INFO ---Calculating std and mean across training set---
+15:17:31,877 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:17:31,877 log INFO ---Creating stage transforms---
+15:17:31,879 log INFO ---Stage transform created---
+
+15:17:31,879 log INFO ---STARTING TRAINING---
+15:17:43,948 log INFO ------LOGGING: .(mod.pth). ------
+15:17:43,949 log INFO ---Model created---
+
+15:17:43,949 log INFO Setting up training env
+15:17:43,950 log INFO ---Calculating std and mean across training set---
+15:17:43,950 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:17:43,950 log INFO ---Creating stage transforms---
+15:17:43,951 log INFO ---Stage transform created---
+
+15:17:43,951 log INFO ---STARTING TRAINING---
+15:17:57,911 log INFO ------LOGGING: .(mod.pth). ------
+15:17:57,911 log INFO ---Model created---
+
+15:17:57,911 log INFO Setting up training env
+15:17:57,913 log INFO ---Calculating std and mean across training set---
+15:17:57,913 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:17:57,913 log INFO ---Creating stage transforms---
+15:17:57,914 log INFO ---Stage transform created---
+
+15:17:57,914 log INFO ---STARTING TRAINING---
+15:18:13,826 log INFO ------LOGGING: .(mod.pth). ------
+15:18:13,826 log INFO ---Model created---
+
+15:18:13,826 log INFO Setting up training env
+15:18:13,827 log INFO ---Calculating std and mean across training set---
+15:18:13,827 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:18:13,827 log INFO ---Creating stage transforms---
+15:18:13,829 log INFO ---Stage transform created---
+
+15:18:13,829 log INFO ---STARTING TRAINING---
+15:18:34,434 log INFO ------LOGGING: .(mod.pth). ------
+15:18:34,434 log INFO ---Model created---
+
+15:18:34,434 log INFO Setting up training env
+15:18:34,435 log INFO ---Calculating std and mean across training set---
+15:18:34,435 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:18:34,435 log INFO ---Creating stage transforms---
+15:18:34,437 log INFO ---Stage transform created---
+
+15:18:34,437 log INFO ---STARTING TRAINING---
+15:19:18,658 log INFO ------LOGGING: .(mod.pth). ------
+15:19:18,658 log INFO ---Model created---
+
+15:19:18,658 log INFO Setting up training env
+15:19:18,659 log INFO ---Calculating std and mean across training set---
+15:19:18,659 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:19:18,659 log INFO ---Creating stage transforms---
+15:19:18,660 log INFO ---Stage transform created---
+
+15:19:18,660 log INFO ---STARTING TRAINING---
+15:22:53,552 log INFO ------LOGGING: .(mod.pth). ------
+15:22:53,552 log INFO ---Model created---
+
+15:22:53,552 log INFO Setting up training env
+15:22:53,555 log INFO ---Calculating std and mean across training set---
+15:22:53,555 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:22:53,555 log INFO ---Creating stage transforms---
+15:22:53,558 log INFO ---Stage transform created---
+
+15:22:53,558 log INFO ---STARTING TRAINING---
+15:23:34,843 log INFO ------LOGGING: .(mod.pth). ------
+15:23:34,843 log INFO ---Model created---
+
+15:23:34,843 log INFO Setting up training env
+15:23:34,844 log INFO ---Calculating std and mean across training set---
+15:23:34,844 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:23:34,844 log INFO ---Creating stage transforms---
+15:23:34,846 log INFO ---Stage transform created---
+
+15:23:34,846 log INFO ---STARTING TRAINING---
+15:23:57,120 log INFO ------LOGGING: .(mod.pth). ------
+15:23:57,120 log INFO ---Model created---
+
+15:23:57,120 log INFO Setting up training env
+15:23:57,123 log INFO ---Calculating std and mean across training set---
+15:23:57,123 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:23:57,123 log INFO ---Creating stage transforms---
+15:23:57,126 log INFO ---Stage transform created---
+
+15:23:57,126 log INFO ---STARTING TRAINING---
+15:25:09,463 log INFO ------LOGGING: .(mod.pth). ------
+15:25:09,463 log INFO ---Model created---
+
+15:25:09,463 log INFO Setting up training env
+15:25:09,465 log INFO ---Calculating std and mean across training set---
+15:25:09,465 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:25:09,465 log INFO ---Creating stage transforms---
+15:25:09,466 log INFO ---Stage transform created---
+
+15:25:09,466 log INFO ---STARTING TRAINING---
+15:25:17,925 log INFO ------LOGGING: .(mod.pth). ------
+15:25:17,925 log INFO ---Model created---
+
+15:25:17,925 log INFO Setting up training env
+15:25:17,927 log INFO ---Calculating std and mean across training set---
+15:25:17,927 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:25:17,927 log INFO ---Creating stage transforms---
+15:25:17,930 log INFO ---Stage transform created---
+
+15:25:17,930 log INFO ---STARTING TRAINING---
+15:25:26,710 log INFO ------LOGGING: .(mod.pth). ------
+15:25:26,710 log INFO ---Model created---
+
+15:25:26,710 log INFO Setting up training env
+15:25:26,712 log INFO ---Calculating std and mean across training set---
+15:25:26,712 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:25:26,712 log INFO ---Creating stage transforms---
+15:25:26,715 log INFO ---Stage transform created---
+
+15:25:26,716 log INFO ---STARTING TRAINING---
+15:26:12,647 log INFO ------LOGGING: .(mod.pth). ------
+15:26:12,647 log INFO ---Model created---
+
+15:26:12,647 log INFO Setting up training env
+15:26:12,650 log INFO ---Calculating std and mean across training set---
+15:26:12,650 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:26:12,650 log INFO ---Creating stage transforms---
+15:26:12,652 log INFO ---Stage transform created---
+
+15:26:12,652 log INFO ---STARTING TRAINING---
+15:26:32,58 log INFO ------LOGGING: .(mod.pth). ------
+15:26:32,58 log INFO ---Model created---
+
+15:26:32,58 log INFO Setting up training env
+15:26:32,61 log INFO ---Calculating std and mean across training set---
+15:26:32,61 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:26:32,61 log INFO ---Creating stage transforms---
+15:26:32,64 log INFO ---Stage transform created---
+
+15:26:32,64 log INFO ---STARTING TRAINING---
+15:27:15,704 log INFO ------LOGGING: .(mod.pth). ------
+15:27:15,705 log INFO ---Model created---
+
+15:27:15,705 log INFO Setting up training env
+15:27:15,707 log INFO ---Calculating std and mean across training set---
+15:27:15,708 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:27:15,708 log INFO ---Creating stage transforms---
+15:27:15,711 log INFO ---Stage transform created---
+
+15:27:15,711 log INFO ---STARTING TRAINING---
+15:34:53,941 log INFO ------LOGGING: .(mod.pth). ------
+15:34:53,941 log INFO ---Model created---
+
+15:34:53,941 log INFO Setting up training env
+15:34:53,942 log INFO ---Calculating std and mean across training set---
+15:34:53,942 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:34:53,942 log INFO ---Creating stage transforms---
+15:34:53,944 log INFO ---Stage transform created---
+
+15:34:53,944 log INFO ---STARTING TRAINING---
+15:35:07,224 log INFO ------LOGGING: .(mod.pth). ------
+15:35:07,224 log INFO ---Model created---
+
+15:35:07,224 log INFO Setting up training env
+15:35:07,225 log INFO ---Calculating std and mean across training set---
+15:35:07,225 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:35:07,225 log INFO ---Creating stage transforms---
+15:35:07,227 log INFO ---Stage transform created---
+
+15:35:07,227 log INFO ---STARTING TRAINING---
+15:38:16,122 log INFO ------LOGGING: .(mod.pth). ------
+15:38:16,122 log INFO ---Model created---
+
+15:38:16,122 log INFO Setting up training env
+15:38:16,123 log INFO ---Calculating std and mean across training set---
+15:38:16,124 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:38:16,124 log INFO ---Creating stage transforms---
+15:38:16,125 log INFO ---Stage transform created---
+
+15:38:16,125 log INFO ---STARTING TRAINING---
+15:38:26,626 log INFO ------LOGGING: .(mod.pth). ------
+15:38:26,627 log INFO ---Model created---
+
+15:38:26,627 log INFO Setting up training env
+15:38:26,629 log INFO ---Calculating std and mean across training set---
+15:38:26,629 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:38:26,629 log INFO ---Creating stage transforms---
+15:38:26,633 log INFO ---Stage transform created---
+
+15:38:26,633 log INFO ---STARTING TRAINING---
+15:38:33,926 log INFO ------LOGGING: .(mod.pth). ------
+15:38:33,926 log INFO ---Model created---
+
+15:38:33,926 log INFO Setting up training env
+15:38:33,928 log INFO ---Calculating std and mean across training set---
+15:38:33,928 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:38:33,928 log INFO ---Creating stage transforms---
+15:38:33,929 log INFO ---Stage transform created---
+
+15:38:33,929 log INFO ---STARTING TRAINING---
+15:38:50,621 log INFO ------LOGGING: .(mod.pth). ------
+15:38:50,621 log INFO ---Model created---
+
+15:38:50,621 log INFO Setting up training env
+15:38:50,622 log INFO ---Calculating std and mean across training set---
+15:38:50,622 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:38:50,622 log INFO ---Creating stage transforms---
+15:38:50,624 log INFO ---Stage transform created---
+
+15:38:50,624 log INFO ---STARTING TRAINING---
+15:39:05,39 log INFO ------LOGGING: .(mod.pth). ------
+15:39:05,39 log INFO ---Model created---
+
+15:39:05,39 log INFO Setting up training env
+15:39:05,41 log INFO ---Calculating std and mean across training set---
+15:39:05,41 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:39:05,41 log INFO ---Creating stage transforms---
+15:39:05,44 log INFO ---Stage transform created---
+
+15:39:05,44 log INFO ---STARTING TRAINING---
+15:50:00,4 log INFO ------LOGGING: .(mod.pth). ------
+15:50:00,4 log INFO ---Model created---
+
+15:50:00,5 log INFO Setting up training env
+15:50:00,6 log INFO ---Calculating std and mean across training set---
+15:50:00,6 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:50:00,6 log INFO ---Creating stage transforms---
+15:50:00,7 log INFO ---Stage transform created---
+
+15:50:00,7 log INFO ---STARTING TRAINING---
+15:50:23,967 log INFO ------LOGGING: .(mod.pth). ------
+15:50:23,967 log INFO ---Model created---
+
+15:50:23,967 log INFO Setting up training env
+15:50:23,968 log INFO ---Calculating std and mean across training set---
+15:50:23,968 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:50:23,968 log INFO ---Creating stage transforms---
+15:50:23,969 log INFO ---Stage transform created---
+
+15:50:23,969 log INFO ---STARTING TRAINING---
+15:50:30,148 log INFO ------LOGGING: .(mod.pth). ------
+15:50:30,148 log INFO ---Model created---
+
+15:50:30,148 log INFO Setting up training env
+15:50:30,149 log INFO ---Calculating std and mean across training set---
+15:50:30,149 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:50:30,149 log INFO ---Creating stage transforms---
+15:50:30,151 log INFO ---Stage transform created---
+
+15:50:30,151 log INFO ---STARTING TRAINING---
+15:50:43,259 log INFO ------LOGGING: .(mod.pth). ------
+15:50:43,259 log INFO ---Model created---
+
+15:50:43,260 log INFO Setting up training env
+15:50:43,262 log INFO ---Calculating std and mean across training set---
+15:50:43,262 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:50:43,262 log INFO ---Creating stage transforms---
+15:50:43,265 log INFO ---Stage transform created---
+
+15:50:43,265 log INFO ---STARTING TRAINING---
+15:50:58,573 log INFO ------LOGGING: .(mod.pth). ------
+15:50:58,574 log INFO ---Model created---
+
+15:50:58,574 log INFO Setting up training env
+15:50:58,575 log INFO ---Calculating std and mean across training set---
+15:50:58,575 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+15:50:58,575 log INFO ---Creating stage transforms---
+15:50:58,577 log INFO ---Stage transform created---
+
+15:50:58,577 log INFO ---STARTING TRAINING---
+16:02:01,865 log INFO ------LOGGING: .(mod.pth). ------
+16:02:01,865 log INFO ---Model created---
+
+16:02:01,865 log INFO Setting up training env
+16:02:01,867 log INFO ---Calculating std and mean across training set---
+16:02:01,867 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+16:02:01,867 log INFO ---Creating stage transforms---
+16:02:01,868 log INFO ---Stage transform created---
+
+16:02:01,868 log INFO ---STARTING TRAINING---
+16:12:19,392 log INFO ------LOGGING: .(mod.pth). ------
+16:12:19,394 log INFO ---Model created---
+
+16:12:19,394 log INFO Setting up training env
+16:12:19,397 log INFO ---Calculating std and mean across training set---
+16:12:19,397 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+16:12:19,397 log INFO ---Creating stage transforms---
+16:12:19,404 log INFO ---Stage transform created---
+
+16:12:19,404 log INFO ---STARTING TRAINING---
+16:12:27,774 log INFO ------LOGGING: .(mod.pth). ------
+16:12:27,774 log INFO ---Model created---
+
+16:12:27,774 log INFO Setting up training env
+16:12:27,778 log INFO ---Calculating std and mean across training set---
+16:12:27,778 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+16:12:27,778 log INFO ---Creating stage transforms---
+16:12:27,780 log INFO ---Stage transform created---
+
+16:12:27,781 log INFO ---STARTING TRAINING---
+16:13:45,479 log INFO ------LOGGING: .(mod.pth). ------
+16:13:45,479 log INFO ---Model created---
+
+16:13:45,479 log INFO Setting up training env
+16:13:45,480 log INFO ---Calculating std and mean across training set---
+16:13:45,480 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+16:13:45,480 log INFO ---Creating stage transforms---
+16:13:45,482 log INFO ---Stage transform created---
+
+16:13:45,482 log INFO ---STARTING TRAINING---
+17:14:04,334 log INFO ------LOGGING: .(mod.pth). ------
+17:14:04,335 log INFO ---Model created---
+
+17:14:04,335 log INFO Setting up training env
+17:14:59,28 log INFO ------LOGGING: .(mod.pth). ------
+17:14:59,30 log INFO ---Model created---
+
+17:14:59,30 log INFO Setting up training env
+17:14:59,33 log INFO ---Calculating std and mean across training set---
+17:14:59,33 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+17:14:59,33 log INFO ---Creating stage transforms---
+17:14:59,43 log INFO ---Stage transform created---
+
+17:14:59,43 log INFO ---STARTING TRAINING---
+17:16:27,990 log INFO ------LOGGING: .(mod.pth). ------
+17:16:27,991 log INFO ---Model created---
+
+17:16:27,991 log INFO Setting up training env
+17:16:27,992 log INFO ---Calculating std and mean across training set---
+17:16:27,992 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+17:16:27,992 log INFO ---Creating stage transforms---
+17:16:27,999 log INFO ---Stage transform created---
+
+17:16:27,999 log INFO ---STARTING TRAINING---
+17:17:16,226 log INFO ------LOGGING: .(mod.pth). ------
+17:17:16,226 log INFO ---Model created---
+
+17:17:16,227 log INFO Setting up training env
+17:17:16,229 log INFO ---Calculating std and mean across training set---
+17:17:16,230 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+17:17:16,230 log INFO ---Creating stage transforms---
+17:17:16,233 log INFO ---Stage transform created---
+
+17:17:16,233 log INFO ---STARTING TRAINING---
+17:17:50,775 log INFO ------LOGGING: .(mod.pth). ------
+17:17:50,776 log INFO ---Model created---
+
+17:17:50,776 log INFO Setting up training env
+17:17:50,778 log INFO ---Calculating std and mean across training set---
+17:17:50,778 log INFO ---mean and std calculated: mean : [0.485, 0.456, 0.406], std : [0.229, 0.224, 0.225] ---
+17:17:50,778 log INFO ---Creating stage transforms---
+17:17:50,781 log INFO ---Stage transform created---
+
+17:17:50,781 log INFO ---STARTING TRAINING---
