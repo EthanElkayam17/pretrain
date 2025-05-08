@@ -305,7 +305,7 @@ def trainer(rank: int,
     model.cuda(rank)
     #model = efficientnet_v2_s(weights=EfficientNet_V2_S_Weights.DEFAULT).to(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
-
+    print("---------------------------------------------------------------------------------")
 
     if (load_state_dict_path is not None) and (rank == 0):
         model.load_state_dict(torch.load(load_state_dict_path, weights_only=True))
