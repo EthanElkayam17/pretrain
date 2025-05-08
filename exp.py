@@ -12,7 +12,7 @@ from utils.other import dirjoin, logp
 from engine.trainer import trainer
 from collections import Counter
 
-TRAIN_DIR = "/root/.cache/kagglehub/datasets/ethanelkayam/example-dataset/versions/1/data"
+TRAIN_DIR = "~/data"
 
 
 train_dataset = RexailDataset(root=TRAIN_DIR,
@@ -22,8 +22,10 @@ train_dataset = RexailDataset(root=TRAIN_DIR,
                                                               threshold=500),
                                         max_class_size=500,
                                         ratio=90,
-                                        complement_ratio=False)
+                                        complement_ratio=False,
+                                        storewise=True)
 
+print("calculating")
 
 mean, std = calculate_mean_std(train_dataset)
 print(mean)

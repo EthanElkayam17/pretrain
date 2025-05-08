@@ -658,7 +658,7 @@ def calculate_mean_std(dataset: RexailDataset) -> Tuple[List, List]:
             print(f"Skipping {image_path}")
     
     if total_pixels == 0:
-        return [0,0,0] , [1,1,1]
+        return [0,0,0] , [1,1,1] 
 
     mean = channel_sum / total_pixels
     std = np.sqrt(channel_sum_squared / total_pixels - mean ** 2)

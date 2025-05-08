@@ -10,3 +10,5 @@ training_general:
     lazy_dataset: True
     half_precision: False
     train_split: 75
+    mean: [0.46422, 0.45539, 0.44493]
+    std: [0.25619, 0.24720, 0.26809]

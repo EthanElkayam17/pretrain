@@ -113,7 +113,8 @@ if __name__ == "__main__":
                                                               threshold=500),
                                         max_class_size=500,
                                         ratio=90,
-                                        complement_ratio=False)
+                                        complement_ratio=False,
+                                        storewise=True)
             
             test_dataset = RexailDataset(root=TEST_DIR,
                                         transform=(transforms[idx])[1],
@@ -122,7 +123,8 @@ if __name__ == "__main__":
                                                               threshold=500),
                                         max_class_size=500,
                                         ratio=90,
-                                        complement_ratio=True)
+                                        complement_ratio=True,
+                                        storewise=True)
             
             if (mean is None) or (std is None):
                 log("---Calculating std and mean across training set---")
