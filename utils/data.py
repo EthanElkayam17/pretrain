@@ -644,7 +644,9 @@ def calculate_mean_std(dataset: RexailDataset) -> Tuple[List, List]:
     channel_sum = np.zeros(3)
     channel_sum_squared = np.zeros(3)
     total_pixels = 0
+    amiwrong = 0
     
+    print(len(dataset))
     for image_path, _ in dataset.samples:
         try:
             image = Image.open(image_path).convert('RGB') 
@@ -654,14 +656,16 @@ def calculate_mean_std(dataset: RexailDataset) -> Tuple[List, List]:
             channel_sum_squared += np.sum(image_np ** 2, axis=(0, 1))
 
             total_pixels += image_np.shape[0] * image_np.shape[1]
-        
+
         except Exception:
             print(f"Skipping {image_path}")
+            amiwrong += 1
     
     if total_pixels == 0:
         return [0,0,0] , [1,1,1] 
 
     mean = channel_sum / total_pixels
     std = np.sqrt(channel_sum_squared / total_pixels - mean ** 2)
+    print(amiwrong)
     
     return mean.tolist(), std.tolist()

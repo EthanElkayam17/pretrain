@@ -10,3 +10,5 @@ utils/__pycache__/data.cpython-310.pyc
 utils/__pycache__/checkpoint.cpython-310.pyc
 models/__pycache__/model.cpython-310.pyc
 engine/__pycache__/trainer.cpython-310.pyc
+utils/__pycache__/data.cpython-310.pyc
+engine/__pycache__/trainer.cpython-310.pyc
