@@ -22,11 +22,7 @@ train_dataset = RexailDataset(root=TRAIN_DIR,
                                                         threshold=500),
                                 max_class_size=500,
                                 ratio=90,
-                                complement_ratio=True,
+                                complement_ratio=False,
                                 storewise=True)
 
-print("calculating")
-
-mean, std = calculate_mean_std(train_dataset)
-print(mean)
-print(std)
+print(len(train_dataset))

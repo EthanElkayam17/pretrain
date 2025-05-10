@@ -311,6 +311,8 @@ class RexailDataset(datasets.VisionDataset):
         
         classes = [c for c in classes if class_decider(dirjoin(directory, c))]
 
+        print(len(classes))
+
         if not classes:
             raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")
 
