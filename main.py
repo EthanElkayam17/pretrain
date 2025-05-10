@@ -25,8 +25,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 5:
         raise ValueError("Not enough arguments provided. \n required: MODEL_CONFIG_FILENAME , TRAINING_CONFIG_FILENAME , STAGES_CONFIG_FILENAME , DESIRED_MODEL_NAME")
 
-    TRAIN_DIR = "/root/.cache/kagglehub/datasets/ethanelkayam/example-dataset/versions/1/data"
-    TEST_DIR = "/root/.cache/kagglehub/datasets/ethanelkayam/example-dataset/versions/1/data"
+    TRAIN_DIR = "~/.cache/kagglehub/datasets/ethanelkayam/example/versions/1/data"
+    TEST_DIR = "~/.cache/kagglehub/datasets/ethanelkayam/example/versions/1/data"
 
     STAGES_SETTINGS_DIR = "configs/training/stages"
     MODEL_CONFIG_DIR = "configs/architecture"
