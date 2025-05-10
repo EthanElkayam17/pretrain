@@ -16,10 +16,14 @@ TRAIN_DIR = "~/data"
 
 
 train_dataset = RexailDataset(root=TRAIN_DIR,
-                                        transform=None,
-                                        pre_transform=None,
-                                        complement_ratio=False,
-                                        storewise=True)
+                                transform=None,
+                                pre_transform=None,
+                                class_decider=partial(RexailDataset.filter_by_min,
+                                                        threshold=500),
+                                max_class_size=500,
+                                ratio=90,
+                                complement_ratio=True,
+                                storewise=True)
 
 print("calculating")
 
