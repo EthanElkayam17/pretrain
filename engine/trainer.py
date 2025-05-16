@@ -13,6 +13,7 @@ from utils.checkpoint import save_state_dict
 from models.model import CFGCNN
 from torch.cuda.amp import autocast
 from torchvision.models import efficientnet_v2_s, EfficientNet_V2_S_Weights
+from data.analytics import top_k_accuracy
 
 
 def warmup_to_cosine_decay(epoch: int,
@@ -67,7 +68,7 @@ def warmup_to_exponential_decay(epoch: int,
 
 def top1acc(y_pred: Tensor,
             y_real: Tensor) -> float:
-    """Calculate the top 1 accuracy of a single prediction
+    """Calculates the top 1 accuracy of a batched prediction
     
     Args:
         y_pred: The predicted tensor, should be of shape [batchsize, num_of_classes] or [batch_size]
@@ -144,8 +145,10 @@ def train_step(model: torch.nn.Module,
         if rank == 0 and (batch % 50 == 0):
             print(f"training batch number #{batch}")
 
-    train_loss = train_loss / len(dataloader)
-    train_accuracy = train_accuracy / len(dataloader)
+    num_batches = len(dataloader)
+
+    train_loss = train_loss / num_batches
+    train_accuracy = train_accuracy / num_batches
     
     return train_loss, train_accuracy
 
@@ -154,6 +157,7 @@ def test_step(model: torch.nn.Module,
               dataloader: torch.utils.data.DataLoader, 
               loss_fn: torch.nn.Module,
               rank: Any,
+              top5: bool = False,
               half_precision: bool = True) -> Tuple[float, float]:
     
     """Basic test for a single epoch.
@@ -163,18 +167,18 @@ def test_step(model: torch.nn.Module,
         dataloader: dataloader to use for test.
         loss_fn: loss function.
         rank: device to compute on.
+        top5: whether to return top5 accuracy as well.
         half_precision: whether to compute in half precision.
     
     Returns:
-        Tuple - (loss, accuracy)
+        Tuple - (loss, accuracy, top5acc (optional))
     """
 
     model.eval()
     
-    test_loss, test_accuracy = 0 , 0
+    test_loss, test_accuracy, top5_test_accuracy = 0, 0, 0
 
-    # disables autograd
-    with torch.inference_mode():
+    with torch.inference_mode(): # no_grad alt
         for batch, (X,y) in enumerate(dataloader):
             X, y = X.to(rank) , y.to(rank)
 
@@ -188,17 +192,20 @@ def test_step(model: torch.nn.Module,
                 loss = loss_fn(y_res,y)
             
             test_loss += loss.item()
-
-            test_accuracy += ((torch.argmax(torch.softmax(y_res, dim=1), dim=1) == y).sum().item() / len(y_res))
-            torch.nn.functional.softmax
+            test_accuracy += top1acc(y_res,y)
+            if top5:
+                top5_test_accuracy += top_k_accuracy(y_res,y,5)
 
             if rank == 0 and (batch % 50 == 0):
                 print(f"testing batch number #{batch}")
 
-    test_loss = test_loss / len(dataloader)
-    test_accuracy = test_accuracy / len(dataloader)
+    num_batches = len(dataloader)
+
+    test_loss = test_loss / num_batches
+    test_accuracy = test_accuracy / num_batches
+    top5_test_accuracy = top5_test_accuracy / num_batches
     
-    return test_loss,test_accuracy
+    return test_loss,test_accuracy,top5_test_accuracy
 
 
 def setup(rank, world_size):
@@ -300,13 +307,9 @@ def trainer(rank: int,
     
     log = partial(logp, logger=logger)
 
-    print("---------------------------------------------------------------------------------")
-
     model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
     model.cuda(rank)
-    #model = efficientnet_v2_s(weights=EfficientNet_V2_S_Weights.DEFAULT).to(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
-    print("---------------------------------------------------------------------------------")
 
     if (load_state_dict_path is not None) and (rank == 0):
         model.load_state_dict(torch.load(load_state_dict_path, weights_only=True))
@@ -366,13 +369,15 @@ def trainer(rank: int,
                                       scaler=scaler,
                                       half_precision=half_precision)
         
-        test_loss, test_acc = test_step(model=model,
+        test_loss, test_acc, top5_test_acc = test_step(model=model,
                                    dataloader=test_dataloader,
                                    loss_fn=loss_fn,
-                                   rank=rank)
+                                   rank=rank,
+                                   top5=(epoch % 10 == 0),
+                                   half_precision=half_precision)
         
 
-        log(f"Rank: {rank}. \n Epoch: {epoch}. \n Train loss: {train_loss}, Train Acc: {train_acc}. \n Test loss: {test_loss}, Test acc: {test_acc}.")
+        log(f"Rank: {rank}. \n Epoch: {epoch}. \n Train loss: {train_loss}, Train Acc: {train_acc}. \n Test loss: {test_loss}, Test acc: {test_acc}, Top5 test acc: {top5_test_acc}.")
 
     
     if rank == 0:

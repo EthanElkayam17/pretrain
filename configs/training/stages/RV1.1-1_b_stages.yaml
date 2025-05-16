@@ -8,11 +8,11 @@ training_stages:
     RandAugment_magnitude: 5
     dropout_prob: 0.1
     lr_min: 0.00000064
-    lr_max: 0.00064
+    lr_max: 0.00128
     decay_mode: exp
     decay_factor: 0.9873
     warmup_epochs: 20
-    epochs: 70
+    epochs: 100
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
     label_smoothing: 0.0
@@ -24,11 +24,11 @@ training_stages:
     RandAugment_magnitude: 8
     dropout_prob: 0.15
     lr_min: 0.00000000002
-    lr_max: 0.000112593
+    lr_max: 0.00022
     decay_mode: exp
     decay_factor: 0.988
     warmup_epochs: 0
-    epochs: 70
+    epochs: 100
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
     label_smoothing: 0.0
@@ -40,11 +40,11 @@ training_stages:
     RandAugment_magnitude: 12
     dropout_prob: 0.2
     lr_min: 0.00000000002
-    lr_max: 0.00004836
+    lr_max: 0.000096
     decay_mode: exp
     decay_factor: 0.9885
     warmup_epochs: 0
-    epochs: 70
+    epochs: 100
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
     label_smoothing: 0.0
@@ -56,11 +56,11 @@ training_stages:
     RandAugment_magnitude: 15
     dropout_prob: 0.25
     lr_min: 0.00000000001
-    lr_max: 0.000021520999035025463
+    lr_max: 0.00005
     decay_mode: exp
     decay_factor: 0.9885
     warmup_epochs: 0
-    epochs: 70
+    epochs: 120
     cutmix_alpha: 1.0
     mixup_alpha: 0.1
     label_smoothing: 0.0

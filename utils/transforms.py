@@ -98,7 +98,7 @@ def default_transform(resize: tuple = (224,224),
      
     res = v2.Compose([
                 v2.Resize(size=resize),
-                v2.CenterCrop(size=crop_size),
+                v2.RandomResizedCrop(size=crop_size, antialias=True),
                 v2.ToImage(),
                 v2.ToDtype(dtype=dtype,scale=True),
                 v2.Normalize(mean=mean, std=std)

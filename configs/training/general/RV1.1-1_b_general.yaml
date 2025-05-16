@@ -9,6 +9,6 @@ training_general:
     weight_decay: 0.00001
     lazy_dataset: True
     half_precision: True
-    train_split: 75
-    ds_mean: [0.485, 0.456, 0.406]
-    ds_std: [0.229, 0.224, 0.225]
+    train_split: 90
+    ds_mean: [0.46422, 0.45539, 0.44493]
+    ds_std: [0.25619, 0.24720, 0.26809]

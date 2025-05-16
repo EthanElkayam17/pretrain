@@ -5,9 +5,9 @@ import sys
 import os
 import torch.multiprocessing as mp
 from functools import partial
-from utils.data import RexailDataset
+from data.data import RexailDataset
 from utils.transforms import get_stages_image_transforms, collate_cutmix_or_mixup_transform
-from utils.data import create_dataloaders_and_samplers_from_shared_datasets, calculate_mean_std, create_dataloaders_and_samplers_from_datasets
+from data.data import create_dataloaders_and_samplers_from_shared_datasets, calculate_mean_std, create_dataloaders_and_samplers_from_datasets
 from utils.other import dirjoin, logp
 from engine.trainer import trainer
 
@@ -25,8 +25,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 5:
         raise ValueError("Not enough arguments provided. \n required: MODEL_CONFIG_FILENAME , TRAINING_CONFIG_FILENAME , STAGES_CONFIG_FILENAME , DESIRED_MODEL_NAME")
 
-    TRAIN_DIR = "~/.cache/kagglehub/datasets/ethanelkayam/example/versions/1/data"
-    TEST_DIR = "~/.cache/kagglehub/datasets/ethanelkayam/example/versions/1/data"
+    TRAIN_DIR = "~/.cache/kagglehub/datasets/ethanelkayam/example2/versions/1/data"
+    TEST_DIR = "~/.cache/kagglehub/datasets/ethanelkayam/example2/versions/1/data"
 
     STAGES_SETTINGS_DIR = "configs/training/stages"
     MODEL_CONFIG_DIR = "configs/architecture"
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     TRAINING_SETTINGS_PATH = (dirjoin(TRAINING_CONFIG_DIR,TRAINING_SETTINGS_NAME))
     WORLD_SIZE = torch.cuda.device_count()
     SAVED_MODEL_PATH = None
-    START_EPOCH = 0
+    START_EPOCH = 1
 
     SAVED_MODEL_FNAME = input("If continuing from checkpoint, enter saved model's file name (else, leave null): ")
     if SAVED_MODEL_FNAME != "":
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         if START_EPOCH.isdigit():
             START_EPOCH = int(START_EPOCH) + 1
         else:
-            START_EPOCH = 0
+            START_EPOCH = 1
 
 
     if not os.path.exists("logs/"): 
@@ -110,8 +110,8 @@ if __name__ == "__main__":
                                         transform=(transforms[idx])[1],
                                         pre_transform=(transforms[idx])[0],
                                         class_decider=partial(RexailDataset.filter_by_min,
-                                                              threshold=500),
-                                        max_class_size=500,
+                                                              threshold=750),
+                                        max_class_size=750,
                                         ratio=90,
                                         complement_ratio=False,
                                         storewise=True)
@@ -120,8 +120,8 @@ if __name__ == "__main__":
                                         transform=(transforms[idx])[1],
                                         pre_transform=(transforms[idx])[0],
                                         class_decider=partial(RexailDataset.filter_by_min,
-                                                              threshold=500),
-                                        max_class_size=500,
+                                                              threshold=750),
+                                        max_class_size=750,
                                         ratio=90,
                                         complement_ratio=True,
                                         storewise=True)
