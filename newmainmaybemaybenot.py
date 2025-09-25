@@ -11,8 +11,8 @@ from engine.trainer import trainer
 
 
 MODEL_CFG_DIR_PATH = "configs/architecture"
-TRAINING_CFG_DIR_PATH = "configs/training"
-STAGES_CFG_DIR_PATH = "configs/stages"
+TRAINING_CFG_DIR_PATH = "configs/training/general"
+STAGES_CFG_DIR_PATH = "configs/training/stages"
 STATE_DICTS_DIR_PATH = "state_dicts"
 LOGS_DIR_PATH = "logs"
 
