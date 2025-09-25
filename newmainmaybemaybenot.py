@@ -92,10 +92,13 @@ if __name__ == "__main__":
                                         ratio=train_cfg.get('train_split'),
                                         complement_ratio=False)
 
-        test_dataset = RexailDataset(root=TEST_DIR,
+        train_dataset = RexailDataset(root=TRAIN_DIR,
                                         transform=None,
                                         pre_transform=stage_pre_transforms[idx],
-                                        max_class_size=750,
+                                        max_class_size=train_cfg.get('max_class_size', -1),
+                                        min_class_size=train_cfg.get('min_class_size', -1),
+                                        earliest_timestamp_ms=train_cfg.get('earliest_timestamp_ms', 0),
+                                        latest_timestamp_ms=train_cfg.get('latest_timestamp_ms', -1),
                                         ratio=train_cfg.get('train_split'),
                                         complement_ratio=True)
         

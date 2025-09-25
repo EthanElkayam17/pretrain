@@ -288,7 +288,7 @@ class RexailDataset(datasets.VisionDataset):
                 cl_idx_rm.append(class_idx)
 
             else:
-                if self.max_class_size == -1:
+                if self.max_class_size == -1 or self.max_class_size >= len(valid_fnames):
                     universe = valid_fnames
                 else:
                     indices = sorted(random.sample(range(len(valid_fnames)), self.max_class_size))
