@@ -141,30 +141,30 @@ if __name__ == "__main__":
                                                         batch_size=train_cfg.get('batch_size'),
                                                         num_workers=train_cfg.get('dataloader_num_workers'),
                                                         external_collate_func_builder=external_collate_func_builder)
-            log(f"Starting training stage #{str(idx)}")
-            mp.spawn(
-                trainer,
-                args=(WORLD_SIZE, 
-                    args.model_cfg,
-                    create_dataloaders_per_process,
-                    train_cfg.get('momentum'),
-                    train_cfg.get('weight_decay'),
-                    stage.get('lr_min'),
-                    stage.get('lr_max'),
-                    stage.get('dropout_prob', 0),
-                    stage.get('warmup_epochs', 0),
-                    torch.optim.RMSprop,
-                    torch.nn.CrossEntropyLoss(label_smoothing=stage.get('label_smoothing', 0.0)),
-                    stage.get('epochs'),
-                    HALF_PRECISION,
-                    stage.get('decay_mode', None),
-                    stage.get('decay_factor', 0),
-                    VERSION_FNAME,
-                    args.log_to,
-                    LOGS_DIR_PATH),
-                nprocs=WORLD_SIZE,
-                join=True
-            )
+        log(f"Starting training stage #{str(idx)}")
+        mp.spawn(
+            trainer,
+            args=(WORLD_SIZE, 
+                args.model_cfg,
+                create_dataloaders_per_process,
+                train_cfg.get('momentum'),
+                train_cfg.get('weight_decay'),
+                stage.get('lr_min'),
+                stage.get('lr_max'),
+                stage.get('dropout_prob', 0),
+                stage.get('warmup_epochs', 0),
+                torch.optim.RMSprop,
+                torch.nn.CrossEntropyLoss(label_smoothing=stage.get('label_smoothing', 0.0)),
+                stage.get('epochs'),
+                HALF_PRECISION,
+                stage.get('decay_mode', None),
+                stage.get('decay_factor', 0),
+                VERSION_FNAME,
+                args.log_to,
+                LOGS_DIR_PATH),
+            nprocs=WORLD_SIZE,
+            join=True
+        )
         log(f"Finished training stage #{str(idx)} \n")
     
     log("FINISHED TRAINING")
