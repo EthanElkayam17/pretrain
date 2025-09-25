@@ -114,7 +114,7 @@ if __name__ == "__main__":
                                                      mean=mean,
                                                      std=std,
                                                      dtype=DTYPE)
-            test_transform = default_transform(mean, std, DTYPE)
+            test_transform = default_transform(mean, std)
             test_dataset.set_transform(test_transform)
         train_dataset.set_transform(stage_transforms[idx])
 
