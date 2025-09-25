@@ -1,7 +1,9 @@
 ---
-training_general:
+settings:
 
   - id: 0
+    train_dir: "~/.cache/kagglehub/datasets/ethanelkayam/example2/versions/1/newdata"
+    test_dir: "~/.cache/kagglehub/datasets/ethanelkayam/example2/versions/1/newdata"
     batch_size: 512
     dataloader_num_workers: 24
     dataset_num_workers: 24

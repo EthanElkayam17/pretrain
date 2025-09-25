@@ -1,11 +1,11 @@
 ---
-training_stages:
+stages:
   
   - id: 0
     resize: 146
     res: 128
     centered: False
-    RandAugment_magnitude: 5
+    randAugment_magnitude: 5
     dropout_prob: 0.1
     lr_min: 0.00000064
     lr_max: 0.0007
@@ -21,7 +21,7 @@ training_stages:
     resize: 184
     res: 168
     centered: False
-    RandAugment_magnitude: 8
+    randAugment_magnitude: 8
     dropout_prob: 0.15
     lr_min: 0.00000000002
     lr_max: 0.00016
@@ -37,7 +37,7 @@ training_stages:
     resize: 218
     res: 184
     centered: False
-    RandAugment_magnitude: 12
+    randAugment_magnitude: 12
     dropout_prob: 0.2
     lr_min: 0.00000000002
     lr_max: 0.00005
@@ -53,7 +53,7 @@ training_stages:
     resize: 256
     res: 224
     centered: True
-    RandAugment_magnitude: 15
+    randAugment_magnitude: 15
     dropout_prob: 0.25
     lr_min: 0.00000000001
     lr_max: 0.00002

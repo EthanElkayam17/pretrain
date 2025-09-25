@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     log("Setting up training env")
     with open(TRAINING_SETTINGS_PATH, 'r') as training_settings_file:
-        train_cfg = (yaml.safe_load(training_settings_file)).get('training_general')[0]
+        train_cfg = (yaml.safe_load(training_settings_file)).get('settings')[0]
     
     HALF_PRECISION = train_cfg.get("half_precision", True)
     DTYPE = torch.float16 if HALF_PRECISION else torch.float32
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         stages_cfg = (yaml.safe_load(stages_settings_file))
 
 
-    for idx, stage in enumerate(stages_cfg.get('training_stages')):                
+    for idx, stage in enumerate(stages_cfg.get('stages')):                
             
         if START_EPOCH < stage.get('epochs'):       
             

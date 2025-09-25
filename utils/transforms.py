@@ -6,85 +6,87 @@ import torchvision.transforms.v2 as v2
 import yaml
 from utils.other import dirjoin
 
-def get_stages_image_transforms(settings_name: str,
-                                settings_dir: str,
-                                mean: list,
-                                std: list,
-                                dtype: torch.dtype = torch.float16,
-                                divide_crop_and_augment: bool = False) -> List[v2.Transform]:
+def get_stages_pre_transforms(stages_cfg: List[dict], dtype: torch.dtype) -> List[v2.Transform]:
     
-    """Create custom transform based on each training stage in settings.yaml file.
+    """Create custom pre_transforms based on each training stage.
     
     Args:
-        settings_name: path to settings.yaml file.
-        settings_dir: path to settings directory.
-        mean: mean rgb value to normalize by.
-        std: standard deviation to normalize by.
-        dtype: data type for resulting tensor. 
-        divide_crop_and_augment: whether to divide each transform into a tuple of cropper transform and augmentation transform
+        stages_cfg: list of dictionaries containing stages configuration content.
+        dtype: desired data type.
     
     Returns:
-        List[v2.Transform] - [batched_transform_stage_1, ... , batched_transform_stage_n]
+        List[v2.Transform] - [pre_transform_stage_1, ... , pre_transform_stage_n]
     """
      
-    SETTINGS_PATH = dirjoin(settings_dir,settings_name)
     transforms: List[v2.Transform] = []
 
-    with open(SETTINGS_PATH, 'r') as settings_file:
-        settings = (yaml.safe_load(settings_file))
-    
-
-    for idx, stage in enumerate(settings.get('training_stages')):
-        cropper = v2.CenterCrop(size=(stage.get('res'),stage.get('res'))) if stage.get('centered') else v2.RandomResizedCrop(size=(stage.get('res'),stage.get('res')), antialias=True)
-        
-
-        if divide_crop_and_augment:
-            cropper_transform = v2.Compose([ 
-                v2.Resize(size=(stage.get('resize'),stage.get('resize')), antialias=True),
-                v2.Compose([v2.ToImage(), v2.ToDtype(dtype=dtype, scale=True)])
+    for stage in stages_cfg:
+        if stage.get('centered', False):
+            cropper_transform = v2.Compose([
+                v2.ToImage(),
+                v2.Resize(size=(stage.get('resize'), stage.get('resize')), antialias=True),
+                v2.ToDtype(dtype=dtype, scale=True)
             ])
-
-            augmentation_transform = v2.Compose([
-                v2.ToDtype(torch.float32, scale=True),
-                cropper,
-                v2.RandomHorizontalFlip(0.5),
-                v2.RandomVerticalFlip(0.5),
-                v2.RandAugment(magnitude=stage.get('RandAugment_magnitude')),
-                v2.ToDtype(dtype=dtype,scale=True),
-                v2.Normalize(mean=mean, std=std)
-            ])
-            
-            transforms.append(tuple([cropper_transform,augmentation_transform]))
         else:
-            transforms.append(
-                v2.Compose([ 
-                    v2.Resize(stage.get('resize')),
-                    cropper,
-                    v2.RandomHorizontalFlip(0.5),
-                    v2.RandomVerticalFlip(0.5),
-                    v2.RandAugment(magnitude=stage.get('RandAugment_magnitude')),
-                    v2.ToImage(),
-                    v2.ToDtype(dtype=dtype,scale=True),
-                    v2.Normalize(mean=mean, std=std)
-                ])
-            )
-
+            cropper_transform = v2.Compose([ 
+                v2.ToImage(),
+                v2.Resize(size=(stage.get('resize'), stage.get('resize')), antialias=True),
+                v2.CenterCrop(size=(stage.get('res'), stage.get('res'))),
+                v2.ToDtype(dtype=dtype, scale=True)
+            ])    
+    
+        transforms.append(cropper_transform)
     return transforms
 
 
-def default_transform(resize: tuple = (224,224),
-                    crop_size: tuple = (224,224), 
-                    mean: list = None, 
-                    std: list = None,
-                    dtype: torch.dtype = torch.float16):
+def get_stages_transforms(stages_cfg: List[dict], mean: list, std: list, dtype: torch.dtype) -> List[v2.Transform]:
+    
+    """Create custom transforms based on each training stage.
+    
+    Args:
+        stages_cfg: list of dictionaries containing stages configuration content.
+        mean: mean value of each channel.
+        std: standard deviation of each channel.
+        dtype: desired dtype.
+
+    Returns:
+        List[v2.Transform] - [transform_stage_1, ... , transform_stage_n]
+    """
+     
+    transforms: List[v2.Transform] = []
+
+    for stage in stages_cfg:
+        if stage.get('centered', False):
+            augmentation_transform = v2.Compose([
+                v2.ToDtype(torch.uint8, scale=True),
+                v2.RandomResizedCrop(size=(stage.get('res'), stage.get('res'))),
+                v2.RandAugment(magnitude=stage.get('randAugment_magnitude', 0)),
+                v2.RandomHorizontalFlip(p=stage.get('horiz_flip_prob', 0)),
+                v2.RandomVerticalFlip(p=stage.get('vert_flip_prob', 0)),
+                v2.ToDtype(dtype=dtype, scale=True),
+                v2.Normalize(mean=mean, std=std)
+            ])
+        else:
+            augmentation_transform = v2.Compose([ 
+                v2.ToDtype(torch.uint8, scale=True),
+                v2.RandAugment(magnitude=stage.get('randAugment_magnitude', 0)),
+                v2.RandomHorizontalFlip(p=stage.get('horiz_flip_prob', 0)),
+                v2.RandomVerticalFlip(p=stage.get('vert_flip_prob', 0)),
+                v2.ToDtype(dtype=dtype, scale=True),
+                v2.Normalize(mean=mean, std=std)
+            ])
+    
+        transforms.append(augmentation_transform)
+    return transforms
+
+
+def default_transform(mean: list = None, 
+                    std: list = None):
     """Returns testing transform
      
     Args:
-        resize: resize size before crop.
-        crop_size: final output image-size.
         mean: mean rgb value to normalize by.
         std: standard deviation to normalize by.
-        dtype: data type for resulting tensor.
     
     Returns:
         Callable - default transform
@@ -97,10 +99,6 @@ def default_transform(resize: tuple = (224,224),
         std = [1,1,1]
      
     res = v2.Compose([
-                v2.Resize(size=resize),
-                v2.RandomResizedCrop(size=crop_size, antialias=True),
-                v2.ToImage(),
-                v2.ToDtype(dtype=dtype,scale=True),
                 v2.Normalize(mean=mean, std=std)
            ])
     return res
@@ -112,9 +110,9 @@ def collate_cutmix_or_mixup_transform(numclasses: int,
     """Apply cutmix or mixup on batches fetched from dataloader
     
     Args:
+        numclasses: number of classes
         cutmix_alpha: alpha coefficient for cutmix
         mixup_alpha: alpha coefficient for mixup
-        numclasses: number of classes
     
     Returns:
         Callable - collate function with cutmix/mixup

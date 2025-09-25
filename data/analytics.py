@@ -3,6 +3,7 @@ import math
 import os
 import torch.multiprocessing as mp
 import torch.distributed as dist
+import numpy as np
 from torch import Tensor
 from data.data import RexailDataset
 from torch.utils.data import DataLoader, Subset
@@ -10,8 +11,10 @@ from models.model import CFGCNN
 from torch.nn.parallel import DistributedDataParallel
 from utils.checkpoint import save_state_dict
 from utils.other import dirjoin
+from typing import Tuple
 
 STATE_DICT_DIR = "state_dicts"
+MODEL_CONFIG_DIR = "configs/architecture"
 
 def setup(rank, world_size):
     """Set up a process"""
@@ -137,9 +140,13 @@ def load_all_predictions(model_cfg_name: str,
     
     dtype = torch.float16 if half_precision else torch.float32
     N = len(dataset)
+    preds_shape = (N, dataset.num_classes)
 
-    shared_preds = torch.zeros((N, dataset.num_classes), dtype=dtype).share_memory_()
-    shared_reals = torch.zeros(N).share_memory_()
+    shared_preds_arr = mp.Array('f', np.prod(preds_shape), lock=False)
+    shared_reals_arr = mp.Array('f', N, lock=False)
+
+    shared_preds_arr = torch.zeros((N, dataset.num_classes), dtype=dtype).share_memory_()
+    shared_reals_arr = torch.zeros(N).share_memory_()
     WORLD_SIZE = torch.cuda.device_count()
 
     mp.spawn(
@@ -148,19 +155,25 @@ def load_all_predictions(model_cfg_name: str,
             model_cfg_name,
             state_dict_name,
             dataset,
-            shared_preds,
-            shared_reals,
+            shared_preds_arr,
+            shared_reals_arr,
             batch_size,
             half_precision),
         nprocs=WORLD_SIZE,
         join=True
     )
 
-    if save_tensor_with_prefix != "":
-        torch.save(shared_preds, f'{save_tensor_with_prefix}_preds.pt')
-        torch.save(shared_reals, f'{save_tensor_with_prefix}_reals.pt')
+    reals = torch.frombuffer(shared_reals_arr, dtype=dtype, count=N)
+    preds = torch.frombuffer(shared_preds_arr, dtype=dtype, count=np.prod(preds_shape))
 
-    return shared_preds, shared_reals
+    reals.view((N))
+    preds.view(preds_shape)
+
+    if save_tensor_with_prefix != "":
+        torch.save(preds, f'{save_tensor_with_prefix}_preds.pt')
+        torch.save(reals, f'{save_tensor_with_prefix}_reals.pt')
+
+    return preds.detach().cpu() , reals.detach().cpu()
 
 
 def top_k_accuracy(y_preds: Tensor, 
@@ -170,8 +183,8 @@ def top_k_accuracy(y_preds: Tensor,
     Calculates the top-k accuracy of a batched prediction.
 
     Args:
-        y_preds: The predicted tensor, should be of shape [batchsize, num_of_classes] or [batch_size]
-        y_real: he real tensor to be predicted, should be of shape [batchsize] 
+        y_preds: predicted tensor, should be of shape [batchsize, num_of_classes] or [batch_size]
+        y_real: real tensor to be predicted, should be of shape [batchsize] 
         k: k to use for top-k.
 
     Returns:
@@ -186,18 +199,104 @@ def top_k_accuracy(y_preds: Tensor,
     return correct_any.float().mean().item()
 
 
-class OverviewRV():
-    """A class providing an overview of the performance of a given iteration/version.
+class Analytics():
+    """A class providing an overview of the performance of a given version.
     
     A version can be loaded using either:
-        the appropriate model config file, its respective state dict and a RexailDataset instance (REQUIRES CUDA, SLOW).
+        the appropriate model config file, its respective state dict and a RexailDataset instance (requires CUDA, slow).
         OR
-        preds+reals Tensors, residing in storage (RECOMMENDED).
+        preds & reals tensors (fast, no CUDA).
     
-    In practice the former is used to calculate the latter and then the former is discarded, one can (and should) 
-    choose to save the tensors to storage upon calculation by providing a 'save_tensor_with_prefix' so they can be
-    easily loaded again (via the second method) if needed without requiring extensive re-computation.
-     
+    In practice the former is used to calculate the latter, one can (and should) choose to save the 
+    tensors to storage upon calculation by providing a 'save_tensor_with_prefix' so they can be easily loaded 
+    again (via the second method) if needed without requiring extensive re-computation. 
     """
+    
+    def __init__(self,
+                 preds: Tensor = None,
+                 reals: Tensor = None,
+                 model_config_fname: str = None,
+                 state_dict_fname: str = None,
+                 dataset: RexailDataset = None,
+                 batch_size: int = 32,
+                 half_precision: bool = True,
+                 save_tensor_with_prefix: str = ""):
+        """
+        Args:
+            preds: predicted tensor of shape (N, num_classes)
+            reals: real tensor (y) of shape (N)
+            model_config_fname: file name of model config
+            state_dict_fname: file name of state dict
+            dataset: RexailDataset instance
+            batch_size: batch size for computing preds & reals
+            half_precision: whether to use half-precision (float-16)
+            save_tensor_with_prefix: whether to save preds & reals tensors after computing
+        """
 
-    #todo
+        if (preds is not None) and (reals is not None):
+            self.preds = preds.detach().cpu()
+            self.reals = reals.detach().cpu()
+        
+        else:
+            assert ((model_config_fname is not None) and (state_dict_fname is not None) and (dataset is not None)), "You must provide either tensors OR cfg, state dict and dataset."
+            self.preds , self.reals = load_all_predictions(model_cfg_name=model_config_fname,
+                                                           state_dict_name=state_dict_fname,
+                                                           dataset=dataset,
+                                                           batch_size=batch_size,
+                                                           half_precision=half_precision,
+                                                           save_tensor_with_prefix=save_tensor_with_prefix)
+
+        self.np_preds = self.preds.numpy()
+        self.np_reals = self.reals.numpy()
+
+
+    def view_class(self,
+                   class_idx: int) -> Tuple[Tensor, Tensor]:
+        """
+        Returns a View of the preds & reals tensors filtered to contain a specific class
+        Args:
+            class_idx: index of desired class
+        
+        Returns:
+            (filtered_preds, filtered_reals)
+        """
+
+        mask = self.reals == class_idx
+        return self.preds[mask], self.reals[mask]
+
+
+    def top_k_acc(self,
+                       k: int) -> float:
+        """
+        Calculates the top-k accuracy over the whole dataset.
+
+        Args:
+            k: k to use for top-k.
+
+        Returns:
+            float: top-k accuracy.
+        """
+        _, topk_idxs = self.preds.topk(k, dim=1, largest=True, sorted=True)
+        hits = topk_idxs.eq(self.reals.view(-1, 1))
+
+        correct_any = hits.any(dim=1)
+
+        return correct_any.float().mean().item()
+
+
+    def top_k_class_acc(self,
+                             k: int,
+                             class_idx: int) -> float:
+        """"""
+        
+        
+#confusion matrices of one-to-all
+#top-k accuracy of a class
+#graph of class by accuracy to detect outliers
+#graph of real accuracy by predicted accuracy
+
+
+#graph of store by accuracy
+#top-k accuracy across a store
+#top-k accuracy across a class in a store
+

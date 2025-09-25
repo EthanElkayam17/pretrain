@@ -2,11 +2,11 @@ import torch
 import numpy as np
 import os
 import copy
+import random
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor
 from torch.utils.data.sampler import Sampler
 from functools import partial
-from hashlib import sha256
 from pathlib import Path
 from PIL import Image
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
@@ -17,26 +17,16 @@ from utils.other import dirjoin
 from torch import Tensor
 
 
-def default_class_decider(cpath: str) -> bool:
-    """Default file_decider"""
-    return True
-
-def default_store_decider(store_id: str) -> bool:
-    """Default store_decider"""
-    return True
-
 class RexailDataset(datasets.VisionDataset):
     """A dataset class for loading and partitioning data from rexail's dataset,
-    expects directory in one of the following structures: 
-        root/{store_id}/{product_id}/{image_name}.png
-        /
-        root/{product_id}/{image_name}.png
-    
-    the flag 'storewise' can be true only when the first form is present,
-    
-    Data should be filtered/partitioned by using the 'ratio','complement_ratio','max_class_size','class_decider','store_decider' parameters, 
+    expects directory in one of the following structure: 
+        root/{product_id}/{image_name}.jpeg
+        
+    the images file names are expected to be in the form: 
+        {date_of_capture(ms)}_{quantity}_{weight(g)}.ext .
+
+    Data should be filtered/partitioned by using the filter/partition parameters, 
     if not internally.
-    
     
     When not utilizing 'load_into_memory' the dataset can be used as-is to access directly or create dataloaders,
     only the paths and targets will be stored and the actual data is fetched lazily on __getitem___.
@@ -47,7 +37,7 @@ class RexailDataset(datasets.VisionDataset):
     When this method is called - one must have defined 'pre_transform' to transform the images into the tensors that will be stored (and
     hence it is recommended to keep 'pre_transform' deterministic), furthermore 'pre_transform' MUST produce a fixed-shape tensor
     regardless of the image that is being transformed. NOTICE: upon loading the dataset into memory the 'transform' must expect the
-    stored tensor as input as opposed to the output of the loader (which is the expected input of 'transform' w/o loading).
+    stored tensor as input as opposed to the output of the loader (which is the expected input of 'transform' w/o loading into memory).
 
     when using this option with multiple processes (GPUs) one should create one instance of this class outside of the processes
     and use it to create instances of WrappedRexailDataset in each process, which will be used for samplers/dataloaders.
@@ -60,14 +50,16 @@ class RexailDataset(datasets.VisionDataset):
         pre_transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,
         loader: Callable[[str], Any] = datasets.folder.default_loader,
-        class_decider: Callable[[str], bool] = default_class_decider,
-        store_decider: Callable[[str], bool] = default_store_decider,
         max_class_size: int = -1,
+        min_class_size: int = -1,
+        earliest_timestamp_ms: int = 0,
+        latest_timestamp_ms: int = -1,
         ratio: int = 100,
         complement_ratio: bool = False,
-        extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
+        extensions: Tuple[str, ...] = (".png",".jpeg",".jpg"),
         ignore_classes: List[str] = None,
-        storewise: bool = False        
+        load_into_memory: bool = False,
+        num_workers_load: int = 4,
         ):
         """Args:
             root: Root directory path.
@@ -75,14 +67,17 @@ class RexailDataset(datasets.VisionDataset):
             pre_transform: a transform to be applied pre-fetch to all the data (usable only if load_into_memory = True) should return tensor.
             target_transform: A transform for the target.
             loader: A function to load an image given its path.
-            class_decider: A function that takes a path of class and decides if it should be in the dataset.
-            store_decider: A function that takes a name of store and decides if it should be in the dataset (only useful with storewise=True).
-            max_class_size: maximum size of a single class (total images), cuts randomly (but deterministically) to this amount if exceeds.
+            max_class_size: maximum size of a single class (total images after filtering, including complement ratio), cuts uniformly-in-time to this amount if exceeds.
+            min_class_size: minimum size of a single class (total images after filtering, including complement ratio).
+            earliest_timestamp_ms: earliest date-of-capture (in ms) allowed for an image.
+            latest_timestamp_ms: latest date=of=capture (in ms) allowed for an image.
             ratio: ratio of images in every class that should be in the database (0-100).
             complement_ratio: whether to take the complement set of pictures filtered by the ratio.
             extensions: file extensions that are acceptable.
             ignore_classes: classes to ignore when making dataset.
-            storewise: whether the directory is partitioned store-wise."""
+            load_into_memory: whether to load the dataset into shared-memory.
+            num_workers_load: number of workers for parallel loading into memory (useful only when load_into_memory=True).
+        """
         
         super().__init__(
             root=root,
@@ -90,15 +85,19 @@ class RexailDataset(datasets.VisionDataset):
             target_transform=target_transform
         )
         assert max_class_size >= -1, "max_class_size must be positive integer (or -1 for no cap)"
+        assert latest_timestamp_ms >= -1, "latest_timestamp_ms must be a postivie integer (or -1 for no cap)"
+        
+        if min_class_size != -1 and max_class_size != -1:
+            assert max_class_size >= min_class_size, "max_class_size must be at least min_class_size"
 
         self.max_class_size = max_class_size
+        self.min_class_size = min_class_size
         self.ratio = ratio
         self.complement_ratio = complement_ratio
         self.ignore_classes = ignore_classes
-        self.class_decider = class_decider
-        self.store_decider = store_decider
-        self.storewise = storewise
         self.pre_transform = pre_transform
+        self.earliest_timestamp_ms = earliest_timestamp_ms
+        self.latest_timestamp_ms = latest_timestamp_ms
 
         self.loaded_dataset = False
         self.loader = loader
@@ -108,10 +107,7 @@ class RexailDataset(datasets.VisionDataset):
             self.ignore_classes = []
 
         classes, class_to_idx = RexailDataset.find_classes(directory=self.root, 
-                                                           ignore_classes=self.ignore_classes, 
-                                                           storewise=self.storewise, 
-                                                           class_decider=self.class_decider, 
-                                                           store_decider=self.store_decider)
+                                                           ignore_classes=self.ignore_classes)
         self.class_to_idx = class_to_idx
         self.classes = classes
         self.num_classes = len(classes)
@@ -119,6 +115,9 @@ class RexailDataset(datasets.VisionDataset):
         self.samples = self.make_dataset()
         self.targets = [s[1] for s in self.samples]
 
+        if load_into_memory:
+            self.load_into_memory(num_workers=num_workers_load)
+        
 
     def __len__(self) -> int:
         """Returns the amount of items in the dataset"""
@@ -214,18 +213,21 @@ class RexailDataset(datasets.VisionDataset):
 
         assert self.pre_transform is not None, "pre_transform is required when loading dataset into memory"
 
-        data_shape_sample = (self.__getitem__(0,only_pre_transform=(self.pre_transform is not None)))[0].shape
+        data_shape_sample = (self.__getitem__(0,only_pre_transform=True))[0].shape
         self.data = torch.zeros((len(self.samples), *data_shape_sample), dtype=dtype).share_memory_()
 
         self._load_everything(num_workers=num_workers)
         self.loaded_dataset = True
     
 
-    def set_pre_transform(self,
-                        pre_transform: Callable) -> None:
+    def set_pre_transform(self, pre_transform: Callable) -> None:
         """Setter for transform parameter"""
-
         self.pre_transform = pre_transform
+    
+    
+    def set_transform(self, transform: Callable) -> None:
+        """Setter for transform parameter"""
+        self.transform = transform
     
 
     def is_valid_file(self, 
@@ -235,31 +237,62 @@ class RexailDataset(datasets.VisionDataset):
         return ((self.extensions is None) or (path.lower().endswith(self.extensions)))
 
 
+    @staticmethod
+    def fname_time(fname: str) -> int:
+        """Get time in ms from formatted fname"""
+        time = (fname.split('_', 1)[0]).split('/')[-1]
+        return int(time)
+
+
+    @staticmethod
+    def find_idx_by_time(sorted_fnames: List[str], time_ms: int, is_max: bool) -> int:
+        """Finds the first/last index which fname's includes a time after the minimum / maximum.
+        
+        Args:
+            sorted_fnames: list of file names sorted by time.
+            min_time_ms: minimum time threshold (in ms)
+            is_max: whether maximum or minimum.
+        """
+        if time_ms == -1:
+            return int(is_max)*len(sorted_fnames)
+
+        for idx, fname in enumerate(sorted_fnames):
+            curr_time_ms = RexailDataset.fname_time(fname)
+
+            if (curr_time_ms >= time_ms):
+                return idx
+
+        return len(sorted_fnames)
+
+
     def make_dataset(self) -> List[Tuple[str, int]]:
         """Makes a list of pairs (sample,target) of the dataset
         Note: dataset is partitioned and filtered using the partition/filter params, in deterministic way"""
 
         directory = os.path.expanduser(self.root)
+        random.seed(42)
         
-        keyed = []
         res = []
+        cl_idx_rm = []
+
         for target_class in sorted(self.class_to_idx.keys()):
             class_idx = self.class_to_idx[target_class]
-            target_dir = dirjoin(directory, target_class)
-            for root, _, fnames in sorted(os.walk(target_dir, followlinks=True)):
-                
-                keyed = [
-                    (sha256(name.encode("utf-8")).hexdigest(), name)
-                    for name in fnames
-                ]
-                
-                keyed.sort()
-                sorted_names = [n for _, n in keyed]
+            target_dir = Path(dirjoin(directory, target_class))
+            fnames = sorted((str(p) for p in target_dir.iterdir() if self.is_valid_file(str(p))), key=lambda p: RexailDataset.fname_time(str(p)))
+            
+            s = RexailDataset.find_idx_by_time(fnames, self.earliest_timestamp_ms, False)
+            e = RexailDataset.find_idx_by_time(fnames, self.latest_timestamp_ms, True)
+            valid_fnames = fnames[s:e]
+            
+            if len(valid_fnames) < self.min_class_size:
+                cl_idx_rm.append(class_idx)
 
+            else:
                 if self.max_class_size == -1:
-                    universe = sorted_names
+                    universe = valid_fnames
                 else:
-                    universe = sorted_names[:self.max_class_size]
+                    indices = sorted(random.sample(range(len(valid_fnames)), self.max_class_size))
+                    universe = [valid_fnames[i] for i in indices]
 
                 cut_index = (len(universe) * self.ratio) // 100
 
@@ -269,85 +302,43 @@ class RexailDataset(datasets.VisionDataset):
                     filtered_fnames = universe[:cut_index]
 
                 for fname in filtered_fnames:
-                    path = dirjoin(root, fname)
-                    if self.is_valid_file(path):
-                        item = path, class_idx
+                    if self.is_valid_file(fname):
+                        item = fname, class_idx
                         res.append(item)
         
+        for idx in sorted(cl_idx_rm, reverse=True):
+            del self.class_to_idx[self.classes[idx]]
+            del self.classes[idx]
+        
+        if not self.classes:
+            raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")        
+
         return res
 
 
     @staticmethod
     def find_classes(directory: Union[str, Path], 
-                    ignore_classes: List[str] = None,
-                    storewise: bool = False,
-                    class_decider: Callable[[str], bool] = default_class_decider,
-                    store_decider: Callable[[str], bool] = default_store_decider) -> Tuple[List[str], Dict[str, int]]:
+                    ignore_classes: List[str] = None) -> Tuple[List[str], Dict[str, int]]:
         """Creates a list of the classes and provides a mapping to indices.
         
         Args:
             directory: directory containing the classes
             ignore_classes: classes to ignore
-            storewise: whether directory is partitioned firstly by store_id
-            class_decider: A function that takes a path of class and decides if it should be in the dataset.
-            store_decider: A function that takes a name of store and decides if it should be in the dataset (only useful with storewise=True).
 
         Returns:
             Tuple - (list_of_classes, map_class_to_idx)
         """
-        root = Path(os.path.expanduser(directory))
 
         if ignore_classes is None:
             ignore_classes = []
-        
-        if storewise:
-            classes = [
-                f"{store.name}/{product.name}"
-                for store in root.iterdir() if (store.is_dir() and store_decider(store.name))
-                for product in store.iterdir() if product.is_dir()
-            ]
-        else:
-            classes = sorted(entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes)))
-        
-        classes = [c for c in classes if class_decider(dirjoin(directory, c))]
-        classes = sorted(classes)
 
+        classes = sorted((entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes))))
+        
         if not classes:
             raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")
 
         class_to_idx = {cls_name: i for i, cls_name in enumerate(classes)}
         return classes, class_to_idx
-    
-
-    @staticmethod
-    def filter_by_store(store_id:str, stores_lst: List[str]) -> bool:
-        """A file_decider function that accepts data only from stores in {stores_lst}
-        
-        Args:
-            path: path to file
-            stores_lst: List of acceptable stores
-        
-        Returns:
-            bool - should the image be included in the dataset according to the filter
-        """
-
-        return store_id in stores_lst
-    
-
-    @staticmethod
-    def filter_by_min(cpath: str, threshold: int):
-        """A class_decider function that accepts classes with minimum amount of pictures
-        
-        Args:
-            cpath: path to class.
-            minimum: minimum amount of pictures
-        
-        Returns:
-            bool - should the class be included in the dataset according to the filter.
-        """
-
-        num_files = len(os.listdir(cpath))
-        return num_files >= threshold
 
 
 class WrappedRexailDataset(Dataset):
@@ -368,6 +359,7 @@ class WrappedRexailDataset(Dataset):
         self.samples = copy.deepcopy(shared_dataset.samples)
         self.data = shared_dataset.data
         self.transform = shared_dataset.transform
+        self.target_transform = shared_dataset.target_transform
         self.classes = shared_dataset.classes
         self.num_classes = shared_dataset.num_classes
     
@@ -383,10 +375,13 @@ class WrappedRexailDataset(Dataset):
 
         sample = self.data[index]
         target = self.targets[index]
-            
+        
         if self.transform is not None:
             sample = self.transform(sample)
-            
+        
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+        
         return tuple([sample,target])
 
 
@@ -397,139 +392,25 @@ def custom_collate_fn(batch: Tuple[Tensor, Tensor],
     return func(*default_collate(batch))
 
 
-def create_dataloaders_and_samplers_from_dirs(
-        world_size: int,
-        rank: int,
-        train_dir: Union[str, Path],
-        test_dir: Union[str, Path],
-        batch_size: int,
-        num_workers: int = 0,        
-        train_transform: Union[torch.nn.Sequential, transforms.Compose] = default_transform(),
-        train_pre_transform: Optional[Callable] = None,
-        test_transform: Union[torch.nn.Sequential, transforms.Compose] = default_transform(),
-        test_pre_transform: Optional[Callable] = None,
-        train_extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
-        train_store_decider: Callable[[str], bool] = default_store_decider,
-        train_class_decider: Callable[[str], bool] = default_class_decider,
-        test_extensions: Optional[Tuple[str, ...]] = (".png",".jpeg",".jpg"),
-        test_store_decider: Callable[[str], bool] = default_store_decider,
-        test_class_decider: Callable[[str], bool] = default_class_decider,        
-        ignore_classes: List[str] = None,
-        storewise: bool = False,
-        max_class_size: int = -1,
-        ratio: int = 100,
-        external_collate_func_builder: Union[Callable, None] = None
-    ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
-    """Creates training/testing dataloaders from training/testing directories
-    
-    Args:
-        world_size: number of processes.
-        rank: current process id.
-        train_dir: path of training data directory.
-        test_dir: path of testing data directory.
-        batch_size: amount per batch.
-        num_workers: for dataloader.
-        train_transform: transforms to apply to training data.
-        train_pre_transform: pre_transform to apply to training data.
-        test_transform: transforms to apply to testing data.
-        test_pre_transform: pre_transform to apply to testing data.
-        train_extensions: file extensions that are acceptable in the training dataset.
-        train_store_decider: A function that takes a store name and decides if its classes are in the training dataset.
-        train_class_decider: A function that class path and decides if its in the training dataset.
-        test_file_decider: A function that takes path of an Image file and decides if its in the testing dataset.
-        test_extensions: file extensions that are acceptable in the testing dataset.
-        test_store_decider: A function that takes a store name and decides if its classes are in the testing dataset.
-        test_class_decider: A function that class path and decides if its in the testing dataset.
-        ignore_classes: classes to ignore when making training/testing sets.
-        storewise: whether both training and testing directories are partitioned store-wise inside each class.
-        max_class_size: maximum amount of images in any class (will cut uniformly if exceeds).
-        ratio: ratio of split between training data and testing data.
-        external_collate_func_builder: builder for external collate function that should expect num_classes.
-
-    Returns:
-        (train_dataloader, train_sampler, test_dataloader, test_sampler)
-    """
-
-    if ignore_classes is None:
-        ignore_classes = []
-
-    train_data = RexailDataset(root=train_dir,
-                               transform=train_transform,
-                               pre_transform=train_pre_transform,
-                               class_decider=train_class_decider,
-                               store_decider=train_store_decider,
-                               max_class_size=max_class_size,
-                               ratio=ratio,
-                               complement_ratio=False,
-                               extensions=train_extensions,
-                               ignore_classes=ignore_classes,
-                               storewise=storewise)
-    
-    test_data = RexailDataset(root=test_dir,
-                               transform=test_transform,
-                               pre_transform=test_pre_transform,
-                               class_decider=test_class_decider,
-                               store_decider=test_store_decider,
-                               max_class_size=max_class_size,
-                               ratio=ratio,
-                               complement_ratio=True,
-                               extensions=test_extensions,
-                               ignore_classes=ignore_classes,
-                               storewise=storewise)
-
-    train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
-    test_sampler = DistributedSampler(test_data, num_replicas=world_size, rank=rank, shuffle=False)
-    
-    if external_collate_func_builder is not None:
-        external_collate_func = external_collate_func_builder(train_data.num_classes)
-        collate_fn = partial(custom_collate_fn,
-                            external_collate_func)
-    
-    else:
-        collate_fn = None
-
-    train_dataloader = DataLoader(
-        dataset=train_data,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=num_workers,
-        sampler=train_sampler,
-        collate_fn=collate_fn,
-
-        # Try to avoid costs of transfer between pageable and pinned memory
-        pin_memory=True
-    )
-
-    test_dataloader = DataLoader(
-        dataset=test_data,
-        batch_size=batch_size,
-        shuffle=False,  
-        num_workers=num_workers,
-        sampler=test_sampler,
-        pin_memory=True
-    )
-
-    return train_dataloader, train_sampler, test_dataloader, test_sampler
-
-
 def create_dataloaders_and_samplers_from_datasets(
         world_size: int,
         rank: int,
-        train_dataset: RexailDataset,
-        test_dataset: RexailDataset,
+        train_dataset: Dataset,
+        test_dataset: Dataset,
         batch_size: int,
         num_workers: int = 0,
         external_collate_func_builder: Union[Callable, None] = None
     ) -> Tuple[DataLoader, Sampler, DataLoader, Sampler]:
-        """Create dataloaders and samplers from shared RexailDatasets
+        """Create dataloaders and samplers from train/test datasets
         
         Args:
             world_size: number of processes
             rank: current process id
-            train_dataset: shared training RexailDataset
-            test_dataset: shared testing RexailDataset
+            train_dataset: training dataset
+            test_dataset: testing dataset
             batch_size: batch size
             num_workers: number of workers for dataloaders
+            external_collate_func_builder: builder function for custom collate_fn
         
         Returns:
             (train_dataloader, train_smapler, test_dataloader, test_sampler)
@@ -553,8 +434,6 @@ def create_dataloaders_and_samplers_from_datasets(
             num_workers=num_workers,
             sampler=train_sampler,
             collate_fn=collate_fn,
-
-            # Try to avoid costs of transfer between pageable and pinned memory
             pin_memory=True
         )
 
@@ -596,39 +475,7 @@ def create_dataloaders_and_samplers_from_shared_datasets(
         train_data = WrappedRexailDataset(train_dataset)
         test_data = WrappedRexailDataset(test_dataset)
 
-        train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
-        test_sampler = DistributedSampler(test_data, num_replicas=world_size, rank=rank, shuffle=False)
-
-        if external_collate_func_builder is not None:
-            external_collate_func = external_collate_func_builder(train_data.num_classes)
-            collate_fn = partial(custom_collate_fn,
-                                func=external_collate_func)
-        
-        else:
-            collate_fn = None
-
-        train_dataloader = DataLoader(
-            dataset=train_data,
-            batch_size=batch_size,
-            shuffle=False,
-            num_workers=num_workers,
-            sampler=train_sampler,
-            collate_fn=collate_fn,
-
-            # Try to avoid costs of transfer between pageable and pinned memory
-            pin_memory=True
-        )
-
-        test_dataloader = DataLoader(
-            dataset=test_data,
-            batch_size=batch_size,
-            shuffle=False,  
-            num_workers=num_workers,
-            sampler=test_sampler,
-            pin_memory=True
-        )
-
-        return train_dataloader, train_sampler, test_dataloader, test_sampler, 
+        return create_dataloaders_and_samplers_from_datasets(world_size, rank, train_data, test_data, batch_size, num_workers, external_collate_func_builder)
 
 
 def calculate_mean_std(dataset: RexailDataset) -> Tuple[List, List]:

@@ -4,7 +4,7 @@ import math
 import os
 import torch.distributed as dist
 from torch import Tensor
-from utils.other import logp
+from utils.other import start_log
 from torch.utils.data import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel
 from functools import partial
@@ -244,10 +244,9 @@ def trainer(rank: int,
           half_precision: bool = True,
           decay_mode: str = "none",
           exp_decay_factor: float = 0,
-          curr_epoch: int = 1,
           model_name: str = "model.pth",
-          load_state_dict_path: str = None,
-          logpath = None):
+          log_to: str = "stdout-only",
+          log_dir: str = "logs"):
 
     """Train and test CFGCNN networks using multiple GPUs
     
@@ -269,17 +268,13 @@ def trainer(rank: int,
         half_precision: whether to compute in half precision.
         save_freq: how many epochs between model saves.
         exp_decay_factor: decay factor if using 'exp' decay.
-        curr_epoch: current epoch (in case of model checkpoint loading).
         model_name: name of model's state_dict file that will be saved.
-        load_state_dict_path: path to state dict to load at the start of training.
-        logpath: logging file name path.
+        log_to: logging file name.
+        log_dir: logging dir.
     
     Returns:
         None
     """
-
-    if curr_epoch > epochs:
-        return
     
     DECAY_MODE_TO_FUNC = {
         "exp": partial(warmup_to_exponential_decay, lr_min=lr_min,lr_max=lr_max,warmup_epochs=warmup_epochs, decay_factor=exp_decay_factor),
@@ -292,27 +287,11 @@ def trainer(rank: int,
     decay = DECAY_MODE_TO_FUNC.get(decay_mode)
 
     setup(world_size=world_size, rank=rank)
+    log = start_log(log_dir, log_to)
     
-    if logpath is None or rank != 0:
-        logger = logging.getLogger('null_logger')
-        logger.addHandler(logging.NullHandler)
-    
-    else:
-        logging.basicConfig(filename=logpath,
-                        filemode='a',
-                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                        datefmt='%H:%M:%S',
-                        level=logging.INFO)
-        logger = logging.getLogger('log')
-    
-    log = partial(logp, logger=logger)
-
     model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
     model.cuda(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
-
-    if (load_state_dict_path is not None) and (rank == 0):
-        model.load_state_dict(torch.load(load_state_dict_path, weights_only=True))
     
     if rank == 0:
         save_state_dict(model=model, 
@@ -345,7 +324,7 @@ def trainer(rank: int,
 
     scaler = torch.cuda.amp.GradScaler()
 
-    for epoch in range(curr_epoch,epochs+1):
+    for epoch in range(epochs+1):
         
         log(f"entering epoch: {str(epoch)} in process {rank} \n")
         
