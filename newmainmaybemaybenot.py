@@ -112,7 +112,8 @@ if __name__ == "__main__":
         if idx == 0:
             stage_transforms = get_stages_transforms(stages_cfg=stages_cfg,
                                                      mean=mean,
-                                                     std=std)
+                                                     std=std,
+                                                     dtype=DTYPE)
             test_transform = default_transform(mean, std, DTYPE)
             test_dataset.set_transform(test_transform)
         train_dataset.set_transform(stage_transforms[idx])
