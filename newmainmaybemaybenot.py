@@ -92,7 +92,7 @@ if __name__ == "__main__":
                                         ratio=train_cfg.get('train_split'),
                                         complement_ratio=False)
 
-        train_dataset = RexailDataset(root=TRAIN_DIR,
+        test_dataset = RexailDataset(root=TEST_DIR,
                                         transform=None,
                                         pre_transform=stage_pre_transforms[idx],
                                         max_class_size=train_cfg.get('max_class_size', -1),

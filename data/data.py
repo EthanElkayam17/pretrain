@@ -478,7 +478,7 @@ def create_dataloaders_and_samplers_from_shared_datasets(
         return create_dataloaders_and_samplers_from_datasets(world_size, rank, train_data, test_data, batch_size, num_workers, external_collate_func_builder)
 
 
-def calculate_mean_std(dataset: RexailDataset) -> Tuple[List, List]:
+def calculate_mean_std(dataset: RexailDataset) -> Tuple[List, List]: #MAKE PARALLEL AND SHOW PROGRESS!
     """Calculates mean and standard deviation of each channel across a RexailDataset
     
     Args:
