@@ -72,7 +72,7 @@ if __name__ == "__main__":
     stage_pre_transforms = get_stages_pre_transforms(stages_cfg, DTYPE)
 
     log("Starting training:")
-    for idx, stage in enumerate(stages_cfg.get('stages')):
+    for idx, stage in enumerate(stages_cfg):
 
         if stage.get('cutmix_alpha', 0.0) == 0.0 or stage.get('mixup_alpha', 0.0) == 0.0:
             external_collate_func_builder = None
