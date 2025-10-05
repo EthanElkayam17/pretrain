@@ -25,13 +25,13 @@ def get_stages_pre_transforms(stages_cfg: List[dict], dtype: torch.dtype) -> Lis
             cropper_transform = v2.Compose([
                 v2.ToImage(),
                 v2.Resize(size=(stage.get('resize'), stage.get('resize')), antialias=True),
+                v2.CenterCrop(size=(stage.get('res'), stage.get('res'))),
                 v2.ToDtype(dtype=dtype, scale=True)
             ])
         else:
             cropper_transform = v2.Compose([ 
                 v2.ToImage(),
                 v2.Resize(size=(stage.get('resize'), stage.get('resize')), antialias=True),
-                v2.CenterCrop(size=(stage.get('res'), stage.get('res'))),
                 v2.ToDtype(dtype=dtype, scale=True)
             ])    
     
@@ -59,7 +59,6 @@ def get_stages_transforms(stages_cfg: List[dict], mean: list, std: list, dtype: 
         if stage.get('centered', False):
             augmentation_transform = v2.Compose([
                 v2.ToDtype(torch.uint8, scale=True),
-                v2.RandomResizedCrop(size=(stage.get('res'), stage.get('res'))),
                 v2.RandAugment(magnitude=stage.get('randAugment_magnitude', 0)),
                 v2.RandomHorizontalFlip(p=stage.get('horiz_flip_prob', 0)),
                 v2.RandomVerticalFlip(p=stage.get('vert_flip_prob', 0)),
@@ -69,6 +68,7 @@ def get_stages_transforms(stages_cfg: List[dict], mean: list, std: list, dtype: 
         else:
             augmentation_transform = v2.Compose([ 
                 v2.ToDtype(torch.uint8, scale=True),
+                v2.RandomResizedCrop(size=(stage.get('res'), stage.get('res'))),
                 v2.RandAugment(magnitude=stage.get('randAugment_magnitude', 0)),
                 v2.RandomHorizontalFlip(p=stage.get('horiz_flip_prob', 0)),
                 v2.RandomVerticalFlip(p=stage.get('vert_flip_prob', 0)),

@@ -2,29 +2,29 @@
 stages:
   
   - id: 0
-    resize: 146
+    resize: 136
     res: 128
     centered: False
     randAugment_magnitude: 5
     dropout_prob: 0.1
     lr_min: 0.00000064
-    lr_max: 0.0007
+    lr_max: 0.0004
     decay_mode: exp
     decay_factor: 0.9873
-    warmup_epochs: 20
+    warmup_epochs: 15
     epochs: 60
     cutmix_alpha: 0.0
     mixup_alpha: 0.0
     label_smoothing: 0.0
 
   - id: 1
-    resize: 184
+    resize: 176
     res: 168
     centered: False
     randAugment_magnitude: 8
     dropout_prob: 0.15
     lr_min: 0.00000000002
-    lr_max: 0.00016
+    lr_max: 0.000225
     decay_mode: exp
     decay_factor: 0.988
     warmup_epochs: 0
@@ -34,13 +34,13 @@ stages:
     label_smoothing: 0.0
 
   - id: 2
-    resize: 218
+    resize: 202
     res: 184
     centered: False
     randAugment_magnitude: 12
     dropout_prob: 0.2
     lr_min: 0.00000000002
-    lr_max: 0.00005
+    lr_max: 0.0000126
     decay_mode: exp
     decay_factor: 0.9885
     warmup_epochs: 0
@@ -56,7 +56,7 @@ stages:
     randAugment_magnitude: 15
     dropout_prob: 0.25
     lr_min: 0.00000000001
-    lr_max: 0.00002
+    lr_max: 0.0000075
     decay_mode: exp
     decay_factor: 0.9885
     warmup_epochs: 0

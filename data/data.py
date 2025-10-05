@@ -221,7 +221,7 @@ class RexailDataset(datasets.VisionDataset):
     
 
     def set_pre_transform(self, pre_transform: Callable) -> None:
-        """Setter for transform parameter"""
+        """Setter for pre-transform parameter"""
         self.pre_transform = pre_transform
     
     
