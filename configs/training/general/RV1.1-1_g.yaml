@@ -12,7 +12,7 @@ settings:
     lazy_dataset: True
     half_precision: True
     train_split: 90
-    max_class_size: 1400
-    min_class_size: 1400
+    max_class_size: 1300
+    min_class_size: 1300
     mean: [0.46422, 0.45539, 0.44493]
     std: [0.25619, 0.24720, 0.26809]
