@@ -320,10 +320,6 @@ class RexailDataset(datasets.VisionDataset):
                 if self.is_valid_file(fname):
                     item = fname, class_idx
                     res.append(item)
-
-        for idx in sorted(cl_idx_rm, reverse=True):
-            del self.class_to_idx[self.classes[idx]]
-            del self.classes[idx]
         
         if not self.classes:
             raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")        
