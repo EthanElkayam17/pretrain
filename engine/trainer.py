@@ -33,6 +33,7 @@ def warmup_to_cosine_decay(epoch: int,
     Returns:
         float - decayed/warmed learning rate.
     """
+    epoch += 1
      
     if epoch <= warmup_epochs:
         return (epoch*lr_max)/warmup_epochs
@@ -58,6 +59,7 @@ def warmup_to_exponential_decay(epoch: int,
     Returns:
         float - decayed/warmed learning rate.
     """
+    epoch += 1
     
     if epoch <= warmup_epochs:
         return lr_min + (epoch*(lr_max-lr_min))/warmup_epochs
@@ -111,7 +113,7 @@ def train_step(model: torch.nn.Module,
         half_precision: whether to compute in half_precision.
     
     Returns:
-        Tuple - (loss, accuracy, grad_norms)
+        Tuple - (loss, accuracy)
     """
 
     model.train()

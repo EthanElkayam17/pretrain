@@ -133,7 +133,7 @@ if __name__ == "__main__":
                 
             test_dataset.load_into_memory(num_workers=train_cfg.get('dataset_num_workers'),
                                             dtype=DTYPE)
-            log("Finished loading both datasets")
+            log("Finished loading train/test datasets")
 
             create_dataloaders_per_process = partial(create_dataloaders_and_samplers_from_shared_datasets,
                                                         train_dataset=train_dataset,
