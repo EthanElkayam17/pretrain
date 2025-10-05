@@ -2,9 +2,9 @@
 settings:
 
   - id: 0
-    train_dir: "/root/.cache/kagglehub/datasets/ethanelkayam/dataset1/versions/1/newdata3"
-    test_dir: "/root/.cache/kagglehub/datasets/ethanelkayam/dataset1/versions/1/newdata3"
-    batch_size: 512
+    train_dir: /root/.cache/kagglehub/datasets/ethanelkayam/dataset1/versions/1
+    test_dir: /root/.cache/kagglehub/datasets/ethanelkayam/dataset1/versions/1
+    batch_size: 256
     dataloader_num_workers: 24
     dataset_num_workers: 24
     momentum: 0.9
@@ -12,7 +12,7 @@ settings:
     lazy_dataset: True
     half_precision: True
     train_split: 90
-    max_class_size: 750
-    min_class_size: 750
+    max_class_size: 1400
+    min_class_size: 1400
     mean: [0.46422, 0.45539, 0.44493]
     std: [0.25619, 0.24720, 0.26809]

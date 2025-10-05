@@ -28,7 +28,7 @@ if __name__ == "__main__":
     ap.add_argument("--training-cfg", type=str, required=True, help="File name of training settings configuration (.yaml)")
     ap.add_argument("--stages-cfg", type=str, required=True, help="File name of stages configuration (.yaml)")
     ap.add_argument("--version-name", type=str, default=None, help="Output's file name")
-    ap.add_argument("--log-to", type=str, default=None, help="File name to log to (.txt / 'stdout-only')")
+    ap.add_argument("--log-to", type=str, default="stdout-only", help="File name to log to (.txt / 'stdout-only')")
     args = ap.parse_args()
     WORLD_SIZE = torch.cuda.device_count()
 
