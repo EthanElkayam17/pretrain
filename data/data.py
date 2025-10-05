@@ -313,6 +313,7 @@ class RexailDataset(datasets.VisionDataset):
         if not self.classes:
             raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")        
 
+        self.class_to_idx = class_to_idx = {cls_name: i for i, cls_name in enumerate(self.classes)}
         return res
 
 
