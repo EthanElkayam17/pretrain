@@ -287,25 +287,40 @@ class RexailDataset(datasets.VisionDataset):
             if len(valid_fnames) < self.min_class_size:
                 cl_idx_rm.append(class_idx)
 
-            else:
-                if self.max_class_size == -1 or self.max_class_size >= len(valid_fnames):
-                    universe = valid_fnames
-                else:
-                    indices = sorted(random.sample(range(len(valid_fnames)), self.max_class_size))
-                    universe = [valid_fnames[i] for i in indices]
+        for idx in sorted(cl_idx_rm, reverse=True):
+            del self.classes[idx]
+        self.class_to_idx = {cls_name: i for i, cls_name in enumerate(self.classes)}
 
-                cut_index = (len(universe) * self.ratio) // 100
-
-                if self.complement_ratio:
-                    filtered_fnames = universe[cut_index:]
-                else:
-                    filtered_fnames = universe[:cut_index]
-
-                for fname in filtered_fnames:
-                    if self.is_valid_file(fname):
-                        item = fname, class_idx
-                        res.append(item)
+        for target_class in sorted(self.class_to_idx.keys()):
+            class_idx = self.class_to_idx[target_class]
+            target_dir = Path(dirjoin(directory, target_class))
+            fnames = sorted((str(p) for p in target_dir.iterdir() if self.is_valid_file(str(p))), key=lambda p: RexailDataset.fname_time(str(p)))
+            
+            s = RexailDataset.find_idx_by_time(fnames, self.earliest_timestamp_ms, False)
+            e = RexailDataset.find_idx_by_time(fnames, self.latest_timestamp_ms, True)
+            valid_fnames = fnames[s:e]
         
+            if len(valid_fnames) < self.min_class_size:
+                print("problem?")
+
+            if self.max_class_size == -1 or self.max_class_size >= len(valid_fnames):
+                universe = valid_fnames
+            else:
+                indices = sorted(random.sample(range(len(valid_fnames)), self.max_class_size))
+                universe = [valid_fnames[i] for i in indices]
+
+            cut_index = (len(universe) * self.ratio) // 100
+
+            if self.complement_ratio:
+                filtered_fnames = universe[cut_index:]
+            else:
+                filtered_fnames = universe[:cut_index]
+
+            for fname in filtered_fnames:
+                if self.is_valid_file(fname):
+                    item = fname, class_idx
+                    res.append(item)
+
         for idx in sorted(cl_idx_rm, reverse=True):
             del self.class_to_idx[self.classes[idx]]
             del self.classes[idx]
@@ -313,7 +328,7 @@ class RexailDataset(datasets.VisionDataset):
         if not self.classes:
             raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")        
 
-        self.class_to_idx = class_to_idx = {cls_name: i for i, cls_name in enumerate(self.classes)}
+        self.class_to_idx = {cls_name: i for i, cls_name in enumerate(self.classes)}
         return res
 
 
