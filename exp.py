@@ -26,7 +26,9 @@ from data.data import create_dataloaders_and_samplers_from_shared_datasets, calc
 from utils.other import dirjoin, start_log, missing_keys, ConfigError
 from engine.trainer import trainer
 
-t = RexailDataset(root="~/newdata2", min_class_size=800)
-print((t))
+tt = RexailDataset(root="~/newdata2", min_class_size=1300)
+t = RexailDataset(root="~/newdata2", min_class_size=1300, only_classes=tt)
+print(t.classes)
+print(len(t.classes))
 
 

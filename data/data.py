@@ -58,8 +58,9 @@ class RexailDataset(datasets.VisionDataset):
         complement_ratio: bool = False,
         extensions: Tuple[str, ...] = (".png",".jpeg",".jpg"),
         ignore_classes: List[str] = None,
+        only_classes: List[str] = None,
         load_into_memory: bool = False,
-        num_workers_load: int = 4,
+        num_workers_load: int = 4
         ):
         """Args:
             root: Root directory path.
@@ -75,6 +76,7 @@ class RexailDataset(datasets.VisionDataset):
             complement_ratio: whether to take the complement set of pictures filtered by the ratio.
             extensions: file extensions that are acceptable.
             ignore_classes: classes to ignore when making dataset.
+            only_classes: marks these classes exclusivly as valid, all else invalid.
             load_into_memory: whether to load the dataset into shared-memory.
             num_workers_load: number of workers for parallel loading into memory (useful only when load_into_memory=True).
         """
@@ -95,6 +97,7 @@ class RexailDataset(datasets.VisionDataset):
         self.ratio = ratio
         self.complement_ratio = complement_ratio
         self.ignore_classes = ignore_classes
+        self.only_classes = only_classes
         self.pre_transform = pre_transform
         self.earliest_timestamp_ms = earliest_timestamp_ms
         self.latest_timestamp_ms = latest_timestamp_ms
@@ -107,7 +110,8 @@ class RexailDataset(datasets.VisionDataset):
             self.ignore_classes = []
 
         classes, class_to_idx = RexailDataset.find_classes(directory=self.root, 
-                                                           ignore_classes=self.ignore_classes)
+                                                           ignore_classes=self.ignore_classes,
+                                                           only_classes=self.only_classes)
         self.class_to_idx = class_to_idx
         self.classes = classes
         self.num_classes = len(classes)
@@ -330,12 +334,14 @@ class RexailDataset(datasets.VisionDataset):
 
     @staticmethod
     def find_classes(directory: Union[str, Path], 
-                    ignore_classes: List[str] = None) -> Tuple[List[str], Dict[str, int]]:
+                    ignore_classes: List[str] = None,
+                    only_classes: List[str] = None) -> Tuple[List[str], Dict[str, int]]:
         """Creates a list of the classes and provides a mapping to indices.
         
         Args:
-            directory: directory containing the classes
-            ignore_classes: classes to ignore
+            directory: directory containing the classes.
+            ignore_classes: classes to ignore.
+            only_classes: only valid classes.
 
         Returns:
             Tuple - (list_of_classes, map_class_to_idx)
@@ -344,8 +350,12 @@ class RexailDataset(datasets.VisionDataset):
         if ignore_classes is None:
             ignore_classes = []
 
-        classes = sorted((entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes))))
-        
+        pre_classes = sorted((entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes))))
+        if only_classes is not None:
+            classes = sorted((cls for cls in pre_classes if (cls in only_classes)))            
+        else:
+            classes = pre_classes
+
         if not classes:
             raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")
 
