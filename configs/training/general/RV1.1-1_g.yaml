@@ -3,7 +3,7 @@ settings:
 
   - id: 0
     train_dir: /root/.cache/kagglehub/datasets/ethanelkayam/dataset1/versions/1/newdata3
-    test_dir: /root/.cache/kagglehub/datasets/ethanelkayam/dataset2/versions/1/ntestingdata
+    test_dir: /root/.cache/kagglehub/datasets/ethanelkayam/dataset2/versions/1/newdata3
     batch_size: 256
     dataloader_num_workers: 24
     dataset_num_workers: 24
