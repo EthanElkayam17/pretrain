@@ -58,7 +58,7 @@ class RexailDataset(datasets.VisionDataset):
         complement_ratio: bool = False,
         extensions: Tuple[str, ...] = (".png",".jpeg",".jpg"),
         ignore_classes: List[str] = None,
-        only_classes: List[str] = None,
+        force_classes: List[str] = None,
         load_into_memory: bool = False,
         num_workers_load: int = 4
         ):
@@ -71,12 +71,12 @@ class RexailDataset(datasets.VisionDataset):
             max_class_size: maximum size of a single class (total images after filtering, including complement ratio), cuts uniformly-in-time to this amount if exceeds.
             min_class_size: minimum size of a single class (total images after filtering, including complement ratio).
             earliest_timestamp_ms: earliest date-of-capture (in ms) allowed for an image.
-            latest_timestamp_ms: latest date=of=capture (in ms) allowed for an image.
+            latest_timestamp_ms: latest date-of-capture (in ms) allowed for an image.
             ratio: ratio of images in every class that should be in the database (0-100).
             complement_ratio: whether to take the complement set of pictures filtered by the ratio.
             extensions: file extensions that are acceptable.
             ignore_classes: classes to ignore when making dataset.
-            only_classes: marks these classes exclusivly as valid, all else invalid.
+            force_classes: marks these classes as exclusively valid, the target space is also forced to be those classes in exact order.
             load_into_memory: whether to load the dataset into shared-memory.
             num_workers_load: number of workers for parallel loading into memory (useful only when load_into_memory=True).
         """
@@ -97,7 +97,7 @@ class RexailDataset(datasets.VisionDataset):
         self.ratio = ratio
         self.complement_ratio = complement_ratio
         self.ignore_classes = ignore_classes
-        self.only_classes = only_classes
+        self.force_classes = force_classes
         self.pre_transform = pre_transform
         self.earliest_timestamp_ms = earliest_timestamp_ms
         self.latest_timestamp_ms = latest_timestamp_ms
@@ -111,10 +111,10 @@ class RexailDataset(datasets.VisionDataset):
 
         classes, class_to_idx = RexailDataset.find_classes(directory=self.root, 
                                                            ignore_classes=self.ignore_classes,
-                                                           only_classes=self.only_classes)
+                                                           force_classes=self.force_classes)
         self.class_to_idx = class_to_idx
         self.classes = classes
-        self.num_classes = len(classes)
+        self.num_classes = len(classes) if force_classes is None else len(force_classes)
 
         self.samples = self.make_dataset()
         self.targets = [s[1] for s in self.samples]
@@ -279,7 +279,7 @@ class RexailDataset(datasets.VisionDataset):
         res = []
         cl_idx_rm = []
 
-        for target_class in sorted(self.class_to_idx.keys()):
+        for target_class in sorted(self.classes):
             class_idx = self.class_to_idx[target_class]
             target_dir = Path(dirjoin(directory, target_class))
             fnames = sorted((str(p) for p in target_dir.iterdir() if self.is_valid_file(str(p))), key=lambda p: RexailDataset.fname_time(str(p)))
@@ -293,9 +293,11 @@ class RexailDataset(datasets.VisionDataset):
 
         for idx in sorted(cl_idx_rm, reverse=True):
             del self.classes[idx]
-        self.class_to_idx = {cls_name: i for i, cls_name in enumerate(self.classes)}
 
-        for target_class in sorted(self.class_to_idx.keys()):
+        if self.force_classes is None:
+            self.class_to_idx = {cls_name: i for i, cls_name in enumerate(self.classes)}
+
+        for target_class in sorted(self.classes):
             class_idx = self.class_to_idx[target_class]
             target_dir = Path(dirjoin(directory, target_class))
             fnames = sorted((str(p) for p in target_dir.iterdir() if self.is_valid_file(str(p))), key=lambda p: RexailDataset.fname_time(str(p)))
@@ -303,9 +305,6 @@ class RexailDataset(datasets.VisionDataset):
             s = RexailDataset.find_idx_by_time(fnames, self.earliest_timestamp_ms, False)
             e = RexailDataset.find_idx_by_time(fnames, self.latest_timestamp_ms, True)
             valid_fnames = fnames[s:e]
-        
-            if len(valid_fnames) < self.min_class_size:
-                print("problem?")
 
             if self.max_class_size == -1 or self.max_class_size >= len(valid_fnames):
                 universe = valid_fnames
@@ -328,20 +327,19 @@ class RexailDataset(datasets.VisionDataset):
         if not self.classes:
             raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")        
 
-        self.class_to_idx = {cls_name: i for i, cls_name in enumerate(self.classes)}
         return res
 
 
     @staticmethod
     def find_classes(directory: Union[str, Path], 
                     ignore_classes: List[str] = None,
-                    only_classes: List[str] = None) -> Tuple[List[str], Dict[str, int]]:
+                    force_classes: List[str] = None) -> Tuple[List[str], Dict[str, int]]:
         """Creates a list of the classes and provides a mapping to indices.
         
         Args:
             directory: directory containing the classes.
             ignore_classes: classes to ignore.
-            only_classes: only valid classes.
+            force_classes: only valid classes.
 
         Returns:
             Tuple - (list_of_classes, map_class_to_idx)
@@ -351,15 +349,17 @@ class RexailDataset(datasets.VisionDataset):
             ignore_classes = []
 
         pre_classes = sorted((entry.name for entry in os.scandir(directory) if (entry.is_dir() and (entry.name not in ignore_classes))))
-        if only_classes is not None:
-            classes = sorted((cls for cls in pre_classes if (cls in only_classes)))            
+        if force_classes is not None:
+            classes = sorted((cls for cls in pre_classes if (cls in force_classes)))
+            class_to_idx = {cls_name: i for i, cls_name in enumerate(force_classes)}
+            print(class_to_idx)
         else:
             classes = pre_classes
+            class_to_idx = {cls_name: i for i, cls_name in enumerate(classes)}
 
         if not classes:
             raise FileNotFoundError(f"Couldn't find any classes in {directory} that adhere to the restrictions.")
 
-        class_to_idx = {cls_name: i for i, cls_name in enumerate(classes)}
         return classes, class_to_idx
 
 

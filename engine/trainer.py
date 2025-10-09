@@ -198,7 +198,7 @@ def test_step(model: torch.nn.Module,
             if top5:
                 top5_test_accuracy += top_k_accuracy(y_res,y,5)
 
-            if rank == 0 and (batch % 50 == 0):
+            if rank == 0:
                 print(f"testing batch number #{batch}")
 
     num_batches = len(dataloader)

@@ -27,8 +27,7 @@ from utils.other import dirjoin, start_log, missing_keys, ConfigError
 from engine.trainer import trainer
 
 tt = RexailDataset(root="~/newdata2", min_class_size=1300)
-t = RexailDataset(root="~/newdata2", min_class_size=1300, only_classes=tt)
-print(t.classes)
+t = RexailDataset(root="~/ntestingdata", min_class_size=40)
+print(len(tt.classes))
 print(len(t.classes))
-
 
