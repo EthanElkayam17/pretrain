@@ -143,6 +143,8 @@ if __name__ == "__main__":
                                                         num_workers=train_cfg.get('dataloader_num_workers'),
                                                         external_collate_func_builder=external_collate_func_builder)
         log(f"Starting training stage #{str(idx)}")
+        print(train_dataset)
+        print(test_dataset)
         mp.spawn(
             trainer,
             args=(WORLD_SIZE, 
