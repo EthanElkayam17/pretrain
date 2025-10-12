@@ -69,7 +69,7 @@ class RexailDataset(datasets.VisionDataset):
             target_transform: A transform for the target.
             loader: A function to load an image given its path.
             max_class_size: maximum size of a single class (total images after filtering, including complement ratio), cuts uniformly-in-time to this amount if exceeds.
-            min_class_size: minimum size of a single class (total images after filtering, including complement ratio).
+            min_class_size: minimum size of a single class (total images after filtering, including complement ratio), unless forced by "force_classes" (in which this parameter does nothing).
             earliest_timestamp_ms: earliest date-of-capture (in ms) allowed for an image.
             latest_timestamp_ms: latest date-of-capture (in ms) allowed for an image.
             ratio: ratio of images in every class that should be in the database (0-100).
@@ -288,7 +288,7 @@ class RexailDataset(datasets.VisionDataset):
             e = RexailDataset.find_idx_by_time(fnames, self.latest_timestamp_ms, True)
             valid_fnames = fnames[s:e]
             
-            if len(valid_fnames) < self.min_class_size:
+            if (len(valid_fnames) < self.min_class_size) and (self.force_classes is None):
                 cl_idx_rm.append(class_idx)
 
         for idx in sorted(cl_idx_rm, reverse=True):
@@ -352,7 +352,6 @@ class RexailDataset(datasets.VisionDataset):
         if force_classes is not None:
             classes = sorted((cls for cls in pre_classes if (cls in force_classes)))
             class_to_idx = {cls_name: i for i, cls_name in enumerate(force_classes)}
-            print(class_to_idx)
         else:
             classes = pre_classes
             class_to_idx = {cls_name: i for i, cls_name in enumerate(classes)}

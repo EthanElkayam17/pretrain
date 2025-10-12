@@ -102,8 +102,6 @@ if __name__ == "__main__":
                                         ratio=train_cfg.get('train_split'),
                                         complement_ratio=True,
                                         force_classes=train_dataset.classes) #clean force classes input from user
-        log(len(test_dataset))
-        log(len(train_dataset))
         
         mean, std = train_cfg.get('mean', None), train_cfg.get('std', None)
         if (mean is None) or (std is None):
