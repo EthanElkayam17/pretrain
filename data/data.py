@@ -288,7 +288,7 @@ class RexailDataset(datasets.VisionDataset):
             e = RexailDataset.find_idx_by_time(fnames, self.latest_timestamp_ms, True)
             valid_fnames = fnames[s:e]
             
-            if (len(valid_fnames) < self.min_class_size) and (self.force_classes is None):
+            if (len(valid_fnames) < self.min_class_size) and (self.force_classes is None) and (self.min_class_size != -1):
                 cl_idx_rm.append(class_idx)
 
         for idx in sorted(cl_idx_rm, reverse=True):

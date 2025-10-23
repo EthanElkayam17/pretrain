@@ -59,7 +59,6 @@ class InvertedResidualDWBlock(nn.Module):
         expanded_channels = int(round(in_channels*expansion_ratio))
 
         if not self.fused:
-            #expand
             if expanded_channels != in_channels:
                 layers.append(
                     Conv2dNormActivation(in_channels=self.in_channels,
@@ -70,7 +69,6 @@ class InvertedResidualDWBlock(nn.Module):
                                         )
                 )
         
-            #DWconv
             layers.append(
                 Conv2dNormActivation(in_channels=expanded_channels,
                                     out_channels=expanded_channels,
@@ -92,7 +90,6 @@ class InvertedResidualDWBlock(nn.Module):
                                     activation_layer=activation_layer)
             )
 
-        #squeeze-and-excitation
         if SE_reduction_ratio != 0:
             squeeze_channels = max(1,int(round(in_channels*SE_reduction_ratio)))
             layers.append(
@@ -100,7 +97,6 @@ class InvertedResidualDWBlock(nn.Module):
             )
 
         if expanded_channels != out_channels:
-            #shrink
             layers.append(
                 Conv2dNormActivation(in_channels=expanded_channels,
                                     out_channels=self.out_channels,

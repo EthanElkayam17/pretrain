@@ -99,10 +99,10 @@ if __name__ == "__main__":
                                         min_class_size=train_cfg.get('min_class_size', -1),
                                         earliest_timestamp_ms=train_cfg.get('earliest_timestamp_ms', 0),
                                         latest_timestamp_ms=train_cfg.get('latest_timestamp_ms', -1),
-                                        ratio=train_cfg.get('train_split'),
-                                        complement_ratio=True,
-                                        force_classes=train_dataset.classes) #clean force classes input from user
-        
+                                        ratio=100,
+                                        complement_ratio=False,
+                                        force_classes=train_dataset.classes) #clean force classes input from ""user""
+
         mean, std = train_cfg.get('mean', None), train_cfg.get('std', None)
         if (mean is None) or (std is None):
             log("Calculating std and mean across training set..")
