@@ -105,7 +105,6 @@ if __name__ == "__main__":
         print(len(test_dataset))
         print(len(train_dataset))
 
-
         mean, std = train_cfg.get('mean', None), train_cfg.get('std', None)
         if (mean is None) or (std is None):
             log("Calculating std and mean across training set..")

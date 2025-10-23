@@ -5,7 +5,7 @@ stages:
     resize: 136
     res: 128
     centered: False
-    randAugment_magnitude: 5
+    randAugment_magnitude: 7
     dropout_prob: 0.1
     lr_min: 0.00000064
     lr_max: 0.0004
@@ -21,7 +21,7 @@ stages:
     resize: 176
     res: 168
     centered: False
-    randAugment_magnitude: 8
+    randAugment_magnitude: 9
     dropout_prob: 0.15
     lr_min: 0.00000000002
     lr_max: 0.000225
@@ -37,7 +37,7 @@ stages:
     resize: 202
     res: 184
     centered: False
-    randAugment_magnitude: 12
+    randAugment_magnitude: 14
     dropout_prob: 0.2
     lr_min: 0.00000000002
     lr_max: 0.0000126
@@ -53,7 +53,7 @@ stages:
     resize: 256
     res: 224
     centered: True
-    randAugment_magnitude: 15
+    randAugment_magnitude: 16
     dropout_prob: 0.25
     lr_min: 0.00000000001
     lr_max: 0.0000075
