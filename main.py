@@ -102,6 +102,9 @@ if __name__ == "__main__":
                                         ratio=100,
                                         complement_ratio=False,
                                         force_classes=train_dataset.classes) #clean force classes input from ""user""
+        print(len(test_dataset))
+        print(len(train_dataset))
+
 
         mean, std = train_cfg.get('mean', None), train_cfg.get('std', None)
         if (mean is None) or (std is None):
