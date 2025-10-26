@@ -291,8 +291,8 @@ def trainer(rank: int,
     setup(world_size=world_size, rank=rank)
     log = start_log(log_dir, log_to)
     
-    #model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
-    model = efficientnet_v2_s(EfficientNet_V2_S_Weights.DEFAULT).to(rank)
+    model = CFGCNN(cfg_name=model_cfg_name, dropout_prob_override=dropout_prob).to(rank)
+    #model = efficientnet_v2_s(EfficientNet_V2_S_Weights.DEFAULT).to(rank)
     model.cuda(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
     
