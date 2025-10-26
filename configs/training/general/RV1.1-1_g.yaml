@@ -13,6 +13,6 @@ settings:
     half_precision: True
     train_split: 90
     max_class_size: 1300
-    min_class_size: 1300
+    min_class_size: 800
     mean: [0.4665552622511037, 0.4587000404130766, 0.4476851038301765]
     std: [0.2561551292582817, 0.2449296727629446, 0.2647244509669918]
