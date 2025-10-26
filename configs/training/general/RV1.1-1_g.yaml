@@ -11,7 +11,7 @@ settings:
     weight_decay: 0.00001
     lazy_dataset: True
     half_precision: True
-    train_split: 90
+    train_split: 100
     max_class_size: 1300
     min_class_size: 800
     mean: [0.4665552622511037, 0.4587000404130766, 0.4476851038301765]
