@@ -101,5 +101,5 @@ model_stages:
 
   - id: 11
     type: FC
-    out_features: 80
+    out_features: 105
     in_features: 1024
