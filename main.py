@@ -71,6 +71,7 @@ if __name__ == "__main__":
 
     stage_pre_transforms = get_stages_pre_transforms(stages_cfg, DTYPE)
 
+    pretrained = "slow.pth"
     log("Starting training:")
     for idx, stage in enumerate(stages_cfg):
 
@@ -145,7 +146,6 @@ if __name__ == "__main__":
                                                         batch_size=train_cfg.get('batch_size'),
                                                         num_workers=train_cfg.get('dataloader_num_workers'),
                                                         external_collate_func_builder=external_collate_func_builder)
-        pretrained = None
 
         log(f"Starting training stage #{str(idx)}")
         mp.spawn(
