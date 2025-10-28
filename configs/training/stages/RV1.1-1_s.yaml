@@ -1,23 +1,7 @@
 ---
 stages:
-  
-  - id: 0
-    resize: 136
-    res: 128
-    centered: False
-    randAugment_magnitude: 7
-    dropout_prob: 0.1
-    lr_min: 0.00000064
-    lr_max: 0.0003
-    decay_mode: exp
-    decay_factor: 0.9873
-    warmup_epochs: 15
-    epochs: 60
-    cutmix_alpha: 0.0
-    mixup_alpha: 0.0
-    label_smoothing: 0.0
 
-  - id: 1
+  - id: 0
     resize: 176
     res: 168
     centered: False
@@ -33,7 +17,7 @@ stages:
     mixup_alpha: 0.0
     label_smoothing: 0.0
 
-  - id: 2
+  - id: 1
     resize: 202
     res: 184
     centered: False
@@ -49,7 +33,7 @@ stages:
     mixup_alpha: 0.0
     label_smoothing: 0.0
 
-  - id: 3
+  - id: 2
     resize: 256
     res: 224
     centered: True
@@ -63,4 +47,20 @@ stages:
     epochs: 80
     cutmix_alpha: 1.0
     mixup_alpha: 0.1
+    label_smoothing: 0.0
+
+  - id: 3
+    resize: 136
+    res: 128
+    centered: False
+    randAugment_magnitude: 7
+    dropout_prob: 0.1
+    lr_min: 0.00000064
+    lr_max: 0.0003
+    decay_mode: exp
+    decay_factor: 0.9873
+    warmup_epochs: 15
+    epochs: 60
+    cutmix_alpha: 0.0
+    mixup_alpha: 0.0
     label_smoothing: 0.0
