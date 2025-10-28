@@ -8,7 +8,7 @@ stages:
     randAugment_magnitude: 7
     dropout_prob: 0.1
     lr_min: 0.00000064
-    lr_max: 0.0004
+    lr_max: 0.0001
     decay_mode: exp
     decay_factor: 0.9873
     warmup_epochs: 15
@@ -24,7 +24,7 @@ stages:
     randAugment_magnitude: 9
     dropout_prob: 0.15
     lr_min: 0.00000000002
-    lr_max: 0.000225
+    lr_max: 0.00005
     decay_mode: exp
     decay_factor: 0.988
     warmup_epochs: 0
@@ -40,7 +40,7 @@ stages:
     randAugment_magnitude: 14
     dropout_prob: 0.2
     lr_min: 0.00000000002
-    lr_max: 0.0000126
+    lr_max: 0.000025
     decay_mode: exp
     decay_factor: 0.9885
     warmup_epochs: 0
@@ -56,7 +56,7 @@ stages:
     randAugment_magnitude: 16
     dropout_prob: 0.25
     lr_min: 0.00000000001
-    lr_max: 0.0000075
+    lr_max: 0.0000125
     decay_mode: exp
     decay_factor: 0.9885
     warmup_epochs: 0

@@ -2,7 +2,7 @@
 settings:
 
   - id: 0
-    train_dir: ~/.cache/kagglehub/datasets/ethanelkayam/dataset1/versions/1/newdata3
+    train_dir: ~/.cache/kagglehub/datasets/ethanelkayam/datasetm/versions/1/newdata5
     test_dir: ~/.cache/kagglehub/datasets/ethanelkayam/dataset2/versions/1/nntestingdata
     batch_size: 256
     dataloader_num_workers: 24
@@ -13,6 +13,6 @@ settings:
     half_precision: True
     train_split: 100
     max_class_size: 1300
-    min_class_size: 800
+    min_class_size: 1300
     mean: [0.4665552622511037, 0.4587000404130766, 0.4476851038301765]
     std: [0.2561551292582817, 0.2449296727629446, 0.2647244509669918]
