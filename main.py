@@ -145,6 +145,8 @@ if __name__ == "__main__":
                                                         batch_size=train_cfg.get('batch_size'),
                                                         num_workers=train_cfg.get('dataloader_num_workers'),
                                                         external_collate_func_builder=external_collate_func_builder)
+        pretrained = None
+
         log(f"Starting training stage #{str(idx)}")
         mp.spawn(
             trainer,
@@ -165,10 +167,12 @@ if __name__ == "__main__":
                 stage.get('decay_factor', 0),
                 VERSION_FNAME,
                 args.log_to,
-                LOGS_DIR_PATH),
+                LOGS_DIR_PATH,
+                pretrained),
             nprocs=WORLD_SIZE,
             join=True
         )
         log(f"Finished training stage #{str(idx)} \n")
+        pretrained = VERSION_FNAME
     
     log("FINISHED TRAINING")

@@ -248,7 +248,8 @@ def trainer(rank: int,
           exp_decay_factor: float = 0,
           model_name: str = "model.pth",
           log_to: str = "stdout-only",
-          log_dir: str = "logs"): #MUST ADD LOADING OF STATE DICT FOR NEXT STAGES
+          log_dir: str = "logs",
+          pretrained: str = None): #MUST ADD LOADING OF STATE DICT FOR NEXT STAGES
 
     """Train and test CFGCNN networks using multiple GPUs
     
@@ -296,20 +297,24 @@ def trainer(rank: int,
     model.cuda(rank)
     model = DistributedDataParallel(model, device_ids=[rank], output_device=rank)
     
-    if rank == 0:
-        save_state_dict(model=model, 
-                        dir="temp_state_dicts",
-                        model_name="temp_state_dict_rank_0.pth")
-    dist.barrier()
+    if pretrained is None:
+        if rank == 0:
+            save_state_dict(model=model, 
+                            dir="temp_state_dicts",
+                            model_name="temp_state_dict_rank_0.pth")
+        dist.barrier()
 
-    map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
-    model.load_state_dict(torch.load("temp_state_dicts/temp_state_dict_rank_0.pth", map_location=map_location, weights_only=True))    
-    dist.barrier()
+        map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
+        model.load_state_dict(torch.load("temp_state_dicts/temp_state_dict_rank_0.pth", map_location=map_location, weights_only=True))    
+        dist.barrier()
 
-    if rank == 0:
-        os.remove("temp_state_dicts/temp_state_dict_rank_0.pth")
-        os.rmdir("temp_state_dicts")
-
+        if rank == 0:
+            os.remove("temp_state_dicts/temp_state_dict_rank_0.pth")
+            os.rmdir("temp_state_dicts")
+    else:
+        map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
+        model.load_state_dict(torch.load(f"state_dicts/{pretrained}", map_location=map_location, weights_only=True))    
+        dist.barrier()
 
     loss_fn.to(rank)
     optimizer = optimizer(params=model.parameters(),
